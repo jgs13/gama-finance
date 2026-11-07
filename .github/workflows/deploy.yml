@@ -19,6 +19,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate application JavaScript
+        run: |
+          node -e "const fs=require('fs');const html=fs.readFileSync('index.html','utf8');const match=html.match(/<script>([\\s\\S]*?)<\\/script>/);if(!match)throw new Error('Script block not found');fs.writeFileSync('/tmp/gama-finance.js',match[1]);"
+          node --check /tmp/gama-finance.js
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site
