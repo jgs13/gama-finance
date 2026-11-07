@@ -33,7 +33,7 @@
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const today=()=>new Date().toISOString().slice(0,10), monthNow=()=>today().slice(0,7);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}, monthNow=()=>today().slice(0,7);
 const uid=()=>Math.random().toString(36).slice(2,10);
 const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],selectedDay:today()};
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
