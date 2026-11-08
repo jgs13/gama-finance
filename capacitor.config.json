@@ -1,0 +1,7 @@
+{
+  "appId": "br.com.gama.finance",
+  "appName": "GAMA FINANCE",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {}
+}
