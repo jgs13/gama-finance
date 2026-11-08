@@ -48,6 +48,12 @@ jobs:
       - name: Add Android platform
         run: npx cap add android
 
+      - name: Configure Gradle download
+        run: |
+          # Use the smaller binary distribution and allow slower connections.
+          sed -i 's/gradle-8\.14\.3-all\.zip/gradle-8.14.3-bin.zip/' android/gradle/wrapper/gradle-wrapper.properties
+          grep -q '^networkTimeout=' android/gradle/wrapper/gradle-wrapper.properties || echo 'networkTimeout=120000' >> android/gradle/wrapper/gradle-wrapper.properties
+
       - name: Sync Android project
         run: npx cap sync android
 
@@ -55,7 +61,17 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          for attempt in 1 2 3; do
+            echo "Build attempt $attempt of 3"
+            if ./gradlew assembleDebug --no-daemon; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Gradle build failed; retrying in 15 seconds..."
+              sleep 15
+            fi
+          done
+          exit 1
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
