@@ -10,6 +10,8 @@ Aplicativo web instalável (PWA) para controle financeiro pessoal e profissional
 - Cartões com limite total, limite utilizado, valor e vencimento da fatura atual, e controle de fatura paga/em aberto.
 - Contas a pagar e acompanhamento de vencimentos.
 - Análise por categoria e comparativo dos últimos seis meses, incluindo contas pagas sem duplicar lançamentos equivalentes.
+- Metas financeiras com valor-alvo, valor acumulado, prazo e registro manual de aportes.
+- Painel de alertas para contas e faturas vencidas ou com vencimento nos próximos sete dias, lançamentos atrasados e prazos de metas.
 - Benefícios e descontos informativos, sem abatimento automático do salário líquido.
 - Backup e restauração em JSON, com validação da estrutura antes de substituir os dados locais.
 - Interface responsiva e suporte a instalação/offline via PWA.
@@ -21,4 +23,4 @@ O projeto é publicado pelo GitHub Actions no GitHub Pages. Abra a URL HTTPS no 
 Os dados ficam no armazenamento local do navegador/dispositivo. Não há conta, servidor ou sincronização em nuvem. Faça backups regulares e não limpe os dados do navegador sem exportar um backup.
 
 ## Limitações desta versão
-Esta entrega é um PWA, não um APK Android nativo. As previsões recorrentes são projeções: não criam recebimentos automaticamente. Contas pagas são conciliadas com lançamentos de despesa quando data, valor e descrição correspondem, independentemente do status. Para evitar duplicidade de fluxo de caixa, não cadastre a mesma obrigação simultaneamente como conta e lançamento com descrições diferentes. O valor da fatura do cartão representa o compromisso de pagamento; despesas de compras no cartão devem ser registradas de forma consistente para não contar a mesma saída duas vezes.
+Os alertas são exibidos dentro do aplicativo quando ele é aberto; esta versão não envia notificações push em segundo plano. Os aportes das metas são controles manuais e não movimentam dinheiro nem criam despesas automaticamente. Esta entrega é um PWA, não um APK Android nativo. As previsões recorrentes são projeções: não criam recebimentos automaticamente. Contas pagas são conciliadas com lançamentos de despesa quando data, valor e descrição correspondem, independentemente do status. Para evitar duplicidade de fluxo de caixa, não cadastre a mesma obrigação simultaneamente como conta e lançamento com descrições diferentes. O valor da fatura do cartão representa o compromisso de pagamento; despesas de compras no cartão devem ser registradas de forma consistente para não contar a mesma saída duas vezes.
