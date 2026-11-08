@@ -45,7 +45,7 @@ function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.t
 const brandLogos={
 bancodobrasil:['bancodobrasil','ffef00'],bancobrasil:['bancodobrasil','ffef00'],santander:['santander','ec0000'],bradesco:['bradesco','cc092f'],
 nubank:['nubank','820ad1'],shopee:['shopee','ee4d2d'],itau:['itau','ec7000'],caixa:['caixa','005ca9'],inter:['inter','ff7a00'],mercadopago:['mercadopago','009ee3'],picpay:['picpay','21c25e'],c6:['c6bank','202020'],amazon:['amazon','ff9900'],99:['99','f6d600'],
-netflix:['netflix','e50914'],disneyplus:['disneyplus','113ccf'],hbomax:['hbomax','5825d6'],hbo:['hbo','5825d6'],max:['max','ffffff'],appletv:['appletv','ffffff'],youtube:['youtube','ff0033'],primevideo:['primevideo','00a8e1'],paramountplus:['paramountplus','0064ff'],crunchyroll:['crunchyroll','f47521'],spotify:['spotify','1ed760']
+netflix:['netflix','e50914'],disney:['disneyplus','113ccf'],disneyplus:['disneyplus','113ccf'],hbomax:['hbomax','5825d6'],hbo:['hbo','5825d6'],max:['max','ffffff'],appletv:['appletv','ffffff'],youtube:['youtube','ff0033'],primevideo:['primevideo','00a8e1'],paramountplus:['paramountplus','0064ff'],crunchyroll:['crunchyroll','f47521'],spotify:['spotify','1ed760']
 };
 const brandGlyphs=[[/mottu|motu/,'🛵'],[/spoke|spokly|circuit/,'🗺️'],[/globoplay/,'▶️'],[/wifi|wi-fi|internet|banda larga|fibra/,'📶'],[/celular|plano de celular|telefonia|chip/,'📱']];
 function normIcon(v){return String(v||'').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
