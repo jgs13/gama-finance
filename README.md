@@ -45,3 +45,14 @@ O workflow **Build GAMA FINANCE Android APK** também compila automaticamente um
 O armazenamento do PWA no navegador e o armazenamento do APK são separados. Antes de começar a usar o APK, exporte um backup JSON no PWA e importe esse arquivo no aplicativo Android. Não desinstale o PWA nem apague os dados do navegador até confirmar que o backup foi importado corretamente.
 
 Esta configuração prepara um APK **debug** para instalação e testes. Uma versão de distribuição exige assinatura de release e testes adicionais. As notificações nativas serão implementadas e testadas em uma etapa própria.
+
+
+## Distribuição e atualização do APK
+
+- Página pública de download: https://jgs13.github.io/gama-finance/download/
+- O app consulta `latest.json` ao abrir e mostra um aviso dentro do aplicativo quando uma versão superior estiver publicada.
+- Os APKs de distribuição são publicados em GitHub Releases com o nome estável `GamaFinance.apk`.
+- Para publicar uma versão, crie uma tag no formato `vMAJOR.MINOR.PATCH` (ex.: `v1.0.1`). O workflow `Release GAMA FINANCE Android` compila, assina e publica o APK e atualiza os metadados usados pelo aviso interno.
+- O APK de distribuição exige os segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD` nas configurações do repositório. A mesma chave deve ser usada em todas as versões futuras; perder ou trocar essa chave impede atualização por cima da instalação anterior.
+- A primeira instalação assinada pode exigir backup e reinstalação caso o usuário já tenha instalado o APK debug. Não desinstale antes de exportar os dados. As versões seguintes poderão ser instaladas por cima, desde que mantenham o mesmo certificado e o versionCode aumente.
+- O botão de atualização abre o download do APK no navegador/gerenciador do Android; o usuário confirma a instalação no Android. Não há instalação silenciosa.
