@@ -1,6 +1,6 @@
 import { cp, mkdir, rm } from "node:fs/promises";
 
-const files = ["index.html", "manifest.json", "sw.js", "icon.svg"];
+const files = ["index.html", "manifest.json", "sw.js", "icon.svg", "app-version.json"];
 await rm("www", { recursive: true, force: true });
 await mkdir("www", { recursive: true });
 for (const file of files) {
