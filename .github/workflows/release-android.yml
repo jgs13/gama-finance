@@ -56,6 +56,7 @@ jobs:
           VERSION_TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
           echo "$KS" | base64 --decode > "$RUNNER_TEMP/gama-release.jks"
+          VERSION_TAG="${VERSION_TAG%.}"
           VERSION="${VERSION_TAG#v}"
           python3 - "$VERSION" <<'PY'
           import re, sys
