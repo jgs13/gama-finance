@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b12">
+<title>Baixar GAMA FINANCE</title>
+<style>
+:root{color-scheme:dark;--bg:#080b12;--panel:#101722;--line:#263345;--txt:#edf3fb;--muted:#8d9caf;--cyan:#36d6c5}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 15% -10%,#14243a 0,transparent 38%),var(--bg);color:var(--txt);font:16px/1.5 system-ui,sans-serif}.card{width:min(520px,100%);padding:26px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,#121c29,#0f1620)}.logo{width:52px;height:52px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(135deg,var(--cyan),#628cff);color:#071018;font-size:26px;font-weight:900}.muted{color:var(--muted)}.version{font-size:13px;color:var(--cyan)}a.button{display:block;text-align:center;margin:22px 0 12px;padding:14px;border-radius:12px;background:linear-gradient(120deg,var(--cyan),#69a8ff);color:#071018;font-weight:800;text-decoration:none}.note{font-size:13px;padding:12px;border:1px solid var(--line);border-radius:12px;margin-top:16px}.small{font-size:12px;color:var(--muted)}ul{padding-left:20px;color:var(--muted);font-size:14px}
+</style>
+</head>
+<body><main class="card">
+<div class="logo">G</div>
+<h1>GAMA FINANCE</h1>
+<p class="muted">Controle financeiro pessoal e profissional.</p>
+<div class="version" id="version">Consultando versão mais recente...</div>
+<a class="button" id="download" href="https://github.com/jgs13/gama-finance/releases/latest/download/GAMA-FINANCE.apk">Baixar aplicativo Android (APK)</a>
+<div class="note"><b>Como instalar</b><ul><li>Baixe o APK no Android.</li><li>Abra o arquivo baixado e autorize a instalação, se o Android solicitar.</li><li>Instale por cima da versão anterior para preservar os dados.</li></ul></div>
+<p class="small">Se esta for a primeira instalação, basta seguir as instruções do Android. Se o sistema informar que o aplicativo não pode ser atualizado, não desinstale antes de exportar seu backup.</p>
+<p class="small"><a href="./" style="color:var(--cyan)">Abrir versão web do GAMA FINANCE</a></p>
+</main>
+<script>
+fetch('./version.json?'+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(v=>{document.getElementById('version').textContent='Versão mais recente: '+v.version+(v.releaseDate?' · '+v.releaseDate:'');if(v.downloadUrl)document.getElementById('download').href=v.downloadUrl;const notes=document.createElement('div');notes.className='note';notes.innerHTML='<b>Novidades desta versão</b><p></p>';notes.querySelector('p').textContent=v.notes||'Melhorias e correções.';document.querySelector('.card').insertBefore(notes,document.querySelector('.small'))}).catch(()=>{document.getElementById('version').textContent='Consulte a versão mais recente no GitHub.'});
+</script>
+</body></html>
