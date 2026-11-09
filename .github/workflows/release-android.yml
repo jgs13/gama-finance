@@ -1,0 +1,160 @@
+name: Release GAMA FINANCE Android
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag da versão, por exemplo v1.0.1"
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: gama-finance-release
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+      - name: Validate signing secrets
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          for name in KEYSTORE_B64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then echo "::error::Missing GitHub Actions secret: $name"; exit 1; fi
+          done
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Prepare web assets
+        run: npm run android:prepare
+      - name: Add Android platform
+        run: npx cap add android
+      - name: Configure Gradle
+        run: |
+          sed -i 's/gradle-8\.14\.3-all\.zip/gradle-8.14.3-bin.zip/' android/gradle/wrapper/gradle-wrapper.properties
+          grep -q '^networkTimeout=' android/gradle/wrapper/gradle-wrapper.properties || echo 'networkTimeout=120000' >> android/gradle/wrapper/gradle-wrapper.properties
+      - name: Sync Android project
+        run: npx cap sync android
+      - name: Configure release signing
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/gama-release.jks"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("android/app/build.gradle")
+          s=p.read_text()
+          marker="    signingConfigs {"
+          block="""    signingConfigs {
+          release {
+              storeFile file(System.getenv("GAMA_KEYSTORE_FILE"))
+              storePassword System.getenv("GAMA_KEYSTORE_PASSWORD")
+              keyAlias System.getenv("GAMA_KEY_ALIAS")
+              keyPassword System.getenv("GAMA_KEY_PASSWORD")
+          }
+      }
+      """
+          if marker not in s:
+              pos=s.rfind("}")
+              s=s[:pos]+block+s[pos:]
+          s=s.replace("release {", "release {\n            signingConfig signingConfigs.release", 1)
+          p.write_text(s)
+          PY
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          GAMA_KEYSTORE_FILE: ${{ runner.temp }}/gama-release.jks
+          GAMA_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          GAMA_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          GAMA_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon
+      - name: Rename APK and verify signature
+        run: |
+          mkdir -p release
+          cp android/app/build/outputs/apk/release/app-release.apk release/GamaFinance.apk
+          jarsigner -verify -verbose -certs release/GamaFinance.apk
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GamaFinance-release
+          path: release/GamaFinance.apk
+          retention-days: 30
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: GamaFinance-release
+          path: release
+      - name: Determine version
+        id: version
+        env:
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          TAG="${INPUT_TAG:-$REF_NAME}"
+          VERSION="${TAG#v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          IFS=. read -r MAJOR MINOR PATCH <<< "$VERSION"
+          echo "code=$((MAJOR*10000 + MINOR*100 + PATCH))" >> "$GITHUB_OUTPUT"
+      - name: Create GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: GAMA FINANCE ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: release/GamaFinance.apk
+      - name: Publish update metadata to GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_CODE: ${{ steps.version.outputs.code }}
+        run: |
+          git clone "https://x-access-token:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" repo
+          cd repo
+          git checkout main
+          cat > app-version.json <<EOF
+          {
+            "version": "$VERSION",
+            "versionCode": $VERSION_CODE
+          }
+          EOF
+          cat > latest.json <<EOF
+          {
+            "version": "$VERSION",
+            "versionCode": $VERSION_CODE,
+            "name": "GAMA FINANCE $VERSION",
+            "releaseNotes": "Confira as novidades desta versão nas notas do lançamento.",
+            "downloadUrl": "https://github.com/$GITHUB_REPOSITORY/releases/download/${{ steps.version.outputs.tag }}/GamaFinance.apk",
+            "downloadPage": "https://jgs13.github.io/gama-finance/download/"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app-version.json latest.json
+          git commit -m "Publish GAMA FINANCE $VERSION update metadata" || echo "Metadata already current"
+          git push origin main
