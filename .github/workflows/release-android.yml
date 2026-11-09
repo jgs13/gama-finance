@@ -1,5 +1,5 @@
 name: GAMA FINANCE - Publicar APK assinado
-on:
+'on':
   push:
     tags:
       - 'v*'
