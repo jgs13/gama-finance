@@ -129,6 +129,50 @@ body.family-workspace-open #familyWorkspace .family-workspace-bar{background:col
 body.family-workspace-open #familyWorkspace #tabs{background:color-mix(in srgb,var(--bg) 94%,var(--theme))}
 body.family-workspace-open #familyWorkspace .profile-switch-compact{border-color:color-mix(in srgb,var(--theme) 45%,var(--line))}
 #familyProfileSwitch{accent-color:var(--theme)}
+</style><style id="family-theme-presets">
+body.family-workspace-open{background:var(--bg)!important;color:var(--txt)}
+body.family-workspace-open #familyWorkspace{background:var(--bg)}
+body.family-workspace-open #familyWorkspace .family-workspace-bar,
+body.family-workspace-open #familyWorkspace #tabs{background:linear-gradient(110deg,color-mix(in srgb,var(--bg) 88%,var(--theme) 12%),color-mix(in srgb,var(--bg) 88%,var(--theme-alt) 12%))!important;border-color:var(--line)!important}
+body.family-workspace-open #familyWorkspace .profile-switch-compact{background:var(--panel2)!important;color:var(--txt)!important;border-color:var(--theme-border)!important}
+body.family-workspace-open #familyWorkspace .btn{background:var(--panel2);color:var(--txt);border-color:var(--line)}
+body.family-workspace-open #familyWorkspace .btn.primary{background:linear-gradient(120deg,var(--theme),var(--theme-alt));color:#101018;border:0}
+body.family-workspace-open #familyWorkspace .tab{background:var(--panel2);color:var(--muted);border-color:var(--line)}
+body.family-workspace-open #familyWorkspace .tab.active{background:linear-gradient(120deg,color-mix(in srgb,var(--theme) 28%,var(--panel2)),color-mix(in srgb,var(--theme-alt) 24%,var(--panel2)));color:var(--txt);border-color:var(--theme-border)}
+body.family-workspace-open #familyWorkspace .card,
+body.family-workspace-open #familyWorkspace .metric-card,
+body.family-workspace-open #familyWorkspace .guide-card{background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 94%,var(--theme) 6%),var(--panel))!important;border-color:var(--line)}
+body.family-workspace-open #familyWorkspace .notice,
+body.family-workspace-open #familyWorkspace .guide-example,
+body.family-workspace-open #familyWorkspace .guide-scenario-result{background:color-mix(in srgb,var(--panel2) 88%,var(--theme) 12%);border-color:var(--line);color:var(--txt)}
+body.family-workspace-open #familyWorkspace input,
+body.family-workspace-open #familyWorkspace select,
+body.family-workspace-open #familyWorkspace textarea{background:var(--panel2);color:var(--txt);border-color:var(--line)}
+body.family-workspace-open #familyWorkspace input:focus,
+body.family-workspace-open #familyWorkspace select:focus,
+body.family-workspace-open #familyWorkspace textarea:focus{border-color:var(--theme);box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 20%,transparent)}
+body.family-workspace-open #familyWorkspace .accent,
+body.family-workspace-open #familyWorkspace .section-head h2{color:var(--theme)}
+body.family-workspace-open #familyWorkspace .bar{background:var(--panel2)}
+body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90deg,var(--theme),var(--theme-alt))}
+.family-appearance{margin:18px 0 8px}
+.family-appearance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}
+.family-appearance-card{border:1px solid var(--line);border-radius:15px;padding:13px;background:var(--panel);min-width:0}
+.family-appearance-card h3{font-size:14px;margin:0 0 10px}
+.family-appearance-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.family-appearance-controls select{flex:1;min-width:150px}
+.family-appearance-controls input[type=color]{width:42px;height:38px;padding:3px}
+.family-theme-preview{height:74px;border-radius:12px;margin-top:10px;padding:9px;display:flex;align-items:flex-end;gap:7px;border:1px solid #ffffff22;overflow:hidden}
+.family-theme-preview span{display:block;border-radius:8px;height:27px;flex:1;border:1px solid #ffffff20}
+.family-theme-preview b{font-size:10px;color:#fff;text-shadow:0 1px 4px #000;align-self:flex-start}
+.family-appearance-card small{display:block;color:var(--muted);font-size:11px;margin-top:7px}
+.profile-card[data-family-open-profile="me"],
+.profile-card[data-family-open-profile="partner"],
+#familyAdditionalProfiles .profile-card:not(.family-combined-card){background:linear-gradient(135deg,var(--profile-start,#153e4c),var(--profile-end,#172033))!important;border-color:var(--profile-border,#52717d)!important}
+.profile-card[data-family-open-profile="me"] .profile-card-foot,
+.profile-card[data-family-open-profile="partner"] .profile-card-foot,
+#familyAdditionalProfiles .profile-card .profile-card-foot{color:#fff!important}
+@media(max-width:600px){.family-appearance-grid{grid-template-columns:1fr}}
 </style></head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE TESTE</h1><small>VERSÃO EXPERIMENTAL · DADOS ISOLADOS</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
@@ -159,7 +203,7 @@ body.family-workspace-open #familyWorkspace .profile-switch-compact{border-color
 </div>
 <div id="familyAdditionalProfiles" class="profile-grid"></div>
 <div class="actions"><button type="button" class="btn" id="familyCreateProfile">+ Criar outro perfil</button></div>
-<div id="familyProfileSettings" class="hidden"></div>
+<section class="family-appearance"><div class="section-head"><div><h2>Temas e aparência</h2><p>Escolha um visual para cada perfil. A alteração aparece ao abrir o respectivo cartão.</p></div></div><div id="familyProfileSettings" class="family-appearance-grid"></div></section>
 </section><section class="view" id="guide">
 <div class="section-head"><div><h2>GAMA Guia</h2><p>Manual passo a passo: o que cadastrar, quando fazer e como evitar erros.</p></div></div>
 <div class="card" style="margin-bottom:12px"><h3>Como usar este manual</h3><p class="muted" style="font-size:13px;margin:0">Use a busca para localizar uma função. Abra um tópico para ver a explicação e toque no botão ao final para ir à tela correspondente ou iniciar o cadastro descrito. Os botões executam somente a ação indicada.</p></div>
@@ -543,6 +587,7 @@ try{
  if(!profiles.some(p=>p.id==='partner'))profiles.push({...FAMILY_DEFAULT_PROFILES[1]});
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles,...(saved||{})};
  familyDemo.profiles=profiles;
+ for(const p of familyDemo.profiles)if(!p.themeId)p.themeId='custom';
 }catch{
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles:FAMILY_DEFAULT_PROFILES.map(p=>({...p}))};
 }
@@ -584,25 +629,54 @@ function persistFamilyState(){
 function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
-function applyFamilyTheme(scope=familyDemo.scope){
- const valid=c=>/^#[0-9a-fA-F]{6}$/.test(c||'')?c:'#36d6c5';
- const me=profileById('me'),partner=profileById('partner');
- const primary=scope==='all'||scope==='home'?valid(me?.color):valid(profileById(scope)?.color);
- const secondary=scope==='all'||scope==='home'?valid(partner?.color):valid(primary);
- const root=document.documentElement;
- root.style.setProperty('--theme',primary);
- root.style.setProperty('--theme-alt',secondary);
- root.style.setProperty('--cyan',primary);
- root.style.setProperty('--blue',secondary);
- root.style.setProperty('--theme-soft','color-mix(in srgb,'+primary+' 24%,#101722)');
- root.style.setProperty('--theme-border','color-mix(in srgb,'+primary+' 62%,#263345)');
- root.style.setProperty('--theme-glow','color-mix(in srgb,'+primary+' 22%,transparent)');
- const meta=document.querySelector('meta[name="theme-color"]');
- if(meta)meta.setAttribute('content',primary);
+const FAMILY_THEME_PRESETS={
+ rose:{label:'Rosa chá · feminino',group:'Femininos',primary:'#D99AB5',secondary:'#B985A7',bg:'#151018',panel:'#211923',panel2:'#2B202D',line:'#493443',txt:'#F8EFF4',muted:'#B9A6B2'},
+ mauve:{label:'Malva elegante · feminino',group:'Femininos',primary:'#B68AAE',secondary:'#8F789F',bg:'#130F17',panel:'#201925',panel2:'#2A2031',line:'#49384D',txt:'#F5EDF6',muted:'#B7A8BC'},
+ lavender:{label:'Lavanda suave · feminino',group:'Femininos',primary:'#B6A1D8',secondary:'#8F9ACB',bg:'#10101A',panel:'#1B1B2A',panel2:'#25253A',line:'#41415B',txt:'#F0EFFB',muted:'#AAAAC2'},
+ wine:{label:'Vinho sofisticado · feminino',group:'Femininos',primary:'#C47F9A',secondary:'#89566F',bg:'#160F15',panel:'#241820',panel2:'#30202A',line:'#513441',txt:'#F8EEF2',muted:'#BCA5AF'},
+ graphite:{label:'Preto grafite · masculino',group:'Masculinos',primary:'#AEB9C8',secondary:'#68788E',bg:'#090C12',panel:'#131923',panel2:'#1C2532',line:'#303D4E',txt:'#EDF2F8',muted:'#9AA8BA'},
+ midnight:{label:'Azul meia-noite · masculino',group:'Masculinos',primary:'#78A9D8',secondary:'#526E9E',bg:'#09111C',panel:'#111E2D',panel2:'#192A3D',line:'#2B4058',txt:'#EDF5FC',muted:'#9BAFC3'},
+ forest:{label:'Verde floresta · masculino',group:'Masculinos',primary:'#78B69A',secondary:'#4D8977',bg:'#0B1412',panel:'#14211D',panel2:'#1D302A',line:'#304B40',txt:'#EDF7F1',muted:'#9CB5A8'},
+ steel:{label:'Azul aço · masculino',group:'Masculinos',primary:'#8FAFC2',secondary:'#647F98',bg:'#0C1218',panel:'#17212A',panel2:'#202D39',line:'#364A5A',txt:'#EDF3F7',muted:'#A0B0BC'},
+ emerald:{label:'Verde esmeralda · neutro',group:'Neutros',primary:'#65C6A7',secondary:'#4E91A4',bg:'#091411',panel:'#12221D',panel2:'#1B3029',line:'#2F4C42',txt:'#EFF8F3',muted:'#9DB7AB'},
+ ocean:{label:'Azul oceano · neutro',group:'Neutros',primary:'#69B9D2',secondary:'#627FC0',bg:'#09121A',panel:'#13212C',panel2:'#1B2E3D',line:'#304A5B',txt:'#EEF6FA',muted:'#9DB2C0'}
+};
+function familyThemeForProfile(p){
+ const preset=FAMILY_THEME_PRESETS[p?.themeId]||null;
+ if(preset)return preset;
+ const c=/^#[0-9a-fA-F]{6}$/.test(p?.color||'')?p.color:'#36d6c5';
+ return {label:'Personalizado',primary:c,secondary:c,bg:'#0B1018',panel:'#151D28',panel2:'#202B39',line:'#354456',txt:'#EDF3FB',muted:'#9DABBC'};
 }
+function applyFamilyTheme(scope=familyDemo.scope){
+ const root=document.documentElement;
+ if(scope==='home'){
+  for(const k of ['--bg','--panel','--panel2','--line','--txt','--muted','--cyan','--blue','--theme','--theme-alt','--theme-soft','--theme-border','--theme-glow'])root.style.removeProperty(k);
+  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content','#080b12');
+  return;
+ }
+ let theme;
+ if(scope==='all'){
+  const a=familyThemeForProfile(profileById('me')),b=familyThemeForProfile(profileById('partner'));
+  theme={...a,primary:a.primary,secondary:b.primary,bg:'#0D1018',panel:'#171B26',panel2:'#222838',line:'#3A4053',txt:'#F0F2F8',muted:'#A5ADBE'};
+ }else theme=familyThemeForProfile(profileById(scope));
+ const values={bg:theme.bg,panel:theme.panel,panel2:theme.panel2,line:theme.line,txt:theme.txt,muted:theme.muted,cyan:theme.primary,blue:theme.secondary,theme:theme.primary,'theme-alt':theme.secondary,'theme-soft':'color-mix(in srgb,'+theme.primary+' 25%,'+theme.panel2+')','theme-border':'color-mix(in srgb,'+theme.primary+' 68%,'+theme.line+')','theme-glow':'color-mix(in srgb,'+theme.primary+' 24%,transparent)'};
+ for(const [k,v] of Object.entries(values))root.style.setProperty('--'+k,v);
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme.bg);
+}
+function renderFamilyAppearance(){
+ const host=$('#familyProfileSettings');if(!host)return;
+ const groups=['Femininos','Masculinos','Neutros'];
+ host.innerHTML=familyDemo.profiles.map(p=>{
+  const current=FAMILY_THEME_PRESETS[p.themeId]?p.themeId:'custom';
+  const options=groups.map(g=>'<optgroup label="'+g+'">'+Object.entries(FAMILY_THEME_PRESETS).filter(([,v])=>v.group===g).map(([id,v])=>'<option value="'+id+'" '+(current===id?'selected':'')+'>'+v.label+'</option>').join('')+'</optgroup>').join('');
+  const t=familyThemeForProfile(p),custom=current==='custom';
+  return '<div class="family-appearance-card" data-profile-theme-card="'+esc(p.id)+'"><h3>'+esc(p.name)+'</h3><div class="family-appearance-controls"><select aria-label="Tema de '+esc(p.name)+'" data-family-theme="'+esc(p.id)+'"><option value="custom" '+(custom?'selected':'')+'>Cor personalizada</option>'+options+'</select><input type="color" aria-label="Cor personalizada de '+esc(p.name)+'" value="'+esc(p.color||t.primary)+'" data-family-color="'+esc(p.id)+'"></div><div class="family-theme-preview" style="background:linear-gradient(120deg,'+esc(t.bg)+','+esc(t.panel)+')"><b>'+esc(t.label)+'</b><span style="background:'+esc(t.primary)+'"></span><span style="background:'+esc(t.secondary)+'"></span><span style="background:'+esc(t.panel2)+'"></span></div><small>Prévia do fundo, cor principal e cor secundária</small></div>';
+ }).join('');
+}
+
 function renderFamilyHub(){
  if(!familyDemo)return;
- applyFamilyTheme(familyDemo.scope==='all'?'all':familyDemo.scope||'home');
+ if(document.body.classList.contains('family-workspace-open'))applyFamilyTheme(familyDemo.scope==='all'?'all':familyDemo.scope||'home');
  const me=profileById('me'),partner=profileById('partner');
  const setProfile=(p,prefix,avatar)=>{
   if(!p)return;
@@ -616,7 +690,8 @@ function renderFamilyHub(){
  $('#familyTotalBalance').textContent=money(familyDemo.profiles.reduce((n,p)=>n+profileBalance(p),0));
  $('#familyAllColor').style.background='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';
  $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<button type="button" class="profile-card" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button>').join('');
- $('#familyProfileSettings').innerHTML=familyDemo.profiles.map(p=>'<div class="item"><div><strong><span style="color:'+esc(p.color)+'">●</span> '+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small></div><input aria-label="Cor do '+esc(p.name)+'" type="color" value="'+esc(p.color)+'" data-family-color="'+esc(p.id)+'" style="width:48px;height:38px;padding:3px"></div>').join('');
+ familyDemo.profiles.forEach(p=>{const card=document.querySelector('[data-family-open-profile="'+p.id+'"]');if(card){const t=familyThemeForProfile(p);card.style.setProperty('--profile-start',t.primary);card.style.setProperty('--profile-end',t.secondary);card.style.setProperty('--profile-border',t.primary);}});
+ renderFamilyAppearance();
 }
 function showFamilyHome(){
  persistFamilyState();
@@ -630,9 +705,10 @@ function activateFamilyProfile(scope){
  familyDemo.scope=scope;familyDemo.active=scope;
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
- applyFamilyTheme(scope);
  document.body.classList.add('family-workspace-open');
+ applyFamilyTheme(scope);
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
+ applyFamilyTheme(scope);
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
  const color=scope==='all'?'#fff':profileById(scope).color;
  $('#familyProfileSwitch').style.color=color;
@@ -662,11 +738,21 @@ $('#family').addEventListener('click',e=>{
  if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
 });
 $('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+$('#familyProfileSettings').addEventListener('change',e=>{
+ const select=e.target.closest('[data-family-theme]');
+ if(!select)return;
+ const p=profileById(select.dataset.familyTheme);if(!p)return;
+ p.themeId=select.value==='custom'?'custom':select.value;
+ const t=familyThemeForProfile(p);p.color=t.primary;
+ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
+});
 $('#familyProfileSettings').addEventListener('input',e=>{
  const input=e.target.closest('[data-family-color]');if(!input)return;
  const p=profileById(input.dataset.familyColor);if(!p)return;
- p.color=input.value;localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));if(familyDemo.scope==='all'||familyDemo.scope===p.id)applyFamilyTheme(familyDemo.scope);renderFamilyHub();
+ p.color=input.value;p.themeId='custom';
+ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
 });
+applyFamilyTheme('home');
 renderFamilyHub();
 initFamilyWorkspace();
 familyReady=true;
