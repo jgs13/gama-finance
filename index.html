@@ -96,6 +96,20 @@ body.family-workspace-open #familyWorkspace #tabs{
  body.family-workspace-open #familyWorkspace .view{padding:10px 11px 18px}
 }
 
+
+/* Navegação compacta no topo, em faixa horizontal rolável. */
+body.family-workspace-open #familyWorkspace .family-workspace-bar{order:0;display:flex;align-items:center;flex:0 0 auto;gap:6px;min-height:42px;padding:4px 8px;background:#080b12;border:0;border-bottom:1px solid var(--line);border-radius:0}
+body.family-workspace-open #familyWorkspace .family-workspace-bar #familyBackBtn{flex:0 0 30px;width:30px;min-width:30px;height:30px;padding:0;display:grid;place-items:center;font-size:17px;border-radius:8px}
+body.family-workspace-open #familyWorkspace .profile-switch-compact{flex:0 1 auto;width:auto;min-width:0;max-width:min(42vw,180px);height:30px;padding:3px 22px 3px 7px;font-size:12px;font-weight:700;border-radius:8px;background:#111a26;border:1px solid var(--line)}
+body.family-workspace-open #familyWorkspace .family-workspace-bar .owner-control{display:flex;flex:0 1 auto;width:auto;min-width:0;flex-direction:row;align-items:center;gap:4px;font-size:10px;white-space:nowrap}
+body.family-workspace-open #familyWorkspace .family-workspace-bar .owner-control span{display:none}
+body.family-workspace-open #familyWorkspace .family-workspace-bar .owner-control select{width:auto;max-width:112px;height:30px;padding:3px 18px 3px 6px;font-size:10px}
+body.family-workspace-open #familyWorkspace #tabs{order:1;display:flex;flex:0 0 auto;align-items:center;justify-content:flex-start;gap:5px;width:100%;margin:0;padding:5px 8px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scrollbar-width:none;border:0;border-bottom:1px solid var(--line);border-radius:0;background:#0b111b;box-shadow:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+body.family-workspace-open #familyWorkspace #tabs::-webkit-scrollbar{display:none}
+body.family-workspace-open #familyWorkspace #tabs .tab{flex:0 0 auto;min-width:max-content;min-height:30px;height:30px;padding:4px 10px;font-size:11px;line-height:1;border-radius:7px}
+body.family-workspace-open #familyWorkspace .view{order:2;flex:1 1 0;min-height:0}
+@media(max-width:720px){body.family-workspace-open #familyWorkspace .family-workspace-bar{min-height:38px;padding:3px 6px;gap:5px}body.family-workspace-open #familyWorkspace .profile-switch-compact{max-width:45vw;height:28px;font-size:11px}body.family-workspace-open #familyWorkspace .family-workspace-bar #familyBackBtn{width:28px;min-width:28px;height:28px}body.family-workspace-open #familyWorkspace .family-workspace-bar .owner-control select{max-width:95px;height:28px;font-size:9px}body.family-workspace-open #familyWorkspace #tabs{padding:4px 6px;gap:4px}body.family-workspace-open #familyWorkspace #tabs .tab{height:28px;min-height:28px;padding:4px 8px;font-size:10px}}
+
 </style></head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE TESTE</h1><small>VERSÃO EXPERIMENTAL · DADOS ISOLADOS</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
@@ -454,7 +468,7 @@ function activateFamilyProfile(scope){
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
  const color=scope==='all'?'#fff':profileById(scope).color;
- $('#familyWorkspaceName').textContent=name;$('#familyWorkspaceName').style.color=color;
+ $('#familyProfileSwitch').style.color=color;
  $('#familyWorkspaceOwner').value=familyDemo.lastProfile;
  $('#familyProfileSwitch').value=scope;
  $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
@@ -468,7 +482,7 @@ function initFamilyWorkspace(){
  const family=$('#family'),tabs=$('#tabs'),workspace=document.createElement('div');
  workspace.id='familyWorkspace';workspace.hidden=true;
  const bar=document.createElement('div');bar.className='family-workspace-bar';
- bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">‹ Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><label class="owner-control">Trocar perfil <select id="familyProfileSwitch" aria-label="Trocar perfil"></select></label><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
+ bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn" aria-label="Voltar aos perfis">‹</button><select id="familyProfileSwitch" class="profile-switch-compact" aria-label="Perfil atual"></select><label class="owner-control" id="familyWorkspaceOwnerWrap"><span>Cadastro:</span><select id="familyWorkspaceOwner"></select></label>';
  workspace.appendChild(bar);family.after(workspace);
  const nodes=[tabs,...$$('.view').filter(v=>v.id!=='family')];
  nodes.forEach(node=>workspace.appendChild(node));
