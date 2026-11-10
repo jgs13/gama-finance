@@ -131,7 +131,7 @@ body.family-workspace-open #familyWorkspace .view{order:2;flex:1 1 0;min-height:
 <section class="view" id="bills"><div class="section-head"><div><h2>Contas e compromissos</h2><p>Controle vencimentos e pagamentos.</p></div><button class="btn primary" id="newBill">+ Nova conta</button></div><div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Vencimento</th><th>Conta</th><th>Categoria</th><th>Valor</th><th>Status</th><th>Ação</th></tr></thead><tbody id="billRows"></tbody></table></div></div></section>
 <section class="view" id="analysis"><div class="section-head"><div><h2>Análises e inteligência</h2><p>Entenda para onde o dinheiro está indo.</p></div></div><div class="grid"><div class="card"><div class="metric-label">Taxa de economia</div><div class="metric" id="savingRate">0%</div><div class="metric-sub">Saldo ÷ receitas recebidas</div></div><div class="card"><div class="metric-label">Maior categoria de gasto</div><div class="metric" id="topCategory">—</div><div class="metric-sub">No mês selecionado</div></div><div class="card"><div class="metric-label">Total em cartões</div><div class="metric" id="cardDebt">R$ 0,00</div><div class="metric-sub">Limite utilizado cadastrado</div></div><div class="card"><div class="metric-label">Contas vencidas</div><div class="metric" id="overdue">0</div><div class="metric-sub">Pendências anteriores a hoje</div></div></div><div class="two"><div class="card"><h3>Despesas por categoria</h3><div id="categoryAnalysis"></div></div><div class="card"><h3>Diagnóstico do mês</h3><div id="diagnosis" class="list"></div></div></div><div class="card" style="margin-top:12px"><div class="row"><h3 style="margin:0">Consultor financeiro inteligente</h3><span class="pill">Análise automática</span></div><p class="muted" style="font-size:12px;margin:8px 0">Avaliação baseada nos lançamentos, contas, cartões, metas e histórico registrado neste aparelho. As recomendações são geradas localmente; não é necessário enviar seus dados financeiros para um servidor.</p><div id="aiInsights" class="list"></div></div><div class="card" style="margin-top:12px"><h3>Comparativo dos últimos 6 meses</h3><div class="table-wrap"><table class="table"><thead><tr><th>Mês</th><th>Receitas</th><th>Despesas</th><th>Resultado</th></tr></thead><tbody id="monthCompare"></tbody></table></div></div></section>
 <section class="view" id="goals"><div class="section-head"><div><h2>Metas financeiras</h2><p>Defina objetivos, acompanhe o progresso e registre aportes.</p></div><button class="btn primary" id="newGoal">+ Nova meta</button></div><div class="notice">O valor acumulado é informado manualmente. O GAMA FINANCE não movimenta dinheiro nem transfere valores automaticamente.</div><div id="goalGrid" class="grid"></div></section>
-<section class="view" id="settings"><div class="section-head"><div><h2>Configurações e dados</h2><p>Personalize o controle e proteja seus registros.</p></div></div><div class="two"><div class="card"><h3>Descrições e categorias dos lançamentos</h3><p class="muted" style="font-size:12px">Cadastre aqui as opções que aparecerão nos campos de descrição e categoria ao adicionar lançamentos.</p><div class="two" style="margin-top:8px"><div><strong>Descrições</strong><div id="descriptionOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addDescription" style="margin-top:10px">+ Adicionar descrição</button></div><div><strong>Categorias</strong><div id="categoryOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addCategory" style="margin-top:10px">+ Adicionar categoria</button></div></div></div><div class="card"><h3>Dados fictícios para teste</h3><p class="muted" style="font-size:12px">Adicione exemplos identificados como TESTE para conferir descrições, categorias, filtros, calendário e análises. Eles não são dados reais.</p><div id="testDataStatus" class="muted" style="font-size:12px;margin:8px 0">Nenhum exemplo de teste adicionado.</div><div class="actions"><button class="btn primary" id="addTestData">Adicionar exemplos</button><button class="btn danger" id="removeTestData">Remover exemplos</button></div></div><div class="card"><h3>Benefícios e descontos informativos</h3><p class="muted" style="font-size:12px">Cadastre valores que deseja acompanhar sem alterar o saldo do salário líquido.</p><div id="benefitRows" class="list"></div><button class="btn" id="addBenefit" style="margin-top:12px">+ Adicionar item</button></div><div class="card"><h3>Backup e restauração</h3><p class="muted" style="font-size:12px">Exporte uma cópia completa dos seus dados. Antes de restaurar, o GAMA FINANCE valida o arquivo, mostra um resumo e permite salvar uma cópia dos dados atuais.</p><div class="actions"><button class="btn primary" id="exportBtn">Exportar backup</button><label class="btn" for="importFile">Selecionar backup para restaurar</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div id="backupStatus" class="notice" style="margin-top:12px">Backup manual: exporte um arquivo e guarde-o fora do celular para se proteger contra perda ou troca do aparelho.</div><hr style="border-color:var(--line);margin:20px 0"><h3>Privacidade</h3><p class="muted" style="font-size:12px">Os dados desta versão ficam no armazenamento local do navegador. Não há conta, servidor ou sincronização automática.</p><button class="btn danger" id="clearData">Apagar todos os dados</button></div></div></section>
+<section class="view" id="settings"><div class="section-head"><div><h2>Configurações e dados</h2><p>Personalize o controle e proteja seus registros.</p></div></div><div class="two"><div class="card"><h3>Descrições e categorias dos lançamentos</h3><p class="muted" style="font-size:12px">Cadastre aqui as opções que aparecerão nos campos de descrição e categoria ao adicionar lançamentos.</p><div class="two" style="margin-top:8px"><div><strong>Descrições</strong><div id="descriptionOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addDescription" style="margin-top:10px">+ Adicionar descrição</button></div><div><strong>Categorias</strong><div id="categoryOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addCategory" style="margin-top:10px">+ Adicionar categoria</button></div></div></div><div class="card"><h3>Dados fictícios para teste</h3><p class="muted" style="font-size:12px">Adicione ou atualize exemplos identificados como TESTE em todos os perfis da família. A atualização substitui somente exemplos antigos; “Remover exemplos” apaga somente itens marcados como teste, preservando seus registros reais em todos os perfis.</p><div id="testDataStatus" class="muted" style="font-size:12px;margin:8px 0">Nenhum exemplo de teste adicionado.</div><div class="actions"><button class="btn primary" id="addTestData">Adicionar exemplos</button><button class="btn danger" id="removeTestData">Remover exemplos</button></div></div><div class="card"><h3>Benefícios e descontos informativos</h3><p class="muted" style="font-size:12px">Cadastre valores que deseja acompanhar sem alterar o saldo do salário líquido.</p><div id="benefitRows" class="list"></div><button class="btn" id="addBenefit" style="margin-top:12px">+ Adicionar item</button></div><div class="card"><h3>Backup e restauração</h3><p class="muted" style="font-size:12px">Exporte uma cópia completa dos seus dados. Antes de restaurar, o GAMA FINANCE valida o arquivo, mostra um resumo e permite salvar uma cópia dos dados atuais.</p><div class="actions"><button class="btn primary" id="exportBtn">Exportar backup</button><label class="btn" for="importFile">Selecionar backup para restaurar</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div id="backupStatus" class="notice" style="margin-top:12px">Backup manual: exporte um arquivo e guarde-o fora do celular para se proteger contra perda ou troca do aparelho.</div><hr style="border-color:var(--line);margin:20px 0"><h3>Privacidade</h3><p class="muted" style="font-size:12px">Os dados desta versão ficam no armazenamento local do navegador. Não há conta, servidor ou sincronização automática.</p><button class="btn danger" id="clearData">Apagar todos os dados</button></div></div></section>
 <section id="family" class="family-home">
 <div class="section-head"><div><h2>Escolha o espaço financeiro</h2><p>Toque no espaço que deseja abrir. Cada opção mostra os dados correspondentes.</p></div></div>
 <div class="profile-grid">
@@ -294,31 +294,80 @@ function renderBenefits(){$('#benefitRows').innerHTML=state.benefits.map(b=>'<di
 function dayDistance(date){return Math.round((Date.parse(date+'T00:00:00')-Date.parse(today()+'T00:00:00'))/86400000)}
 function renderAlerts(){let alerts=[];state.bills.filter(b=>b.status==='pending'&&b.due).forEach(b=>{let d=dayDistance(b.due);if(d<=7)alerts.push({date:b.due,name:b.name,amount:b.amount,kind:d<0?'Conta vencida':d===0?'Conta vence hoje':'Conta vence em '+d+' dia(s)',late:d<0})});state.cards.filter(c=>c.invoiceStatus!=='paid'&&c.invoiceAmount>0&&c.invoiceDue).forEach(c=>{let d=dayDistance(c.invoiceDue);if(d<=7)alerts.push({date:c.invoiceDue,name:'Fatura '+c.name,amount:c.invoiceAmount,kind:d<0?'Fatura vencida':d===0?'Fatura vence hoje':'Fatura vence em '+d+' dia(s)',late:d<0})});state.entries.filter(e=>e.status==='pending'&&e.date&&e.date<today()).forEach(e=>alerts.push({date:e.date,name:e.description,amount:e.amount,kind:e.type==='income'?'Receita atrasada':'Despesa pendente atrasada',late:true,income:e.type==='income'}));state.goals.filter(g=>g.deadline&&g.target>g.current).forEach(g=>{let d=dayDistance(g.deadline);if(d<=7)alerts.push({date:g.deadline,name:'Meta: '+g.name,amount:g.target-g.current,kind:d<0?'Prazo da meta expirado':d===0?'Meta vence hoje':'Prazo da meta em '+d+' dia(s)',late:d<0})});alerts.sort((a,b)=>a.date.localeCompare(b.date));$('#alertCount').textContent=alerts.length+' alerta(s)';$('#alertList').innerHTML=alerts.length?alerts.map(a=>'<div class="item"><div><strong>'+visualIcon(a.name)+esc(a.name)+'</strong><small class="'+(a.late?'negative':'muted')+'">'+esc(a.kind)+' · '+a.date.split('-').reverse().join('/')+'</small></div><b class="amount '+(a.income?'positive':a.late?'negative':'')+'">'+money(a.amount)+'</b></div>').join(''):'<div class="empty">Nenhum vencimento próximo ou atraso identificado.</div>'}
 function renderGoals(){$('#goalGrid').innerHTML=state.goals.map(g=>{let pct=g.target>0?Math.min(100,g.current/g.target*100):0;return '<div class="card"><div class="row"><strong>'+esc(g.name)+'</strong>'+familyOwnerTag(g)+'<span class="pill '+(pct>=100?'paid':'pending')+'">'+pct.toFixed(0)+'%</span></div><div class="metric">'+money(g.current)+'</div><div class="metric-sub">Meta: '+money(g.target)+(g.deadline?' · Prazo: '+g.deadline.split('-').reverse().join('/'):'')+'</div><div class="bar"><i style="width:'+pct+'%"></i></div><div class="row"><small class="muted">Faltam '+money(Math.max(0,g.target-g.current))+'</small><button class="btn small" data-add-goal="'+g.id+'">Adicionar valor</button></div><div class="actions"><button class="btn small danger" data-del-goal="'+g.id+'">Excluir meta</button></div></div>'}).join('')||'<div class="card empty">Nenhuma meta cadastrada. Crie uma meta para começar a acompanhar seu progresso.</div>'}
-function testDataCount(){return ['entries','sources','cards','bills','benefits','goals'].reduce((n,k)=>n+(state[k]||[]).filter(x=>x.gamaTestData===true).length,0)}
-function renderTestDataStatus(){const n=testDataCount();$('#testDataStatus').textContent=n?n+' registro(s) fictício(s) de teste cadastrado(s), distribuídos pelas áreas financeiras. Use “Remover exemplos” para apagar somente esses registros.':'Nenhum exemplo de teste adicionado.'}
-function addTestData(){if(testDataCount()){alert('Os exemplos de teste já estão cadastrados. Remova-os antes de adicionar novamente.');return}const date=today(),next=isoUTC(Number(date.slice(0,4)),Number(date.slice(5,7)),Math.min(Number(date.slice(8,10))+5,new Date(Number(date.slice(0,4)),Number(date.slice(5,7)),0).getDate())),monthEnd=isoUTC(Number(date.slice(0,4)),Number(date.slice(5,7))+1,0),samples=[
-{description:'Água',category:'Casa',type:'expense',amount:89.90,status:'paid'},
-{description:'Energia',category:'Casa',type:'expense',amount:145.60,status:'pending'},
-{description:'Compra de lanche',category:'Alimentação',type:'expense',amount:28.50,status:'paid'},
-{description:'Combustível',category:'Combustível',type:'expense',amount:120,status:'pending'},
-{description:'Internet',category:'Casa',type:'expense',amount:99.90,status:'paid'},
-{description:'Salário CLT - teste',category:'Renda',type:'income',amount:2800,status:'paid'}
-];samples.forEach(x=>state.entries.push({id:uid(),date,note:'DADO FICTÍCIO PARA TESTE',gamaTestData:true,...x}));
-state.sources.push(
-{id:uid(),name:'Salário CLT - TESTE',amount:2800,frequency:'semimonthly',nextDate:nextSalaryDate(),active:'yes',gamaTestData:true},
-{id:uid(),name:'Shopee - TESTE',amount:350,frequency:'weekly',nextDate:next,active:'yes',gamaTestData:true},
-{id:uid(),name:'Amazon - TESTE',amount:220,frequency:'weekly',nextDate:next,active:'yes',gamaTestData:true},
-{id:uid(),name:'Diálogo - TESTE',amount:180,frequency:'biweekly',nextDate:next,active:'yes',gamaTestData:true});
-state.benefits.push(
-{id:uid(),name:'Vale-alimentação - TESTE',kind:'benefit',amount:650,active:'yes',gamaTestData:true},
-{id:uid(),name:'Vale-transporte - TESTE',kind:'benefit',amount:220,active:'yes',gamaTestData:true},
-{id:uid(),name:'Plano de saúde - TESTE',kind:'discount',amount:185,active:'yes',gamaTestData:true},
-{id:uid(),name:'Desconto odontológico - TESTE',kind:'discount',amount:32,active:'yes',gamaTestData:true});
-state.bills.push({id:uid(),name:'Aluguel - TESTE',category:'Casa',amount:950,due:next,status:'pending',gamaTestData:true},{id:uid(),name:'Internet - TESTE',category:'Casa',amount:99.90,due:monthEnd,status:'pending',gamaTestData:true});
-state.cards.push({id:uid(),name:'Cartão teste · Visa',bank:'Banco teste',brand:'Visa',limit:3000,used:780,closing:20,due:27,invoiceAmount:420,invoiceDue:next,invoiceStatus:'pending',gamaTestData:true});
-state.goals.push({id:uid(),name:'Reserva de emergência - TESTE',target:5000,current:750,deadline:'',gamaTestData:true});
-save();alert('Exemplos fictícios adicionados em lançamentos, rendas, benefícios, contas, cartões e metas. Todos estão identificados como TESTE e podem ser removidos juntos.')}
-function removeTestData(){const n=testDataCount();if(!n){alert('Não há exemplos de teste para remover.');return}if(confirm('Remover somente os '+n+' registro(s) fictício(s) de teste? Seus dados reais serão preservados.')){['entries','sources','cards','bills','benefits','goals'].forEach(k=>{state[k]=(state[k]||[]).filter(x=>x.gamaTestData!==true)});save();alert('Todos os exemplos de teste foram removidos. Os demais dados foram preservados.')}}
+function testDataCount(){
+ if(familyReady&&familyDemo?.profiles?.length)return familyDemo.profiles.reduce((total,p)=>total+FAMILY_ARRAYS.reduce((n,k)=>n+(p.data?.[k]||[]).filter(x=>x.gamaTestData===true).length,0),0);
+ return ['entries','sources','cards','bills','benefits','goals'].reduce((n,k)=>n+(state[k]||[]).filter(x=>x.gamaTestData===true).length,0)
+}
+function renderTestDataStatus(){
+ const n=testDataCount(),profiles=familyDemo?.profiles?.length||1;
+ $('#testDataStatus').textContent=n?n+' registro(s) fictício(s) de teste distribuído(s) pelos '+profiles+' perfil(is) da família. Use “Remover exemplos” para apagar somente esses registros em todos os perfis.':'Nenhum exemplo de teste adicionado.';
+}
+function removeMarkedTestData(data){
+ for(const k of FAMILY_ARRAYS)data[k]=(data[k]||[]).filter(x=>x.gamaTestData!==true);
+ return data;
+}
+function makeTestDataSet(profileId){
+ const date=today(),parts=date.split('-').map(Number),lastDay=new Date(parts[0],parts[1],0).getDate();
+ const next=isoUTC(parts[0],parts[1],Math.min(parts[2]+5,lastDay));
+ const monthEnd=isoUTC(parts[0],parts[1]+1,0);
+ const tag=' - TESTE';
+ const data=emptyFinancialState();
+ const samples=[
+  {description:'Água'+tag,category:'Casa',type:'expense',amount:89.90,status:'paid'},
+  {description:'Energia'+tag,category:'Casa',type:'expense',amount:145.60,status:'pending'},
+  {description:'Compra de lanche'+tag,category:'Alimentação',type:'expense',amount:28.50,status:'paid'},
+  {description:'Combustível'+tag,category:'Combustível',type:'expense',amount:120,status:'pending'},
+  {description:'Internet'+tag,category:'Casa',type:'expense',amount:99.90,status:'paid'},
+  {description:'Salário CLT'+tag,category:'Renda',type:'income',amount:2800,status:'paid'}
+ ];
+ samples.forEach(x=>data.entries.push({id:uid(),date,note:'DADO FICTÍCIO PARA TESTE · '+profileId,gamaTestData:true,...x}));
+ data.sources.push(
+  {id:uid(),name:'Salário CLT'+tag,amount:2800,frequency:'semimonthly',nextDate:nextSalaryDate(),active:'yes',gamaTestData:true},
+  {id:uid(),name:'Shopee'+tag,amount:350,frequency:'weekly',nextDate:next,active:'yes',gamaTestData:true},
+  {id:uid(),name:'Amazon'+tag,amount:220,frequency:'weekly',nextDate:next,active:'yes',gamaTestData:true},
+  {id:uid(),name:'Diálogo'+tag,amount:180,frequency:'biweekly',nextDate:next,active:'yes',gamaTestData:true}
+ );
+ data.benefits.push(
+  {id:uid(),name:'Vale-alimentação'+tag,kind:'benefit',amount:650,active:'yes',gamaTestData:true},
+  {id:uid(),name:'Vale-transporte'+tag,kind:'benefit',amount:220,active:'yes',gamaTestData:true},
+  {id:uid(),name:'Plano de saúde'+tag,kind:'discount',amount:185,active:'yes',gamaTestData:true},
+  {id:uid(),name:'Desconto odontológico'+tag,kind:'discount',amount:32,active:'yes',gamaTestData:true}
+ );
+ data.bills.push(
+  {id:uid(),name:'Aluguel'+tag,category:'Casa',amount:950,due:next,status:'pending',gamaTestData:true},
+  {id:uid(),name:'Internet'+tag,category:'Casa',amount:99.90,due:monthEnd,status:'pending',gamaTestData:true}
+ );
+ data.cards.push({id:uid(),name:'Cartão teste · Visa',bank:'Banco teste',brand:'Visa',limit:3000,used:780,closing:20,due:27,invoiceAmount:420,invoiceDue:next,invoiceStatus:'pending',gamaTestData:true});
+ data.goals.push({id:uid(),name:'Reserva de emergência'+tag,target:5000,current:750,deadline:'',gamaTestData:true});
+ return data;
+}
+function addTestData(){
+ if(!familyReady||!familyDemo?.profiles?.length){alert('A estrutura familiar ainda não está pronta. Tente novamente.');return}
+ const total=testDataCount();
+ if(total&&!confirm('Já existem '+total+' exemplo(s) de teste. Atualizar os exemplos em todos os perfis? Somente itens marcados como TESTE serão substituídos; seus dados reais serão preservados.'))return;
+ familyDemo.profiles.forEach(p=>{
+  const clean=removeMarkedTestData(p.data||emptyFinancialState());
+  const sample=makeTestDataSet(p.id);
+  for(const k of FAMILY_ARRAYS)clean[k]=[...(clean[k]||[]),...sample[k]];
+  p.data=clean;
+ });
+ state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)||profileById('me')).data;
+ save();
+ alert('Exemplos fictícios atualizados em todos os perfis da família. Cada item está marcado como TESTE e pode ser removido sem apagar seus registros reais.');
+}
+function removeTestData(){
+ const n=testDataCount();
+ if(!n){alert('Não há exemplos de teste para remover.');return}
+ if(!confirm('Remover os '+n+' registro(s) fictício(s) de TODOS os perfis da família? Somente itens marcados como TESTE serão apagados. Seus dados reais serão preservados.'))return;
+ if(familyReady&&familyDemo?.profiles?.length){
+  familyDemo.profiles.forEach(p=>{p.data=removeMarkedTestData(p.data||emptyFinancialState())});
+  state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)||profileById('me')).data;
+ }else{
+  removeMarkedTestData(state);
+ }
+ save();
+ alert('Todos os exemplos de teste foram removidos de todos os perfis. Seus dados reais foram preservados.');
+}
 function render(){renderDashboard();renderEntries();renderSources();renderCards();renderBills();renderCalendar();renderAnalysis();renderBenefits();renderSavedOptions();renderAlerts();renderGoals();renderTestDataStatus()}
 /* Navegação entre telas independentes: delegada porque a barra é criada ao iniciar o workspace. */
 document.addEventListener('click',e=>{
