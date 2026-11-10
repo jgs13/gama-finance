@@ -372,13 +372,16 @@ document.addEventListener('paste',e=>{
 });
 document.addEventListener('input',e=>{
   refreshFieldIcon(e.target);
-  if(e.target.matches('input[data-money]')){formatMoneyTyping(e.target);if(e.target.dataset.moneyManual==='1'){const p=e.target.value.split(',');e.target.value=(p[0]||'0')+','+(p[1]||'').padEnd(2,'0').slice(0,2)}}
+  if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
 });
 document.addEventListener('change',e=>{
   if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
 });
 document.addEventListener('focusout',e=>{
-  if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
+  if(e.target.matches('input[data-money]')){
+   formatMoneyTyping(e.target);
+   if(e.target.dataset.moneyManual==='1'){const p=e.target.value.split(',');e.target.value=(p[0]||'0')+','+(p[1]||'').padEnd(2,'0').slice(0,2)}
+  }
 });
 $('#closeModal').onclick=()=>$('#modal').classList.remove('open');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('open')};
 function addEntry(data){state.entries.push({id:uid(),status:'pending',...data,amount:moneyValue(data.amount)});save()}
