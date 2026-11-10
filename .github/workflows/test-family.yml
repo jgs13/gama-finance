@@ -1,0 +1,63 @@
+name: GAMA FINANCE - APK privado de testes familiares
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gama-finance-family-test
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    if: github.ref == 'refs/heads/teste-conta-familiar'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout da branch experimental
+        uses: actions/checkout@v4
+        with:
+          ref: teste-conta-familiar
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Prepare web assets
+        run: npm run android:prepare
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Configure Gradle download
+        run: |
+          sed -i 's/gradle-8\\.14\\.3-all\\.zip/gradle-8.14.3-bin.zip/' android/gradle/wrapper/gradle-wrapper.properties
+          grep -q '^networkTimeout=' android/gradle/wrapper/gradle-wrapper.properties || echo 'networkTimeout=120000' >> android/gradle/wrapper/gradle-wrapper.properties
+
+      - name: Sync Android project
+        run: npx cap sync android
+
+      - name: Build isolated debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload private test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GAMA-FINANCE-TESTE-FAMILIAR
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
