@@ -172,7 +172,58 @@ body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90
 .profile-card[data-family-open-profile="partner"] .profile-card-foot,
 #familyAdditionalProfiles .profile-card .profile-card-foot{color:#fff!important}
 @media(max-width:600px){.family-appearance-grid{grid-template-columns:1fr}}
-</style></head>
+</style><style id="family-theme-full-overrides">
+/* O tema do perfil colore o workspace inteiro; a tela inicial mantém o tema geral. */
+body.family-workspace-open{
+ background:
+ radial-gradient(ellipse at 5% 0%,color-mix(in srgb,var(--theme) 54%,transparent),transparent 58%),
+ radial-gradient(ellipse at 96% 42%,color-mix(in srgb,var(--theme-alt) 48%,transparent),transparent 60%),
+ linear-gradient(145deg,color-mix(in srgb,var(--bg) 72%,var(--theme) 28%),color-mix(in srgb,var(--bg) 78%,var(--theme-alt) 22%))!important;
+ color:var(--txt)!important;
+}
+body.family-workspace-open #familyWorkspace{background:transparent!important}
+body.family-workspace-open #familyWorkspace .view{background:transparent!important}
+body.family-workspace-open #familyWorkspace .family-workspace-bar,
+body.family-workspace-open #familyWorkspace #tabs{
+ background:linear-gradient(100deg,color-mix(in srgb,var(--panel) 62%,var(--theme) 38%),color-mix(in srgb,var(--panel) 66%,var(--theme-alt) 34%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace .card,
+body.family-workspace-open #familyWorkspace .guide-card,
+body.family-workspace-open #familyWorkspace .guide-scenario-result{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 72%,var(--theme) 28%),color-mix(in srgb,var(--panel) 82%,var(--theme-alt) 18%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace input,
+body.family-workspace-open #familyWorkspace select,
+body.family-workspace-open #familyWorkspace textarea{
+ background:color-mix(in srgb,var(--panel2) 76%,var(--theme) 24%)!important;
+ color:var(--txt)!important;border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace .day,
+body.family-workspace-open #familyWorkspace .pill,
+body.family-workspace-open #familyWorkspace .notice,
+body.family-workspace-open #familyWorkspace .guide-example{
+ background:color-mix(in srgb,var(--panel2) 72%,var(--theme) 28%)!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;color:var(--txt);
+}
+body.family-workspace-open #familyWorkspace .section-head h2,
+body.family-workspace-open #familyWorkspace .accent{color:var(--theme)!important}
+body.family-workspace-open #familyWorkspace .btn.primary{
+ background:linear-gradient(120deg,var(--theme),var(--theme-alt))!important;color:#101018!important;
+}
+body.family-workspace-open .modal-box{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 72%,var(--theme) 28%),color-mix(in srgb,var(--panel) 82%,var(--theme-alt) 18%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;color:var(--txt);
+}
+body.family-workspace-open .modal-box input,
+body.family-workspace-open .modal-box select,
+body.family-workspace-open .modal-box textarea{
+ background:color-mix(in srgb,var(--panel2) 76%,var(--theme) 24%)!important;color:var(--txt)!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+</style>
+</head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE TESTE</h1><small>VERSÃO EXPERIMENTAL · DADOS ISOLADOS</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
 <section id="updateNotice" class="card" hidden style="margin:0 0 16px;border:1px solid var(--cyan);padding:16px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><strong id="updateTitle">Atualização disponível</strong><p id="updateText" class="muted" style="margin:5px 0 0">Há uma nova versão do GAMA FINANCE.</p></div><a id="updateLink" class="btn primary" href="https://jgs13.github.io/gama-finance/download/" target="_blank" rel="noopener">Ver atualização</a></div></section>
@@ -290,7 +341,7 @@ const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],goals:[]
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
 let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady)renderFamilyHub()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.')}else if((s.match(/\./g)||[]).length>1||/\.\d{3}$/.test(s)){s=s.replace(/\./g,'')}const n=Number(s);return Number.isFinite(n)?n:NaN}
+function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:NaN}if(/[.]/.test(s)){const digits=s.replace(/\D/g,'');if(!digits)return 0;return Number(digits)/100}const n=Number(s);return Number.isFinite(n)?n:NaN}
 function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''}
 const brandLogos={
 bancodobrasil:['https://commons.wikimedia.org/wiki/Special:FilePath/Logotipo_do_Banco_do_Brasil_(símbolo).svg','ffef00'],bancobrasil:['https://commons.wikimedia.org/wiki/Special:FilePath/Banco_do_Brasil_logo.svg','ffef00'],bb:['https://commons.wikimedia.org/wiki/Special:FilePath/Logotipo_do_Banco_do_Brasil_(símbolo).svg','ffef00'],
@@ -333,41 +384,22 @@ document.addEventListener('change',e=>refreshFieldIcon(e.target));
 function formatMoneyTyping(el){
  if(!el||!el.matches('input[data-money]'))return;
  const raw=String(el.value??''),caret=el.selectionStart??raw.length,atEnd=caret===raw.length;
- let formatted='';
- if(el.dataset.moneyManual==='1'){
-  const parts=raw.replace(/[^0-9,]/g,'').split(',');
-  let whole=(parts[0]||'').replace(/^0+(?=\d)/,'')||'0';
-  let cents=(parts[1]||'').replace(/\D/g,'').slice(0,2);
-  whole=whole.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-  formatted=whole+','+cents;
- }else{
-  let digits=raw.replace(/\D/g,'');
-  if(!digits){el.value='';return}
-  digits=digits.replace(/^0+(?=\d)/,'').padStart(3,'0');
-  formatted=digits.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+digits.slice(-2);
- }
+ let digits=raw.replace(/\D/g,'');
+ if(!digits){el.value='';return}
+ digits=digits.replace(/^0+(?=\d)/,'').padStart(3,'0');
+ const formatted=digits.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+digits.slice(-2);
  if(el.value!==formatted)el.value=formatted;
  const pos=atEnd?formatted.length:Math.min(caret,formatted.length);
  try{el.setSelectionRange(pos,pos)}catch(_){}
 }
-document.addEventListener('beforeinput',e=>{
- const el=e.target;if(!el?.matches?.('input[data-money]')||e.inputType!=='insertText'||!/[,.]/.test(e.data||''))return;
- e.preventDefault();
- const digits=el.value.replace(/\D/g,'').replace(/^0+(?=\d)/,'')||'0';
- el.dataset.moneyManual='1';
- el.value=digits.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+',';
- try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
-});
 document.addEventListener('paste',e=>{
  const el=e.target;if(!el?.matches?.('input[data-money]'))return;
  const pasted=e.clipboardData?.getData('text')||'';
- if(!/[,.]/.test(pasted))return;
- e.preventDefault();el.dataset.moneyManual='1';
- let normalized=pasted.replace(/R\$\s?/gi,'').replace(/\s/g,'');
- if(normalized.includes(','))normalized=normalized.replace(/\./g,'').replace(',','.');
- else if((normalized.match(/\./g)||[]).length>1||/\.\d{3}$/.test(normalized))normalized=normalized.replace(/\./g,'');
- const value=Number(normalized);if(!Number.isFinite(value))return;
- el.value=value.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+ if(!/[0-9]/.test(pasted))return;
+ e.preventDefault();
+ const digits=pasted.replace(/\D/g,'').replace(/^0+(?=\d)/,'').padStart(3,'0');
+ el.dataset.moneyManual='0';
+ el.value=digits.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+digits.slice(-2);
  try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
 });
 document.addEventListener('input',e=>{
@@ -377,12 +409,7 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',e=>{
   if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
 });
-document.addEventListener('focusout',e=>{
-  if(e.target.matches('input[data-money]')){
-   formatMoneyTyping(e.target);
-   if(e.target.dataset.moneyManual==='1'){const p=e.target.value.split(',');e.target.value=(p[0]||'0')+','+(p[1]||'').padEnd(2,'0').slice(0,2)}
-  }
-});
+document.addEventListener('focusout',e=>{if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target)});
 $('#closeModal').onclick=()=>$('#modal').classList.remove('open');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.remove('open')};
 function addEntry(data){state.entries.push({id:uid(),status:'pending',...data,amount:moneyValue(data.amount)});save()}
 function savedOptions(list,current){const values=[...new Set([...(list||[]),...(current?[current]:[])])];return values.map(v=>[v,v])}function entryForm(existing){const d=existing||{date:today(),type:'expense',status:'pending',description:state.descriptions[0]||'',category:state.categories[0]||'Geral',amount:'',note:''};openModal(existing?'Editar lançamento':'Novo lançamento',field('description','Descrição','select',d.description,savedOptions(state.descriptions,d.description))+field('amount','Valor (R$)','number',d.amount)+field('date','Data','date',d.date)+field('type','Tipo','select',d.type,[['income','Receita'],['expense','Despesa']])+field('category','Categoria / origem','select',d.category,savedOptions(state.categories,d.category))+field('status','Status','select',d.status,[['pending','Pendente'],['paid','Recebido / pago']])+'<div class="field full"><label>Observação (opcional)</label><input name="note" value="'+esc(d.note||'')+'"></div>',x=>{if(existing){Object.assign(existing,{...x,amount:moneyValue(x.amount)});save()}else addEntry(x)},!existing)}
@@ -635,7 +662,7 @@ try{
  if(!profiles.some(p=>p.id==='partner'))profiles.push({...FAMILY_DEFAULT_PROFILES[1]});
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles,...(saved||{})};
  familyDemo.profiles=profiles;
- for(const p of familyDemo.profiles)if(!p.themeId)p.themeId='custom';
+ for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
 }catch{
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles:FAMILY_DEFAULT_PROFILES.map(p=>({...p}))};
 }
