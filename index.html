@@ -173,6 +173,54 @@ body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90
 #familyAdditionalProfiles .profile-card .profile-card-foot{color:#fff!important}
 @media(max-width:600px){.family-appearance-grid{grid-template-columns:1fr}}
 </style><style id="family-theme-full-overrides">
+/* Paleta com cores fortes, mas conteúdo e leitura sempre em primeiro plano. */
+body.family-workspace-open{
+ background:
+ radial-gradient(ellipse at 5% 0%,color-mix(in srgb,var(--theme) 18%,transparent),transparent 58%),
+ radial-gradient(ellipse at 96% 42%,color-mix(in srgb,var(--theme-alt) 16%,transparent),transparent 60%),
+ linear-gradient(145deg,var(--bg),color-mix(in srgb,var(--bg) 94%,var(--theme) 6%))!important;
+ color:var(--txt)!important;
+}
+body.family-workspace-open #familyWorkspace .family-workspace-bar,
+body.family-workspace-open #familyWorkspace #tabs{
+ background:linear-gradient(100deg,color-mix(in srgb,var(--panel) 91%,var(--theme) 9%),color-mix(in srgb,var(--panel) 91%,var(--theme-alt) 9%))!important;
+ border-color:color-mix(in srgb,var(--line) 78%,var(--theme) 22%)!important;
+}
+body.family-workspace-open #familyWorkspace .card,
+body.family-workspace-open #familyWorkspace .guide-card,
+body.family-workspace-open #familyWorkspace .guide-scenario-result{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 94%,var(--theme) 6%),color-mix(in srgb,var(--panel) 96%,var(--theme-alt) 4%))!important;
+ border-color:var(--line)!important;
+}
+body.family-workspace-open #familyWorkspace input,
+body.family-workspace-open #familyWorkspace select,
+body.family-workspace-open #familyWorkspace textarea{
+ background:color-mix(in srgb,var(--panel2) 94%,var(--theme) 6%)!important;
+ color:var(--txt)!important;border-color:var(--line)!important;
+}
+body.family-workspace-open #familyWorkspace .day,
+body.family-workspace-open #familyWorkspace .pill,
+body.family-workspace-open #familyWorkspace .notice,
+body.family-workspace-open #familyWorkspace .guide-example{
+ background:color-mix(in srgb,var(--panel2) 94%,var(--theme) 6%)!important;
+ border-color:var(--line)!important;color:var(--txt)!important;
+}
+body.family-workspace-open #familyWorkspace .section-head h2,
+body.family-workspace-open #familyWorkspace .accent{color:var(--theme)!important}
+body.family-workspace-open #familyWorkspace .metric,
+body.family-workspace-open #familyWorkspace .amount,
+body.family-workspace-open #familyWorkspace .metric-label,
+body.family-workspace-open #familyWorkspace .metric-sub,
+body.family-workspace-open #familyWorkspace .muted{color:var(--txt)}
+body.family-workspace-open #familyWorkspace .btn.primary{
+ background:linear-gradient(120deg,var(--theme),var(--theme-alt))!important;color:#080B12!important;
+}
+body.family-workspace-open .modal-box{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 94%,var(--theme) 6%),color-mix(in srgb,var(--panel) 96%,var(--theme-alt) 4%))!important;
+ color:var(--txt)!important;
+}
+body:not(.family-workspace-open){background:radial-gradient(ellipse at 15% -10%,#14243a 0,transparent 38%),#080b12!important}
+
 /* O tema do perfil colore o workspace inteiro; a tela inicial mantém o tema geral. */
 body.family-workspace-open{
  background:
@@ -705,16 +753,16 @@ function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
 const FAMILY_THEME_PRESETS={
- rose:{label:'Rosa chá · feminino',group:'Femininos',primary:'#D99AB5',secondary:'#B985A7',bg:'#151018',panel:'#211923',panel2:'#2B202D',line:'#493443',txt:'#F8EFF4',muted:'#B9A6B2'},
- mauve:{label:'Malva elegante · feminino',group:'Femininos',primary:'#B68AAE',secondary:'#8F789F',bg:'#130F17',panel:'#201925',panel2:'#2A2031',line:'#49384D',txt:'#F5EDF6',muted:'#B7A8BC'},
- lavender:{label:'Lavanda suave · feminino',group:'Femininos',primary:'#B6A1D8',secondary:'#8F9ACB',bg:'#10101A',panel:'#1B1B2A',panel2:'#25253A',line:'#41415B',txt:'#F0EFFB',muted:'#AAAAC2'},
- wine:{label:'Vinho sofisticado · feminino',group:'Femininos',primary:'#C47F9A',secondary:'#89566F',bg:'#160F15',panel:'#241820',panel2:'#30202A',line:'#513441',txt:'#F8EEF2',muted:'#BCA5AF'},
- graphite:{label:'Preto grafite · masculino',group:'Masculinos',primary:'#AEB9C8',secondary:'#68788E',bg:'#090C12',panel:'#131923',panel2:'#1C2532',line:'#303D4E',txt:'#EDF2F8',muted:'#9AA8BA'},
- midnight:{label:'Azul meia-noite · masculino',group:'Masculinos',primary:'#78A9D8',secondary:'#526E9E',bg:'#09111C',panel:'#111E2D',panel2:'#192A3D',line:'#2B4058',txt:'#EDF5FC',muted:'#9BAFC3'},
- forest:{label:'Verde floresta · masculino',group:'Masculinos',primary:'#78B69A',secondary:'#4D8977',bg:'#0B1412',panel:'#14211D',panel2:'#1D302A',line:'#304B40',txt:'#EDF7F1',muted:'#9CB5A8'},
- steel:{label:'Azul aço · masculino',group:'Masculinos',primary:'#8FAFC2',secondary:'#647F98',bg:'#0C1218',panel:'#17212A',panel2:'#202D39',line:'#364A5A',txt:'#EDF3F7',muted:'#A0B0BC'},
- emerald:{label:'Verde esmeralda · neutro',group:'Neutros',primary:'#65C6A7',secondary:'#4E91A4',bg:'#091411',panel:'#12221D',panel2:'#1B3029',line:'#2F4C42',txt:'#EFF8F3',muted:'#9DB7AB'},
- ocean:{label:'Azul oceano · neutro',group:'Neutros',primary:'#69B9D2',secondary:'#627FC0',bg:'#09121A',panel:'#13212C',panel2:'#1B2E3D',line:'#304A5B',txt:'#EEF6FA',muted:'#9DB2C0'}
+ rose:{label:'Rosa intenso',group:'Tons vibrantes',primary:'#F0448B',secondary:'#A92765',bg:'#160A12',panel:'#21101B',panel2:'#301525',line:'#63304A',txt:'#FFF4FA',muted:'#D6B7C7'},
+ mauve:{label:'Roxo ameixa',group:'Tons vibrantes',primary:'#C05AE8',secondary:'#7137B8',bg:'#100A18',panel:'#1D1228',panel2:'#2B193A',line:'#50336B',txt:'#FAF3FF',muted:'#C5B1D8'},
+ lavender:{label:'Violeta elétrico',group:'Tons vibrantes',primary:'#9875FF',secondary:'#4D5FE0',bg:'#0C0B1B',panel:'#17152B',panel2:'#24213D',line:'#45416F',txt:'#F5F3FF',muted:'#B9B5D8'},
+ wine:{label:'Vinho profundo',group:'Tons vibrantes',primary:'#E34D75',secondary:'#8F234B',bg:'#160910',panel:'#24111B',panel2:'#351725',line:'#633044',txt:'#FFF2F5',muted:'#D2AFBA'},
+ graphite:{label:'Black absoluto',group:'Tons escuros',primary:'#D8E0EA',secondary:'#718096',bg:'#05070B',panel:'#0D1118',panel2:'#151C27',line:'#303B4B',txt:'#F7FAFF',muted:'#B1BDCC'},
+ midnight:{label:'Azul elétrico',group:'Tons escuros',primary:'#398BFF',secondary:'#1749A6',bg:'#070D18',panel:'#101A2B',panel2:'#172640',line:'#2B456C',txt:'#F2F7FF',muted:'#AFC1DA'},
+ forest:{label:'Verde floresta',group:'Tons escuros',primary:'#27D18A',secondary:'#08764F',bg:'#06130E',panel:'#0D2118',panel2:'#143326',line:'#285B43',txt:'#F0FFF7',muted:'#A9D0BA'},
+ steel:{label:'Azul aço',group:'Tons escuros',primary:'#42B8E8',secondary:'#27658F',bg:'#07121A',panel:'#10212C',panel2:'#173242',line:'#2B5368',txt:'#F0FAFF',muted:'#A9C4D1'},
+ emerald:{label:'Esmeralda',group:'Tons mistos',primary:'#00D6A3',secondary:'#087F91',bg:'#061512',panel:'#0D2420',panel2:'#15352E',line:'#286157',txt:'#EFFFFA',muted:'#A6CEC2'},
+ ocean:{label:'Oceano',group:'Tons mistos',primary:'#20C7E8',secondary:'#435FE8',bg:'#07121C',panel:'#102331',panel2:'#183346',line:'#2B536B',txt:'#F0FAFF',muted:'#AAC6D5'}
 };
 for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
 function familyThemeForProfile(p){
@@ -726,7 +774,8 @@ function familyThemeForProfile(p){
 function applyFamilyTheme(scope=familyDemo.scope){
  const root=document.documentElement;
  if(scope==='home'){
-  for(const k of ['--bg','--panel','--panel2','--line','--txt','--muted','--cyan','--blue','--theme','--theme-alt','--theme-soft','--theme-border','--theme-glow'])root.style.removeProperty(k);
+  const homeValues={bg:'#080b12',panel:'#101722',panel2:'#151f2d',line:'#263345',txt:'#edf3fb',muted:'#8d9caf',cyan:'#36d6c5',blue:'#628cff',theme:'#36d6c5','theme-alt':'#628cff','theme-soft':'#173c42','theme-border':'#2b817d','theme-glow':'#36d6c533'};
+  for(const [k,v] of Object.entries(homeValues))root.style.setProperty('--'+k,v);
   const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content','#080b12');
   return;
  }
@@ -759,7 +808,7 @@ function renderFamilyHub(){
   const name=$('#'+prefix+'Name'),email=$('#'+prefix+'Email'),color=$('#'+prefix+'Color'),balance=$('#'+prefix+'Balance'),count=$('#'+prefix+'Count');
   if(name)name.textContent=p.name;if(email)email.textContent=p.id==='me'?'Acessar e administrar somente seus dados.':p.id==='partner'?'Acessar e administrar somente os dados dela.':'Acessar este espaço individual.';
   if(color){color.textContent=avatar;color.style.background=p.color;color.style.color='#071018'}
-  if(balance){balance.textContent=money(profileBalance(p));balance.style.color=p.color}
+  if(balance){balance.textContent=money(profileBalance(p));balance.style.color='#F7FAFF'}
   if(count)count.textContent=(p.data.entries||[]).length+' lançamento(s) · Abrir painel completo →';
  };
  setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
