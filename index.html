@@ -99,7 +99,7 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
 const uid=()=>Math.random().toString(36).slice(2,10);
 const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],goals:[],descriptions:['Água','Energia','Internet','Aluguel','Mercado','Compra de lanche','Combustível','Farmácia','Transporte','Salário','Shopee','Diálogo','Amazon','99','Extra','Outros'],categories:['Casa','Alimentação','Combustível','Transporte','Saúde','Lazer','Cartão de crédito','Mercado','Contas','Renda','Entregas','Outros'],selectedDay:today()};
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
-function save(){try{localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render()}
+let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady)renderFamilyHub()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.')}else if(/\.\d{1,2}$/.test(s)){/* ponto digitado como separador decimal: converte para centavos corretamente */}else{s=s.replace(/\./g,'')}const n=Number(s);return Number.isFinite(n)?n:NaN}
 function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''}
@@ -278,7 +278,7 @@ if(restored.goals.some(x=>!x||!validName(x.name)||!Number.isFinite(Number(x.targ
 if(restored.descriptions.some(x=>!validName(x))||restored.categories.some(x=>!validName(x)))throw Error('Há uma descrição ou categoria inválida no arquivo.');
 return restored}
 function backupSummary(d){return ['Lançamentos: '+d.entries.length,'Fontes de renda: '+d.sources.length,'Cartões: '+d.cards.length,'Contas: '+d.bills.length,'Benefícios/descontos: '+d.benefits.length,'Metas: '+d.goals.length].join('\n')}
-$('#backupBtn').onclick=exportData;$('#exportBtn').onclick=exportData;$('#importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>10*1024*1024)throw Error('O arquivo ultrapassa o limite de 10 MB.');const parsed=JSON.parse(await file.text()),restored=validateBackup(parsed);const exported=parsed.exportedAt?new Date(parsed.exportedAt).toLocaleString('pt-BR'):'Data não informada';const summary=backupSummary(restored);if(!confirm('BACKUP VALIDADO\nArquivo: '+file.name+'\nExportado em: '+exported+'\n\n'+summary+'\n\nA restauração substituirá os dados atuais. Antes disso, será baixada uma cópia de segurança do estado atual. Deseja continuar?'))return;downloadBackup(state,'antes-da-restauracao');try{localStorage.setItem('gama-finance-v1',JSON.stringify(restored))}catch(err){throw Error('Não foi possível gravar os dados restaurados. Seus dados atuais continuam no aplicativo. Verifique o espaço disponível.')}state=restored;render();const s=$('#backupStatus');if(s)s.textContent='Restauração concluída. A cópia dos dados anteriores também foi exportada; guarde os dois arquivos em local seguro.';alert('Backup restaurado com sucesso.\n\n'+summary+'\n\nA cópia dos dados anteriores foi baixada separadamente.')}catch(err){alert('Não foi possível restaurar o backup.\n'+(err?.message||'Arquivo inválido ou incompatível')+'\n\nOs dados atuais foram preservados.')}finally{e.target.value=''}};
+$('#backupBtn').onclick=exportData;$('#exportBtn').onclick=exportData;$('#importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>10*1024*1024)throw Error('O arquivo ultrapassa o limite de 10 MB.');const parsed=JSON.parse(await file.text()),restored=validateBackup(parsed);const exported=parsed.exportedAt?new Date(parsed.exportedAt).toLocaleString('pt-BR'):'Data não informada';const summary=backupSummary(restored);if(!confirm('BACKUP VALIDADO\nArquivo: '+file.name+'\nExportado em: '+exported+'\n\n'+summary+'\n\nA restauração substituirá os dados atuais. Antes disso, será baixada uma cópia de segurança do estado atual. Deseja continuar?'))return;downloadBackup(state,'antes-da-restauracao');state=restored;try{persistFamilyState()}catch(err){throw Error('Não foi possível gravar os dados restaurados. Seus dados atuais continuam no aplicativo. Verifique o espaço disponível.')}render();renderFamilyHub();const s=$('#backupStatus');if(s)s.textContent='Restauração concluída. A cópia dos dados anteriores também foi exportada; guarde os dois arquivos em local seguro.';alert('Backup restaurado com sucesso.\n\n'+summary+'\n\nA cópia dos dados anteriores foi baixada separadamente.')}catch(err){alert('Não foi possível restaurar o backup.\n'+(err?.message||'Arquivo inválido ou incompatível')+'\n\nOs dados atuais foram preservados.')}finally{e.target.value=''}};
 $('#clearData').onclick=()=>{if(confirm('Isso apagará todos os dados locais. Exporte um backup antes. Continuar?')&&confirm('Confirmação final: apagar tudo?')){localStorage.removeItem('gama-finance-v1');state={...defaultState};save()}};
 let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true}};
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
@@ -287,41 +287,133 @@ async function checkForUpdates(){const box=$('#updateNotice'),title=$('#updateTi
 checkForUpdates();document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkForUpdates()});
 
 
-/* Protótipo offline de perfis familiares: isolado dos dados financeiros principais. */
-const FAMILY_KEY='gama-family-demo-v1';
-const familyDefaults={active:'me',scope:'all',profiles:[{id:'me',name:'Meu perfil',email:'voce@exemplo.local',color:'#36d6c5'},{id:'partner',name:'Perfil dela',email:'ela@exemplo.local',color:'#d36be7'}],items:[
-{id:'fm1',owner:'me',name:'Salário - demonstração',type:'income',amount:2800,date:today()},
-{id:'fm2',owner:'me',name:'Combustível',type:'expense',amount:180,date:today()},
-{id:'fp1',owner:'partner',name:'Renda - demonstração',type:'income',amount:2100,date:today()},
-{id:'fp2',owner:'partner',name:'Mercado',type:'expense',amount:320,date:today()}
-]};
-let familyDemo;try{familyDemo={...familyDefaults,...JSON.parse(localStorage.getItem(FAMILY_KEY)||'{}')};if(!Array.isArray(familyDemo.profiles)||!Array.isArray(familyDemo.items))throw Error('invalid')}catch{familyDemo=JSON.parse(JSON.stringify(familyDefaults))}
-function saveFamilyDemo(){localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyDemo()}
-function familyProfile(id){return familyDemo.profiles.find(p=>p.id===id)||familyDemo.profiles[0]}
-function familyMoney(id){return familyDemo.items.filter(x=>x.owner===id).reduce((n,x)=>n+(x.type==='income'?1:-1)*Number(x.amount||0),0)}
-function renderFamilyDemo(){
-const me=familyProfile('me'),partner=familyProfile('partner'),scope=$('#familyScope');if(!me||!partner)return;
-$('#familyMeTag').textContent=me.name;$('#familyMeTag').style.background=me.color+'33';$('#familyMeTag').style.border='1px solid '+me.color;
-$('#familyPartnerTag').textContent=partner.name;$('#familyPartnerTag').style.background=partner.color+'33';$('#familyPartnerTag').style.border='1px solid '+partner.color;
-$('#familyHero').style.background='linear-gradient(110deg,'+me.color+'55,'+partner.color+'66)';
-$('#familyMeBalance').textContent=money(familyMoney('me'));$('#familyMeBalance').style.color=me.color;
-$('#familyPartnerBalance').textContent=money(familyMoney('partner'));$('#familyPartnerBalance').style.color=partner.color;
-const total=familyMoney('me')+familyMoney('partner');$('#familyTotalBalance').textContent=money(total);
-$('#familyBlendBar').style.background='linear-gradient(90deg,'+me.color+' 0%,'+partner.color+' 100%)';
-if(scope)scope.value=familyDemo.scope||'all';
-const visible=familyDemo.items.filter(x=>familyDemo.scope==='all'||x.owner===familyDemo.scope).sort((a,b)=>b.date.localeCompare(a.date));
-$('#familyTransactions').innerHTML=visible.length?visible.map(x=>{const p=familyProfile(x.owner),color=p?.color||'#9aa';return '<div class="item"><div style="min-width:0"><strong>'+esc(x.name)+'</strong><small><span style="color:'+color+'">● '+esc(p?.name||'Perfil')+'</span> · '+esc(x.date)+'</small></div><span class="amount '+(x.type==='income'?'positive':'negative')+'">'+(x.type==='income'?'+':'−')+money(x.amount)+'</span></div>'}).join(''):'<div class="empty">Nenhuma movimentação neste perfil.</div>';
-$('#familyProfiles').innerHTML=familyDemo.profiles.map(p=>'<div class="item"><div><strong><span style="color:'+p.color+'">●</span> '+esc(p.name)+'</strong><small>'+esc(p.email)+'</small></div><button class="btn small" data-family-login="'+esc(p.id)+'">'+(familyDemo.active===p.id?'Perfil ativo':'Entrar')+'</button></div>').join('');
-$('#familyProfileSettings').innerHTML=familyDemo.profiles.map(p=>'<div class="item"><div><strong><span style="color:'+p.color+'">●</span> '+esc(p.name)+'</strong><small>'+esc(p.email)+'</small></div><input aria-label="Cor do '+esc(p.name)+'" type="color" value="'+esc(p.color)+'" data-family-color="'+esc(p.id)+'" style="width:48px;height:38px;padding:3px"></div>').join('');
-const owner=$('#familyEntryOwner');if(owner){owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');owner.value=familyDemo.active}
+
+/* GAMA FINANCE FAMÍLIA: os módulos financeiros existentes passam a operar sobre o perfil ativo. */
+const FAMILY_KEY='gama-finance-family-v2',LEGACY_FAMILY_KEY='gama-family-demo-v1';
+const FAMILY_ARRAYS=['entries','sources','cards','bills','benefits','goals'];
+const FAMILY_DEFAULT_PROFILES=[
+{id:'me',name:'Meu perfil',email:'voce@exemplo.local',color:'#36d6c5'},
+{id:'partner',name:'Perfil dela',email:'ela@exemplo.local',color:'#d36be7'}
+];
+function emptyFinancialState(){return JSON.parse(JSON.stringify(defaultState))}
+let familyDemo;
+try{
+ const saved=JSON.parse(localStorage.getItem(FAMILY_KEY)||'null');
+ const legacy=JSON.parse(localStorage.getItem(LEGACY_FAMILY_KEY)||'null');
+ const profiles=(saved?.profiles||legacy?.profiles||FAMILY_DEFAULT_PROFILES).map(p=>({...p}));
+ if(!profiles.some(p=>p.id==='me'))profiles.unshift({...FAMILY_DEFAULT_PROFILES[0]});
+ if(!profiles.some(p=>p.id==='partner'))profiles.push({...FAMILY_DEFAULT_PROFILES[1]});
+ familyDemo={active:'me',lastProfile:'me',scope:'me',profiles,...(saved||{})};
+ familyDemo.profiles=profiles;
+}catch{
+ familyDemo={active:'me',lastProfile:'me',scope:'me',profiles:FAMILY_DEFAULT_PROFILES.map(p=>({...p}))};
 }
-$('#familyScope').onchange=e=>{familyDemo.scope=e.target.value;renderFamilyDemo()};
-$$('[data-family-scope]').forEach(b=>b.addEventListener('click',()=>{familyDemo.scope=b.dataset.familyScope;renderFamilyDemo()}));
-$('#familyProfiles').addEventListener('click',e=>{const b=e.target.closest('[data-family-login]');if(!b)return;familyDemo.active=b.dataset.familyLogin;renderFamilyDemo()});
-$('#familyProfileSettings').addEventListener('input',e=>{const el=e.target.closest('[data-family-color]');if(!el)return;const p=familyProfile(el.dataset.familyColor);if(p){p.color=el.value;saveFamilyDemo()}});
-$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail demonstrativo (não será validado):')||'';const color=prompt('Cor do perfil em hexadecimal (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor hexadecimal válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color});familyDemo.active=id;saveFamilyDemo();alert('Perfil demonstrativo criado neste aparelho. Não é uma conta real e não tem autenticação.');};
-$('#familyEntryForm').onsubmit=e=>{e.preventDefault();const owner=$('#familyEntryOwner').value,name=$('#familyEntryName').value.trim(),raw=$('#familyEntryAmount').value.replace(/\./g,'').replace(',','.'),amount=Number(raw),type=$('#familyEntryType').value;if(!name||!Number.isFinite(amount)||amount<=0){alert('Informe uma descrição e um valor válido.');return}familyDemo.items.push({id:'f'+uid(),owner,name,type,amount,date:today()});e.target.reset();saveFamilyDemo()};
-renderFamilyDemo();
+function profileById(id){return familyDemo.profiles.find(p=>p.id===id)}
+function ensureProfileData(p){
+ if(!p.data||typeof p.data!=='object')p.data=emptyFinancialState();
+ for(const key of FAMILY_ARRAYS)if(!Array.isArray(p.data[key]))p.data[key]=[];
+ if(!Array.isArray(p.data.descriptions))p.data.descriptions=[...defaultState.descriptions];
+ if(!Array.isArray(p.data.categories))p.data.categories=[...defaultState.categories];
+}
+const existingMainState=state;
+for(const p of familyDemo.profiles){
+ if(!p.data)p.data=p.id==='me'?JSON.parse(JSON.stringify(existingMainState)):emptyFinancialState();
+ ensureProfileData(p);
+}
+if(!profileById(familyDemo.lastProfile)||familyDemo.lastProfile==='all')familyDemo.lastProfile='me';
+function buildCombinedState(){
+ const combined=emptyFinancialState();
+ combined.descriptions=[...new Set(familyDemo.profiles.flatMap(p=>p.data.descriptions||[]))];
+ combined.categories=[...new Set(familyDemo.profiles.flatMap(p=>p.data.categories||[]))];
+ combined.selectedDay=profileById(familyDemo.lastProfile)?.data.selectedDay||today();
+ for(const p of familyDemo.profiles)for(const key of FAMILY_ARRAYS)
+  combined[key].push(...(p.data[key]||[]).map(item=>({...item,_familyOwner:p.id})));
+ return combined;
+}
+function persistFamilyState(){
+ if(familyDemo.scope==='all'){
+  const fallback=familyDemo.lastProfile||'me';
+  for(const p of familyDemo.profiles)for(const key of FAMILY_ARRAYS)
+   p.data[key]=(state[key]||[]).filter(item=>(item._familyOwner||fallback)===p.id).map(item=>{const copy={...item};delete copy._familyOwner;return copy});
+  const owner=profileById(fallback);
+  if(owner){owner.data.descriptions=[...(state.descriptions||[])];owner.data.categories=[...(state.categories||[])];owner.data.selectedDay=state.selectedDay||today()}
+ }else{
+  const p=profileById(familyDemo.scope)||profileById('me');
+  p.data=state;
+ }
+ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+}
+function profileBalance(p){
+ return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
+}
+function renderFamilyHub(){
+ if(!familyDemo)return;
+ const me=profileById('me'),partner=profileById('partner');
+ const setProfile=(p,prefix,avatar)=>{
+  if(!p)return;
+  const name=$('#'+prefix+'Name'),email=$('#'+prefix+'Email'),color=$('#'+prefix+'Color'),balance=$('#'+prefix+'Balance'),count=$('#'+prefix+'Count');
+  if(name)name.textContent=p.name;if(email)email.textContent=p.email||'Perfil local';
+  if(color){color.textContent=avatar;color.style.background=p.color;color.style.color='#071018'}
+  if(balance){balance.textContent=money(profileBalance(p));balance.style.color=p.color}
+  if(count)count.textContent=(p.data.entries||[]).length+' lançamento(s) · Abrir painel completo →';
+ };
+ setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
+ $('#familyTotalBalance').textContent=money(familyDemo.profiles.reduce((n,p)=>n+profileBalance(p),0));
+ $('#familyAllColor').style.background='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';
+ $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<button type="button" class="profile-card" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button>').join('');
+ $('#familyProfileSettings').innerHTML=familyDemo.profiles.map(p=>'<div class="item"><div><strong><span style="color:'+esc(p.color)+'">●</span> '+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small></div><input aria-label="Cor do '+esc(p.name)+'" type="color" value="'+esc(p.color)+'" data-family-color="'+esc(p.id)+'" style="width:48px;height:38px;padding:3px"></div>').join('');
+}
+function showFamilyHome(){
+ $('#family').hidden=false;$('#familyWorkspace').hidden=true;$('#familyHomeBtn').hidden=true;
+ renderFamilyHub();
+}
+function activateFamilyProfile(scope){
+ familyDemo.scope=scope;familyDemo.active=scope;
+ if(scope!=='all')familyDemo.lastProfile=scope;
+ state=scope==='all'?buildCombinedState():profileById(scope).data;
+ $('#family').hidden=true;$('#familyWorkspace').hidden=false;$('#familyHomeBtn').hidden=false;
+ const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
+ const color=scope==='all'?'#fff':profileById(scope).color;
+ $('#familyWorkspaceName').textContent=name;$('#familyWorkspaceName').style.color=color;
+ $('#familyWorkspaceOwner').value=familyDemo.lastProfile;
+ $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
+ $$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
+ $$('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
+ render();renderFamilyHub();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+}
+function initFamilyWorkspace(){
+ const family=$('#family'),tabs=$('#tabs'),workspace=document.createElement('div');
+ workspace.id='familyWorkspace';workspace.hidden=true;
+ const bar=document.createElement('div');bar.className='family-workspace-bar';
+ bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">← Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
+ workspace.appendChild(bar);family.after(workspace);
+ const nodes=[tabs,...$$('.view').filter(v=>v.id!=='family')];
+ nodes.forEach(node=>workspace.appendChild(node));
+ const actions=$('.top-actions');
+ if(actions&&!$('#familyHomeBtn')){
+  const btn=document.createElement('button');btn.type='button';btn.id='familyHomeBtn';btn.className='btn small';btn.textContent='Perfis da família';btn.hidden=true;actions.appendChild(btn);btn.onclick=showFamilyHome;
+ }
+ $('#familyBackBtn').onclick=showFamilyHome;
+ const owner=$('#familyWorkspaceOwner');
+ owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
+ owner.value=familyDemo.lastProfile;
+ owner.onchange=()=>{familyDemo.lastProfile=owner.value;familyDemo.active='all';state=buildCombinedState();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo))};
+ $('#family').hidden=false;
+}
+$('#family').addEventListener('click',e=>{
+ const open=e.target.closest('[data-family-open-profile]');
+ if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
+});
+$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});const owner=$('#familyWorkspaceOwner');owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+$('#familyProfileSettings').addEventListener('input',e=>{
+ const input=e.target.closest('[data-family-color]');if(!input)return;
+ const p=profileById(input.dataset.familyColor);if(!p)return;
+ p.color=input.value;localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
+});
+renderFamilyHub();
+initFamilyWorkspace();
+familyReady=true;
+localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
 
 render();
 </script></body></html>
