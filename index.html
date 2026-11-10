@@ -28,20 +28,44 @@
 .guide-footer{border-top:1px solid var(--line);color:var(--muted)}
 @media(max-width:720px){.guide-grid{grid-template-columns:1fr}}
 .guide-scenarios{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.guide-scenarios .btn.active{border-color:var(--cyan);color:var(--txt);background:var(--panel)}.guide-scenario-result{border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:12px;font-size:13px;color:var(--txt);background:var(--panel)}.guide-scenario-result p{margin:7px 0}.guide-scenario-result ol{padding-left:20px;color:var(--muted);line-height:1.6}.guide-scenario-result li{margin:6px 0}.guide-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0;color:var(--muted);font-size:12px}.guide-tools span{margin-right:auto}.guide-practice .section-head{margin-bottom:4px}.guide-practice .section-head h3{margin:0}.guide-practice .section-head p{margin:4px 0 0}.family-home{display:block}.family-welcome{background:linear-gradient(115deg,#153e4c,#3e2a51);border-color:transparent;margin-bottom:18px;padding:24px}.family-welcome h2{font-size:25px;margin:8px 0}.family-welcome p{max-width:720px;color:#dce7f2;margin:0;font-size:13px}.family-kicker{font-size:10px;letter-spacing:1.5px;color:#c8e6ef;font-weight:800}.profile-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:18px}.profile-card{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:8px;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,#141f2d,#101721);color:var(--txt);min-width:0}.profile-card:active{transform:scale(.99)}.profile-card strong{font-size:17px}.profile-card small{color:var(--muted);font-size:12px}.profile-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%}.profile-avatar{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:900;color:#071018;background:var(--cyan);font-size:12px}.profile-card-balance{font-size:22px;font-weight:850;margin-top:7px}.profile-card-foot{font-size:12px;color:#a8fff0;margin-top:3px}.profile-card:not(.family-combined-card){padding:11px 13px;gap:5px}.profile-card:not(.family-combined-card) strong{font-size:15px}.profile-card:not(.family-combined-card) .profile-avatar{width:34px;height:34px;border-radius:11px}.profile-card:not(.family-combined-card) .profile-card-balance{font-size:18px;margin-top:2px}.profile-card:not(.family-combined-card) .profile-card-foot{margin-top:0}.family-combined-card{background:linear-gradient(125deg,#153e4c,#3e2a51);border-color:#52717d}.family-profile-settings{margin-top:8px}.family-workspace-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin:0 0 12px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(100deg,#142b39,#211d32)}.family-workspace-bar strong{margin-right:auto}.family-workspace-bar .owner-control{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.family-workspace-bar select{max-width:180px}.family-home .section-head{margin-top:8px}@media(max-width:720px){.profile-grid{grid-template-columns:1fr}.profile-card{padding:15px}.tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;padding:7px}.tab{font-size:10px;min-height:32px;padding:6px 3px}.family-workspace-bar .owner-control{width:100%;justify-content:space-between}.family-workspace-bar select{max-width:65%}}<style>.family-owner-tag{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:3px}.family-owner-tag span{font-size:11px}</style>
+
 <style>
-/* Cada módulo funciona como uma tela; o menu ocupa a tela inteira. */
-#familyWorkspace{min-height:calc(100dvh - 100px)}
-#familyWorkspace .family-workspace-bar{position:sticky;top:0;z-index:60}
+/* Estrutura de aplicativo: cabeçalho fixo, uma tela por vez e navegação persistente. */
+html,body{height:100%;overflow:hidden}
+body{overscroll-behavior:none}
+.app{height:100dvh;min-height:0;max-width:none;margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);display:flex;flex-direction:column;overflow:hidden}
+.app>.top{flex:0 0 auto;margin:0;padding:10px 14px 9px;border-bottom:1px solid var(--line);background:#080b12;z-index:30}
+.app>#updateNotice{flex:0 0 auto;margin:8px 12px!important}
+#family{display:block;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 14px 28px}
+#familyWorkspace[hidden]{display:none!important}
+#familyWorkspace{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden;padding:0 12px}
+#familyWorkspace .family-workspace-bar{order:0;flex:0 0 auto;position:relative;top:auto;z-index:5;margin:8px 0;padding:9px 10px;gap:8px}
+#familyWorkspace .family-workspace-bar strong{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#familyWorkspace .family-workspace-bar .owner-control{font-size:11px}
+#familyWorkspace .family-workspace-bar select{max-width:145px;padding:8px;font-size:12px}
+#familyWorkspace #tabs{display:grid;order:2;flex:0 0 auto;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:8px 0 max(7px,env(safe-area-inset-bottom));padding:7px;border:1px solid var(--line);border-radius:15px;background:#101722;box-shadow:0 5px 18px #0006;position:relative;top:auto;overflow:visible}
 #familyWorkspace #tabs[hidden]{display:none!important}
-#familyWorkspace #tabs:not([hidden]){position:fixed;inset:0;z-index:1000;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:12px;padding:calc(env(safe-area-inset-top) + 28px) 18px 28px;margin:0;overflow:auto;background:#080b12;border:0;box-shadow:none}
-#familyWorkspace #tabs:not([hidden])::before{content:"Escolha uma seção";grid-column:1/-1;font-size:23px;font-weight:800;margin:0 0 12px}
-#familyWorkspace #tabs .tab{min-height:64px;font-size:14px;border-radius:14px}
-#familyWorkspace .view{min-height:calc(100dvh - 120px)}
+#familyWorkspace #tabs .tab{min-height:38px;padding:5px 2px;font-size:10px;border-radius:9px}
+#familyWorkspace .view{display:none;order:1;flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 2px 18px;scrollbar-width:thin}
 #familyWorkspace .view.active{display:block}
+#familyWorkspace .section-head{margin-top:6px}
+#familyWorkspace .calendar{min-width:0}
 @media(max-width:720px){
- #familyWorkspace{min-height:100dvh}
- #familyWorkspace #tabs:not([hidden]){grid-template-columns:repeat(2,minmax(0,1fr));padding:calc(env(safe-area-inset-top) + 24px) 14px 24px}
- #familyWorkspace #tabs .tab{min-height:58px;font-size:13px}
+ .app>.top{padding:8px 11px}
+ .app .brand{gap:8px}
+ .app .logo{width:36px;height:36px;border-radius:11px}
+ .app .brand h1{font-size:14px}
+ .app .brand small{font-size:9px}
+ .app .top-actions .btn{padding:7px 8px;font-size:10px}
+ #family{padding:13px 11px 24px}
+ #familyWorkspace{padding:0 8px}
+ #familyWorkspace .family-workspace-bar{margin:6px 0;padding:8px;gap:6px}
+ #familyWorkspace .family-workspace-bar strong{font-size:13px}
+ #familyWorkspace .family-workspace-bar .owner-control{width:auto;display:flex;flex:1 1 45%;min-width:0;flex-direction:column;align-items:stretch;gap:3px}
+ #familyWorkspace .family-workspace-bar select{width:100%;max-width:none;padding:7px;font-size:11px}
+ #familyWorkspace #tabs{gap:4px;padding:5px;margin:6px 0 max(6px,env(safe-area-inset-bottom))}
+ #familyWorkspace #tabs .tab{min-height:36px;font-size:9px;padding:4px 1px}
+ #familyWorkspace .view{padding:2px 1px 14px}
 }
 </style></head>
 <body><main class="app">
@@ -248,8 +272,15 @@ state.goals.push({id:uid(),name:'Reserva de emergência - TESTE',target:5000,cur
 save();alert('Exemplos fictícios adicionados em lançamentos, rendas, benefícios, contas, cartões e metas. Todos estão identificados como TESTE e podem ser removidos juntos.')}
 function removeTestData(){const n=testDataCount();if(!n){alert('Não há exemplos de teste para remover.');return}if(confirm('Remover somente os '+n+' registro(s) fictício(s) de teste? Seus dados reais serão preservados.')){['entries','sources','cards','bills','benefits','goals'].forEach(k=>{state[k]=(state[k]||[]).filter(x=>x.gamaTestData!==true)});save();alert('Todos os exemplos de teste foram removidos. Os demais dados foram preservados.')}}
 function render(){renderDashboard();renderEntries();renderSources();renderCards();renderBills();renderCalendar();renderAnalysis();renderBenefits();renderSavedOptions();renderAlerts();renderGoals();renderTestDataStatus()}
-$('#familyMenuBtn').onclick=()=>{ $('#tabs .tab').forEach(x=>x.classList.remove('active')); $('.view').forEach(x=>x.classList.remove('active')); $('#tabs').hidden=false; window.scrollTo(0,0); };
-$('#tabs').onclick=e=>{const b=e.target.closest('[data-view]');if(!b)return;$('#tabs .tab').forEach(x=>x.classList.toggle('active',x===b));$('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));$('#tabs').hidden=true;window.scrollTo(0,0);if(b.dataset.view==='calendar'){renderCalendar();requestAnimationFrame(()=>renderCalendar())}};
+/* Navegação entre telas independentes: delegada porque a barra é criada ao iniciar o workspace. */
+document.addEventListener('click',e=>{
+ const b=e.target.closest('#tabs [data-view]');
+ if(!b)return;
+ $('#tabs .tab').forEach(x=>x.classList.toggle('active',x===b));
+ $('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));
+ window.scrollTo(0,0);
+ if(b.dataset.view==='calendar'){renderCalendar();requestAnimationFrame(()=>renderCalendar())}
+});
 const guideSearch=$("#guideSearch"),guideCards=$$("#guideGrid .guide-card");function filterGuide(){const q=normLabel(guideSearch?.value||"");let visible=0;guideCards.forEach(card=>{const hay=normLabel(card.innerText+" "+(card.dataset.guide||""));const show=!q||hay.includes(q);card.hidden=!show;if(show){visible++;if(q)card.open=true}});$("#guideNoResults").hidden=visible!==0}if(guideSearch)guideSearch.addEventListener("input",filterGuide);$("#clearGuideSearch").onclick=()=>{guideSearch.value="";filterGuide();guideSearch.focus()};$("#guideExpandAll").onclick=()=>guideCards.forEach(card=>{if(!card.hidden)card.open=true});$("#guideCollapseAll").onclick=()=>guideCards.forEach(card=>card.open=false);
 const guideScenarios={
 salary:{title:"Salário caiu na sua conta",steps:["Entre em Lançamentos e toque em Novo lançamento.","Descrição: Salário. Valor: informe o valor líquido que realmente caiu na conta. Data: dia do recebimento.","Tipo: Receita. Categoria/origem: Renda. Status: Recebido / pago.","Salve e confira se a receita aparece no mês correto.","Se você cadastrou o salário em Rendas, mantenha aquele valor como previsão. O lançamento confirma o recebimento real; não crie uma segunda receita."],view:"entries",label:"Abrir Lançamentos"},
@@ -389,7 +420,7 @@ function activateFamilyProfile(scope){
  familyDemo.scope=scope;familyDemo.active=scope;
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
- $('#family').hidden=true;$('#familyWorkspace').hidden=false;$('#familyHomeBtn').hidden=false;
+ $('#family').hidden=true;$('#familyWorkspace').hidden=false;
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
  const color=scope==='all'?'#fff':profileById(scope).color;
  $('#familyWorkspaceName').textContent=name;$('#familyWorkspaceName').style.color=color;
@@ -397,7 +428,7 @@ function activateFamilyProfile(scope){
  $('#familyProfileSwitch').value=scope;
  $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
  $('#tabs').hidden=true;
- $('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
+ $('#tabs .tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
  $('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
  window.scrollTo(0,0);
  render();renderFamilyHub();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
@@ -406,7 +437,7 @@ function initFamilyWorkspace(){
  const family=$('#family'),tabs=$('#tabs'),workspace=document.createElement('div');
  workspace.id='familyWorkspace';workspace.hidden=true;
  const bar=document.createElement('div');bar.className='family-workspace-bar';
- bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><button type="button" class="btn small" id="familyMenuBtn">Menu</button><label class="owner-control">Trocar perfil <select id="familyProfileSwitch" aria-label="Trocar perfil"></select></label><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
+ bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">‹ Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><label class="owner-control">Trocar perfil <select id="familyProfileSwitch" aria-label="Trocar perfil"></select></label><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
  workspace.appendChild(bar);family.after(workspace);
  const nodes=[tabs,...$$('.view').filter(v=>v.id!=='family')];
  nodes.forEach(node=>workspace.appendChild(node));
