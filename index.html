@@ -857,7 +857,7 @@ function renderFamilyHub(){
   const name=$('#'+prefix+'Name'),email=$('#'+prefix+'Email'),color=$('#'+prefix+'Color'),balance=$('#'+prefix+'Balance'),count=$('#'+prefix+'Count');
   if(name)name.textContent=p.name;if(email)email.textContent=p.id==='me'?'Acessar e administrar somente seus dados.':p.id==='partner'?'Acessar e administrar somente os dados dela.':'Acessar este espaço individual.';
   if(color){color.textContent=avatar;color.style.background=p.color;color.style.color='#071018'}
-  if(balance){balance.textContent=money(profileBalance(p));balance.style.color='#F7FAFF'}
+  if(balance){const currentBalance=profileBalance(p);balance.textContent=money(currentBalance);balance.style.color=Number(currentBalance)===0?'#F7FAFF':'var(--green,#51d69b)'}
   if(count)count.textContent=(p.data.entries||[]).length+' lançamento(s) · Abrir painel completo →';
  };
  setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
