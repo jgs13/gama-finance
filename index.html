@@ -276,8 +276,8 @@ function render(){renderDashboard();renderEntries();renderSources();renderCards(
 document.addEventListener('click',e=>{
  const b=e.target.closest('#tabs [data-view]');
  if(!b)return;
- $('#tabs .tab').forEach(x=>x.classList.toggle('active',x===b));
- $('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));
+ $$('#tabs .tab').forEach(x=>x.classList.toggle('active',x===b));
+ $$('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));
  window.scrollTo(0,0);
  if(b.dataset.view==='calendar'){renderCalendar();requestAnimationFrame(()=>renderCalendar())}
 });
@@ -428,8 +428,8 @@ function activateFamilyProfile(scope){
  $('#familyProfileSwitch').value=scope;
  $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
  /* A navegação permanece visível no rodapé do aplicativo. */
- $('#tabs .tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
- $('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
+ $$('#tabs .tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
+ $$('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
  window.scrollTo(0,0);
  render();renderFamilyHub();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
 }
