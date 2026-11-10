@@ -1,6 +1,18 @@
 name: GAMA FINANCE - APK privado de testes familiares
 
 on:
+  push:
+    branches: [teste-conta-familiar]
+    paths:
+      - "index.html"
+      - "manifest.json"
+      - "app-version.json"
+      - "sw.js"
+      - "icon.svg"
+      - "package.json"
+      - "capacitor.config.json"
+      - "scripts/**"
+      - ".github/workflows/test-family.yml"
   workflow_dispatch:
 
 permissions:
