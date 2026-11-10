@@ -393,7 +393,7 @@ function initFamilyWorkspace(){
  nodes.forEach(node=>workspace.appendChild(node));
  $('#familyBackBtn').onclick=showFamilyHome;
  const profileSwitch=$('#familyProfileSwitch');
- profileSwitch.innerHTML='<option value="me">Meu perfil</option><option value="partner">Perfil dela</option><option value="all">Família inteira</option>';
+ profileSwitch.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';
  profileSwitch.onchange=()=>activateFamilyProfile(profileSwitch.value);
  const owner=$('#familyWorkspaceOwner');
  owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
