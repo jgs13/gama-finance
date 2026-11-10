@@ -662,7 +662,7 @@ try{
  if(!profiles.some(p=>p.id==='partner'))profiles.push({...FAMILY_DEFAULT_PROFILES[1]});
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles,...(saved||{})};
  familyDemo.profiles=profiles;
- for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
+ for(const p of familyDemo.profiles)if(!p.themeId)p.themeId='custom';
 }catch{
  familyDemo={active:'me',lastProfile:'me',scope:'me',profiles:FAMILY_DEFAULT_PROFILES.map(p=>({...p}))};
 }
@@ -716,6 +716,7 @@ const FAMILY_THEME_PRESETS={
  emerald:{label:'Verde esmeralda · neutro',group:'Neutros',primary:'#65C6A7',secondary:'#4E91A4',bg:'#091411',panel:'#12221D',panel2:'#1B3029',line:'#2F4C42',txt:'#EFF8F3',muted:'#9DB7AB'},
  ocean:{label:'Azul oceano · neutro',group:'Neutros',primary:'#69B9D2',secondary:'#627FC0',bg:'#09121A',panel:'#13212C',panel2:'#1B2E3D',line:'#304A5B',txt:'#EEF6FA',muted:'#9DB2C0'}
 };
+for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
 function familyThemeForProfile(p){
  const preset=FAMILY_THEME_PRESETS[p?.themeId]||null;
  if(preset)return preset;
