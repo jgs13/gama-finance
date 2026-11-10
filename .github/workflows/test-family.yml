@@ -1,4 +1,4 @@
-name: GAMA FINANCE - APK privado de testes familiares
+name: GAMA FINANCE - APK experimental independente
 
 on:
   push:
@@ -69,7 +69,7 @@ jobs:
       - name: Upload private test APK
         uses: actions/upload-artifact@v4
         with:
-          name: GAMA-FINANCE-TESTE-FAMILIAR
+          name: GAMA-FINANCE-APK-EXPERIMENTAL
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
