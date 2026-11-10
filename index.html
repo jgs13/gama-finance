@@ -290,7 +290,7 @@ const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],goals:[]
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
 let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady)renderFamilyHub()}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.')}else if(/\.\d{1,2}$/.test(s)){/* ponto digitado como separador decimal: converte para centavos corretamente */}else{s=s.replace(/\./g,'')}const n=Number(s);return Number.isFinite(n)?n:NaN}
+function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.')}else if((s.match(/\./g)||[]).length>1||/\.\d{3}$/.test(s)){s=s.replace(/\./g,'')}const n=Number(s);return Number.isFinite(n)?n:NaN}
 function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''}
 const brandLogos={
 bancodobrasil:['https://commons.wikimedia.org/wiki/Special:FilePath/Logotipo_do_Banco_do_Brasil_(símbolo).svg','ffef00'],bancobrasil:['https://commons.wikimedia.org/wiki/Special:FilePath/Banco_do_Brasil_logo.svg','ffef00'],bb:['https://commons.wikimedia.org/wiki/Special:FilePath/Logotipo_do_Banco_do_Brasil_(símbolo).svg','ffef00'],
@@ -326,37 +326,53 @@ function visualIcon(value){const n=normIcon(value);const bank=brazilBanks.find(b
 if(typeof brazilBanks!=='undefined'&&brazilBanks.some(b=>normIcon(b)===n))return '<span class="visual-icon">🏦</span>';const rules=[[/aluguel|moradia|casa|condominio/,'🏠'],[/agua|saneamento/,'💧'],[/luz|energia|eletricidade/,'💡'],[/financiamento|emprestimo|prestacao/,'🏦'],[/combustivel|gasolina|etanol|diesel/,'⛽'],[/mercado|supermercado|feira/,'🛒'],[/farmacia|saude|medico/,'💊'],[/transporte|onibus|metro|pedagio/,'🚌'],[/alimentacao|lanche|restaurante/,'🍽️'],[/cartao|fatura/,'💳'],[/salario|renda|pagamento/,'💰'],[/seguro/,'🛡️'],[/imposto|iptu|ipva/,'🧾'],[/escola|curso|educacao/,'🎓'],[/streaming|lazer/,'🎬']];
 const hit=rules.find(([re])=>re.test(n));return '<span class="visual-icon">'+(hit?hit[1]:'📄')+'</span>'}
 function iconPreview(name,value){return ['name','description','category'].includes(name)?'<span class="field-icon-preview">'+visualIcon(value)+'<small>Ícone identificado automaticamente</small></span>':''}
-function field(name,label,type='text',value='',opts=[]){let isMoney=type==='number'&&['amount','limit','used','invoiceAmount','target','current'].includes(name);let v=esc(isMoney&&value!==''?formatMoneyInput(value):value);if(type==='select')return '<div class="field"><label>'+label+'</label><select name="'+name+'" required>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(o[0]===value?'selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select>'+iconPreview(name,value)+'</div>';if(isMoney)return '<div class="field"><label>'+label+'</label><input name="'+name+'" type="text" inputmode="numeric" data-money="true" placeholder="0,00" value="'+v+'" autocomplete="off" required></div>';return '<div class="field"><label>'+label+'</label><input name="'+name+'" type="'+type+'" value="'+v+'" '+(type==='number'?'step="1" min="0"':'')+' required>'+iconPreview(name,value)+'</div>'}
+function field(name,label,type='text',value='',opts=[]){let isMoney=type==='number'&&['amount','limit','used','invoiceAmount','target','current','monthlySalary','firstAmount','secondAmount'].includes(name);let v=esc(isMoney&&value!==''?formatMoneyInput(value):value);if(type==='select')return '<div class="field"><label>'+label+'</label><select name="'+name+'" required>'+opts.map(o=>'<option value="'+esc(o[0])+'" '+(o[0]===value?'selected':'')+'>'+esc(o[1])+'</option>').join('')+'</select>'+iconPreview(name,value)+'</div>';if(isMoney)return '<div class="field"><label>'+label+'</label><input name="'+name+'" type="text" inputmode="decimal" data-money="true" placeholder="0,00" value="'+v+'" autocomplete="off" required></div>';return '<div class="field"><label>'+label+'</label><input name="'+name+'" type="'+type+'" value="'+v+'" '+(type==='number'?'step="1" min="0"':'')+' required>'+iconPreview(name,value)+'</div>'}
 function chooseFamilyOwner(){return new Promise(resolve=>{const overlay=document.createElement('div');overlay.className='modal open';overlay.style.zIndex='100';const options=familyDemo.profiles.map(p=>'<button type="button" class="btn family-owner-choice" data-owner-choice="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><span><strong>'+esc(p.name)+'</strong><small>Salvar neste perfil</small></span></button>').join('');overlay.innerHTML='<div class="modal-box family-owner-dialog"><div class="row"><h3>Onde deseja salvar?</h3><button type="button" class="btn small" data-owner-cancel>Cancelar</button></div><p class="muted" style="font-size:13px;margin:4px 0 14px">Escolha a quem pertence este novo registro.</p><div class="family-owner-options">'+options+'</div></div>';const finish=value=>{overlay.remove();resolve(value)};overlay.addEventListener('click',e=>{const choice=e.target.closest('[data-owner-choice]');if(choice){finish(choice.dataset.ownerChoice);return}if(e.target===overlay||e.target.closest('[data-owner-cancel]'))finish(null)});document.body.appendChild(overlay)})}function openModal(title,fields,onSave,askFamilyOwner=false){$('#modalTitle').textContent=title;$('#modalFields').innerHTML=fields;$('#modal').classList.add('open');$('#modalForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));e.target.querySelectorAll('input[data-money]').forEach(el=>{d[el.name]=moneyValue(el.value)});if(askFamilyOwner&&familyReady&&familyDemo.scope==='all'){const owner=await chooseFamilyOwner();if(!owner)return;familyDemo.lastProfile=owner;}onSave(d);$('#modal').classList.remove('open');e.target.reset()}}
 function refreshFieldIcon(el){if(!el||!['name','description','category'].includes(el.name))return;const wrap=el.closest('.field'),preview=wrap?.querySelector('.field-icon-preview');if(preview)preview.innerHTML=visualIcon(el.value)+'<small>Ícone identificado automaticamente</small>'}
 document.addEventListener('change',e=>refreshFieldIcon(e.target));
 function formatMoneyTyping(el){
-  if(!el||!el.matches('input[data-money]'))return;
-  const raw=String(el.value??'');
-  const caret=el.selectionStart??raw.length;
-  const wasAtEnd=caret===raw.length;
-  const digitCount=(raw.slice(0,caret).match(/\d/g)||[]).length;
-  let digits=raw.replace(/\D/g,'');
+ if(!el||!el.matches('input[data-money]'))return;
+ const raw=String(el.value??''),caret=el.selectionStart??raw.length,atEnd=caret===raw.length;
+ let formatted='';
+ if(el.dataset.moneyManual==='1'){
+  const parts=raw.replace(/[^0-9,]/g,'').split(',');
+  let whole=(parts[0]||'').replace(/^0+(?=\\d)/,'')||'0';
+  let cents=(parts[1]||'').replace(/\\D/g,'').slice(0,2);
+  whole=whole.replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.');
+  formatted=whole+','+cents;
+ }else{
+  let digits=raw.replace(/\\D/g,'');
   if(!digits){el.value='';return}
-  digits=digits.replace(/^0+(?=\d)/,'').padStart(3,'0');
-  const cents=digits.slice(-2);
-  const whole=digits.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-  const formatted=whole+','+cents;
-  if(el.value!==formatted)el.value=formatted;
-  let pos=formatted.length;
-  if(!wasAtEnd){
-    pos=0;
-    let count=0;
-    while(pos<formatted.length&&count<digitCount){
-      if(/\d/.test(formatted[pos]))count++;
-      pos++;
-    }
-  }
-  try{el.setSelectionRange(pos,pos)}catch(_){}
+  digits=digits.replace(/^0+(?=\\d)/,'').padStart(3,'0');
+  formatted=digits.slice(0,-2).replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')+','+digits.slice(-2);
+ }
+ if(el.value!==formatted)el.value=formatted;
+ const pos=atEnd?formatted.length:Math.min(caret,formatted.length);
+ try{el.setSelectionRange(pos,pos)}catch(_){}
 }
+document.addEventListener('beforeinput',e=>{
+ const el=e.target;if(!el?.matches?.('input[data-money]')||e.inputType!=='insertText'||!/[,.]/.test(e.data||''))return;
+ e.preventDefault();
+ const digits=el.value.replace(/\\D/g,'').replace(/^0+(?=\\d)/,'')||'0';
+ el.dataset.moneyManual='1';
+ el.value=digits.replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')+',';
+ try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
+});
+document.addEventListener('paste',e=>{
+ const el=e.target;if(!el?.matches?.('input[data-money]'))return;
+ const pasted=e.clipboardData?.getData('text')||'';
+ if(!/[,.]/.test(pasted))return;
+ e.preventDefault();el.dataset.moneyManual='1';
+ let normalized=pasted.replace(/R\\$\\s?/gi,'').replace(/\\s/g,'');
+ if(normalized.includes(','))normalized=normalized.replace(/\\./g,'').replace(',','.');
+ else if((normalized.match(/\\./g)||[]).length>1||/\\.\\d{3}$/.test(normalized))normalized=normalized.replace(/\\./g,'');
+ const value=Number(normalized);if(!Number.isFinite(value))return;
+ el.value=value.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+ try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
+});
 document.addEventListener('input',e=>{
   refreshFieldIcon(e.target);
-  if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
+  if(e.target.matches('input[data-money]')){formatMoneyTyping(e.target);if(e.target.dataset.moneyManual==='1'){const p=e.target.value.split(',');e.target.value=(p[0]||'0')+','+(p[1]||'').padEnd(2,'0').slice(0,2)}}
 });
 document.addEventListener('change',e=>{
   if(e.target.matches('input[data-money]'))formatMoneyTyping(e.target);
@@ -368,10 +384,40 @@ $('#closeModal').onclick=()=>$('#modal').classList.remove('open');$('#modal').on
 function addEntry(data){state.entries.push({id:uid(),status:'pending',...data,amount:moneyValue(data.amount)});save()}
 function savedOptions(list,current){const values=[...new Set([...(list||[]),...(current?[current]:[])])];return values.map(v=>[v,v])}function entryForm(existing){const d=existing||{date:today(),type:'expense',status:'pending',description:state.descriptions[0]||'',category:state.categories[0]||'Geral',amount:'',note:''};openModal(existing?'Editar lançamento':'Novo lançamento',field('description','Descrição','select',d.description,savedOptions(state.descriptions,d.description))+field('amount','Valor (R$)','number',d.amount)+field('date','Data','date',d.date)+field('type','Tipo','select',d.type,[['income','Receita'],['expense','Despesa']])+field('category','Categoria / origem','select',d.category,savedOptions(state.categories,d.category))+field('status','Status','select',d.status,[['pending','Pendente'],['paid','Recebido / pago']])+'<div class="field full"><label>Observação (opcional)</label><input name="note" value="'+esc(d.note||'')+'"></div>',x=>{if(existing){Object.assign(existing,{...x,amount:moneyValue(x.amount)});save()}else addEntry(x)},!existing)}
 $('#newEntry').onclick=()=>entryForm();
-function sourceForm(s,preset){const d=s||preset||{name:'',amount:'',frequency:'monthly',nextDate:today(),active:'yes'};openModal(s?'Editar fonte de renda':'Nova fonte de renda',field('name','Nome da fonte / empresa','text',d.name)+field('amount','Valor previsto por recebimento (R$)','number',d.amount)+field('frequency','Frequência','select',d.frequency,[['once','Única'],['weekly','Semanal'],['biweekly','A cada 14 dias'],['semimonthly','Duas vezes no mês (dia 15 e último dia)'],['monthly','Mensal']])+field('nextDate','Data do primeiro/próximo recebimento','date',d.nextDate)+field('active','Incluir nas previsões?','select',d.active||'yes',[['yes','Sim'],['no','Não']]),x=>{x.name=x.name.trim();x.amount=moneyValue(x.amount);if(!x.name||!Number.isFinite(x.amount)||x.amount<=0||!x.nextDate){alert('Informe o nome, um valor maior que zero e a próxima data.');return}if(s)Object.assign(s,x);else state.sources.push({id:uid(),...x});save()},!s)}
+function salarySourceForm(s,preset){
+ const d=s||preset||{},mode=d.salaryMode||(s?'amount':'percentage');
+ const first=d.firstAmount??d.amount??'',second=d.secondAmount??d.amount??'';
+ const fields=field('name','Nome da fonte / empresa','text',d.name||'Salário CLT')+
+ field('salaryMode','Como deseja informar os recebimentos?','select',mode,[['percentage','Por porcentagem do salário mensal'],['amount','Por valor em reais de cada quinzena']])+
+ '<div class="salary-config-group" data-salary-percent>'+field('monthlySalary','Salário líquido mensal total (R$)','number',d.monthlySalary||'')+
+ '<div class="two">'+field('firstPercent','Porcentagem da 1ª quinzena (%)','number',d.firstPercent??50)+field('secondPercent','Porcentagem da 2ª quinzena (%)','number',d.secondPercent??50)+'</div><small class="muted">As duas porcentagens precisam somar 100%.</small></div>'+
+ '<div class="salary-config-group" data-salary-amount>'+field('firstAmount','Valor da 1ª quinzena (R$)','number',first)+field('secondAmount','Valor da 2ª quinzena (R$)','number',second)+'</div>'+
+ field('nextDate','Data do próximo recebimento','date',d.nextDate||nextSalaryDate())+
+ field('active','Incluir nas previsões?','select',d.active||'yes',[['yes','Sim'],['no','Não']]);
+ openModal(s?'Editar salário CLT':'Cadastrar salário CLT',fields,x=>{
+  x.name=x.name.trim();x.frequency='semimonthly';
+  if(x.salaryMode==='percentage'){
+   x.monthlySalary=moneyValue(x.monthlySalary);x.firstPercent=Number(x.firstPercent);x.secondPercent=Number(x.secondPercent);
+   if(!Number.isFinite(x.monthlySalary)||x.monthlySalary<=0||x.firstPercent<=0||x.secondPercent<=0||Math.abs(x.firstPercent+x.secondPercent-100)>0.001){alert('Informe o salário mensal e duas porcentagens positivas que somem exatamente 100%.');return}
+   x.firstAmount=Math.round(x.monthlySalary*x.firstPercent)/100;
+   x.secondAmount=Math.round(x.monthlySalary*x.secondPercent)/100;
+  }else{
+   x.firstAmount=moneyValue(x.firstAmount);x.secondAmount=moneyValue(x.secondAmount);
+   if(x.firstAmount<=0||x.secondAmount<=0){alert('Informe um valor maior que zero para cada quinzena.');return}
+   x.monthlySalary=x.firstAmount+x.secondAmount;x.firstPercent=x.firstAmount/x.monthlySalary*100;x.secondPercent=x.secondAmount/x.monthlySalary*100;
+  }
+  x.amount=x.firstAmount;
+  if(!x.name||!x.nextDate){alert('Informe o nome e a data do próximo recebimento.');return}
+  if(s)Object.assign(s,x);else state.sources.push({id:uid(),...x});
+  save();
+ },!s);
+ const updateMode=()=>{const percent=$('[data-salary-percent]'),amount=$('[data-salary-amount]'),isPercent=$('[name="salaryMode"]').value==='percentage';percent.hidden=!isPercent;amount.hidden=isPercent;percent.querySelectorAll('input').forEach(i=>i.disabled=!isPercent);amount.querySelectorAll('input').forEach(i=>i.disabled=isPercent)};
+ $('[name="salaryMode"]').addEventListener('change',updateMode);updateMode();
+}
+function sourceForm(s,preset){const d=s||preset||{name:'',amount:'',frequency:'monthly',nextDate:today(),active:'yes'};if(normLabel(d.name)==='salarioclt')return salarySourceForm(s,preset);openModal(s?'Editar fonte de renda':'Nova fonte de renda',field('name','Nome da fonte / empresa','text',d.name)+field('amount','Valor previsto por recebimento (R$)','number',d.amount)+field('frequency','Frequência','select',d.frequency,[['once','Única'],['weekly','Semanal'],['biweekly','A cada 14 dias'],['semimonthly','Duas vezes no mês (dia 15 e último dia)'],['monthly','Mensal']])+field('nextDate','Data do primeiro/próximo recebimento','date',d.nextDate)+field('active','Incluir nas previsões?','select',d.active||'yes',[['yes','Sim'],['no','Não']]),x=>{x.name=x.name.trim();x.amount=moneyValue(x.amount);if(!x.name||!Number.isFinite(x.amount)||x.amount<=0||!x.nextDate){alert('Informe o nome, um valor maior que zero e a próxima data.');return}if(s)Object.assign(s,x);else state.sources.push({id:uid(),...x});save()},!s)}
 $('#newSource').onclick=()=>sourceForm();
 function nextSalaryDate(){const d=new Date(),y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate(),last=new Date(y,m,0).getDate();return isoUTC(y,m,day<=15?15:last)}
-$('#newSalarySource').onclick=()=>sourceForm(null,{name:'Salário CLT',amount:'',frequency:'semimonthly',nextDate:nextSalaryDate(),active:'yes'});
+$('#newSalarySource').onclick=()=>salarySourceForm(null,{name:'Salário CLT',salaryMode:'percentage',frequency:'semimonthly',nextDate:nextSalaryDate(),active:'yes'});
 const brazilBanks=[
 'Banco do Brasil','Caixa Econômica Federal','Itaú Unibanco','Bradesco','Santander','Banco Safra','BTG Pactual','Banco Inter','Nubank','C6 Bank','Banco PAN','Banco BMG','Banco BV','Banco Mercantil','Banco Daycoval','Banco Sofisa','Banco ABC Brasil','Banco Pine','Banco BS2','Banco Original','Banco Votorantim','Banco do Nordeste','Banco da Amazônia','BRB - Banco de Brasília','Banrisul','Banestes','Banpará','Banese','Banco Topázio','Banco Rendimento','Banco Fibra','Banco Guanabara','Banco Master','Banco Genial','Bancoob','Bancoob/Sicoob','Sicredi','Sicoob','Unicred','Cresol','Ailos','Uniprime','Credicitrus','PagBank','Mercado Pago','PicPay','Neon','Next','Agibank','Stone','Will Bank'
 ];
@@ -386,7 +432,7 @@ function billForm(b){const d=b||{name:'',category:state.categories[0]||'Casa',am
 $('#newBill').onclick=()=>billForm();
 function isoUTC(y,m,d){return new Date(Date.UTC(y,m-1,d)).toISOString().slice(0,10)}
 function occurrenceDate(anchor,freq,index){const p=anchor.split('-').map(Number),y=p[0],m=p[1],day=p[2];if(freq==='weekly'||freq==='biweekly'){const d=new Date(Date.UTC(y,m-1,day));d.setUTCDate(d.getUTCDate()+index*(freq==='weekly'?7:14));return d.toISOString().slice(0,10)}if(freq==='monthly'){const total=y*12+(m-1)+index,yy=Math.floor(total/12),mm=total%12+1,last=new Date(Date.UTC(yy,mm,0)).getUTCDate();return isoUTC(yy,mm,Math.min(day,last))}return anchor}
-function forecasts(month){const out=[];const start=month+'-01',end=isoUTC(Number(month.slice(0,4)),Number(month.slice(5,7))+1,0);state.sources.filter(s=>s.active==='yes'&&s.nextDate).forEach(s=>{if(s.frequency==='once'){if(s.nextDate>=start&&s.nextDate<=end)out.push({date:s.nextDate,name:s.name,amount:+s.amount,sourceId:s.id,_familyOwner:s._familyOwner});return}if(s.frequency==='semimonthly'){const anchor=new Date(s.nextDate+'T00:00:00Z'),cursor=new Date(Date.UTC(anchor.getUTCFullYear(),anchor.getUTCMonth(),1)),limit=new Date(end+'T00:00:00Z');while(cursor<=limit){const y=cursor.getUTCFullYear(),m=cursor.getUTCMonth(),last=new Date(Date.UTC(y,m+1,0)).getUTCDate();[15,last].forEach(day=>{const d=isoUTC(y,m+1,day);if(d>=s.nextDate&&d>=start&&d<=end)out.push({date:d,name:s.name,amount:+s.amount,sourceId:s.id,_familyOwner:s._familyOwner})});cursor.setUTCMonth(cursor.getUTCMonth()+1)}return}for(let i=0;i<600;i++){const d=occurrenceDate(s.nextDate,s.frequency,i);if(d>end)break;if(d>=start)out.push({date:d,name:s.name,amount:+s.amount,sourceId:s.id,_familyOwner:s._familyOwner})}});return out}
+function forecasts(month){const out=[];const start=month+'-01',end=isoUTC(Number(month.slice(0,4)),Number(month.slice(5,7))+1,0);state.sources.filter(s=>s.active==='yes'&&s.nextDate).forEach(s=>{if(s.frequency==='once'){if(s.nextDate>=start&&s.nextDate<=end)out.push({date:s.nextDate,name:s.name,amount:+s.amount,sourceId:s.id,_familyOwner:s._familyOwner});return}if(s.frequency==='semimonthly'){const anchor=new Date(s.nextDate+'T00:00:00Z'),cursor=new Date(Date.UTC(anchor.getUTCFullYear(),anchor.getUTCMonth(),1)),limit=new Date(end+'T00:00:00Z');while(cursor<=limit){const y=cursor.getUTCFullYear(),m=cursor.getUTCMonth(),last=new Date(Date.UTC(y,m+1,0)).getUTCDate();[15,last].forEach(day=>{const d=isoUTC(y,m+1,day);if(d>=s.nextDate&&d>=start&&d<=end){const amount=day===15?Number(s.firstAmount??s.amount):Number(s.secondAmount??s.amount);out.push({date:d,name:s.name,amount,sourceId:s.id,_familyOwner:s._familyOwner})}});cursor.setUTCMonth(cursor.getUTCMonth()+1)}return}for(let i=0;i<600;i++){const d=occurrenceDate(s.nextDate,s.frequency,i);if(d>end)break;if(d>=start)out.push({date:d,name:s.name,amount:+s.amount,sourceId:s.id,_familyOwner:s._familyOwner})}});return out}
 function normLabel(v){return String(v||'').toLocaleLowerCase('pt-BR').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'')}
 function sameFinancialItem(a,b,dateA,dateB,labelA,labelB){const la=normLabel(labelA),lb=normLabel(labelB);return dateA===dateB&&Math.abs(Number(a)-Number(b))<0.005&&la&&lb&&(la===lb||la.includes(lb)||lb.includes(la))}
 function billHasEntry(b){return state.entries.some(e=>e.type==='expense'&&(!familyReady||familyDemo.scope!=='all'||e._familyOwner===b._familyOwner)&&sameFinancialItem(b.amount,e.amount,b.due,e.date,b.name,e.description))}
@@ -400,7 +446,7 @@ let by={};es.filter(e=>e.type==='income'&&e.status==='paid').forEach(e=>by[e.cat
 let labels=[];for(let i=5;i>=0;i--){let dt=new Date(m+'-02T12:00:00');dt.setMonth(dt.getMonth()-i);let mm=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0'),a=monthEntries(mm),income=sum(a.filter(e=>e.type==='income'&&e.status==='paid'),e=>e.amount),expenses=sum(a.filter(e=>e.type==='expense'&&e.status==='paid'),e=>e.amount)+sum(state.bills.filter(b=>b.status==='paid'&&b.due?.startsWith(mm)&&!billHasEntry(b)),b=>b.amount);labels.push({label:dt.toLocaleDateString('pt-BR',{month:'short'}),value:income-expenses})}let max=Math.max(1,...labels.map(x=>Math.abs(x.value)));$('#flowChart').innerHTML=labels.map(x=>'<div class="chart-col"><div class="chart-bar" style="height:'+Math.max(3,Math.abs(x.value)/max*105)+'px;'+(x.value<0?'background:linear-gradient(0deg,#9e3948,#ff7180)':'')+'"></div><small>'+x.label+'</small></div>').join('')}
 function familyOwnerTag(item){if(!familyReady||familyDemo.scope!=='all')return '';const p=profileById(item?._familyOwner||familyDemo.lastProfile);return p?'<small class="family-owner-tag"><span style="color:'+esc(p.color)+'">●</span> '+esc(p.name)+'</small>':''}
 function renderEntries(){let f=$('#entryFilter').value,q=$('#entrySearch').value.toLowerCase(),arr=[...state.entries].filter(e=>(f==='all'||(f==='pending'?e.status==='pending':e.type===f))&&((e.description+' '+e.category).toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date));$('#entryRows').innerHTML=arr.map(e=>'<tr><td>'+e.date.split('-').reverse().join('/')+'</td><td><span class="table-icon">'+visualIcon(e.description+' '+e.category)+esc(e.description)+'</span>'+familyOwnerTag(e)+'</td><td>'+esc(e.category)+'</td><td>'+ (e.type==='income'?'Receita':'Despesa')+'</td><td class="amount">'+money(e.amount)+'</td><td><span class="pill '+(e.status==='paid'?'paid':'pending')+'">'+(e.status==='paid'?'Confirmado':'Pendente')+'</span></td><td><button class="btn small" data-edit-entry="'+e.id+'">Editar</button> <button class="btn small danger" data-del-entry="'+e.id+'">Excluir</button></td></tr>').join('')||'<tr><td colspan="7" class="empty">Nenhum lançamento encontrado.</td></tr>'}
-function renderSources(){$('#sourceRows').innerHTML=state.sources.map(s=>'<tr><td><span class="table-icon">'+visualIcon(s.name)+esc(s.name)+'</span>'+familyOwnerTag(s)+'</td><td>'+money(s.amount)+'</td><td>'+({once:'Única',weekly:'Semanal',biweekly:'A cada 14 dias',semimonthly:'Dias 15 e último dia',monthly:'Mensal'}[s.frequency]||'Mensal')+'</td><td>'+s.nextDate.split('-').reverse().join('/')+'</td><td><button class="btn small" data-edit-source="'+s.id+'">Editar</button> <button class="btn small danger" data-del-source="'+s.id+'">Excluir</button></td></tr>').join('')||'<tr><td colspan="5" class="empty">Cadastre salário CLT, rendas MEI por empresa, Shopee, Mercado Livre, Amazon, iFood, 99Food, Uber, 99, inDrive, Diálogo ou outras fontes.</td></tr>';let f=forecasts(monthNow());$('#forecast').innerHTML=f.length?f.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>'<div class="item"><div><strong>'+visualIcon(x.name)+esc(x.name)+'</strong><small>'+x.date.split('-').reverse().join('/')+'</small></div><b class="positive">'+money(x.amount)+'</b></div>').join(''):'<div class="empty">Sem previsões para este mês. Configure as fontes de renda.</div>'}
+function renderSources(){$('#sourceRows').innerHTML=state.sources.map(s=>'<tr><td><span class="table-icon">'+visualIcon(s.name)+esc(s.name)+'</span>'+familyOwnerTag(s)+'</td><td>'+(normLabel(s.name)==='salarioclt'?money(s.firstAmount??s.amount)+' / '+money(s.secondAmount??s.amount):money(s.amount))+'</td><td>'+({once:'Única',weekly:'Semanal',biweekly:'A cada 14 dias',semimonthly:'Dias 15 e último dia',monthly:'Mensal'}[s.frequency]||'Mensal')+'</td><td>'+s.nextDate.split('-').reverse().join('/')+'</td><td><button class="btn small" data-edit-source="'+s.id+'">Editar</button> <button class="btn small danger" data-del-source="'+s.id+'">Excluir</button></td></tr>').join('')||'<tr><td colspan="5" class="empty">Cadastre salário CLT, rendas MEI por empresa, Shopee, Mercado Livre, Amazon, iFood, 99Food, Uber, 99, inDrive, Diálogo ou outras fontes.</td></tr>';let f=forecasts(monthNow());$('#forecast').innerHTML=f.length?f.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>'<div class="item"><div><strong>'+visualIcon(x.name)+esc(x.name)+'</strong><small>'+x.date.split('-').reverse().join('/')+'</small></div><b class="positive">'+money(x.amount)+'</b></div>').join(''):'<div class="empty">Sem previsões para este mês. Configure as fontes de renda.</div>'}
 function renderCards(){$('#cardGrid').innerHTML=state.cards.map(c=>'<div class="card"><div class="row"><strong><span class="table-icon">'+visualIcon(c.name)+(c.brand?visualIcon(c.brand):'')+esc(c.name)+'</span></strong>'+familyOwnerTag(c)+'<button class="btn small" data-edit-card="'+c.id+'">Editar</button></div><div class="metric">'+money(c.used)+'</div><div class="metric-sub">Limite utilizado de '+money(c.limit)+'</div><div class="bar"><i style="width:'+Math.min(100,c.limit?c.used/c.limit*100:0)+'%"></i></div><div class="row muted" style="font-size:11px"><span>Disponível '+money(c.limit-c.used)+'</span><span>Fecha '+c.closing+' · vence dia '+c.due+'</span></div><div class="item"><div><strong>Fatura atual: '+money(c.invoiceAmount||0)+'</strong><small>Vencimento: '+(c.invoiceDue?c.invoiceDue.split('-').reverse().join('/'):'Não informado')+'</small></div><span class="pill '+(c.invoiceStatus==='paid'?'paid':'pending')+'">'+(c.invoiceStatus==='paid'?'Paga':'Em aberto')+'</span></div><button class="btn small" data-toggle-invoice="'+c.id+'">'+(c.invoiceStatus==='paid'?'Reabrir fatura':'Marcar fatura paga')+'</button> <button class="btn small danger" data-del-card="'+c.id+'">Excluir</button></div>').join('')||'<div class="card empty">Cadastre seus cartões para acompanhar limites e datas.</div>'}
 function renderBills(){$('#billRows').innerHTML=state.bills.sort((a,b)=>a.due.localeCompare(b.due)).map(b=>'<tr><td>'+b.due.split('-').reverse().join('/')+'</td><td><span class="table-icon">'+visualIcon(b.name+' '+b.category)+esc(b.name)+'</span>'+familyOwnerTag(b)+'</td><td><span class="table-icon">'+visualIcon(b.category)+esc(b.category)+'</span></td><td>'+money(b.amount)+'</td><td><span class="pill '+(b.status==='paid'?'paid':'pending')+'">'+(b.status==='paid'?'Paga':'Pendente')+'</span></td><td><button class="btn small" data-toggle-bill="'+b.id+'">'+(b.status==='paid'?'Reabrir':'Marcar paga')+'</button> <button class="btn small" data-edit-bill="'+b.id+'">Editar</button> <button class="btn small danger" data-del-bill="'+b.id+'">Excluir</button></td></tr>').join('')||'<tr><td colspan="6" class="empty">Nenhuma conta cadastrada.</td></tr>'}
 let calDate=new Date();function calendarEvents(date){const m=date.slice(0,7),events=[...state.entries.filter(e=>e.date===date).map(e=>({...e,eventType:e.type==='income'?'income':'expense',label:e.description,detail:e.category||'Lançamento'})),...state.bills.filter(b=>b.due===date).map(b=>({...b,eventType:'expense',label:b.name,detail:'Conta · '+(b.status==='paid'?'paga':'pendente')})),...forecasts(m).filter(f=>f.date===date&&!state.entries.some(e=>e.type==='income'&&(!familyReady||familyDemo.scope!=='all'||e._familyOwner===f._familyOwner)&&sameFinancialItem(f.amount,e.amount,f.date,e.date,f.name,e.description))).map(f=>({...f,eventType:'income',label:f.name,detail:'Previsão de renda'})),...state.cards.filter(c=>c.invoiceDue===date&&c.invoiceAmount>0).map(c=>({amount:c.invoiceAmount,eventType:'expense',label:'Fatura '+c.name,detail:c.invoiceStatus==='paid'?'Fatura paga':'Fatura em aberto',_familyOwner:c._familyOwner}))];return events}
