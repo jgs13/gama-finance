@@ -427,7 +427,7 @@ function activateFamilyProfile(scope){
  $('#familyWorkspaceOwner').value=familyDemo.lastProfile;
  $('#familyProfileSwitch').value=scope;
  $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
- $('#tabs').hidden=true;
+ /* A navegação permanece visível no rodapé do aplicativo. */
  $('#tabs .tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
  $('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
  window.scrollTo(0,0);
