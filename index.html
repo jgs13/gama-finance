@@ -173,6 +173,55 @@ body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90
 #familyAdditionalProfiles .profile-card .profile-card-foot{color:#fff!important}
 @media(max-width:600px){.family-appearance-grid{grid-template-columns:1fr}}
 </style><style id="family-theme-full-overrides">
+/* O tema do perfil colore o workspace inteiro; a tela inicial mantém o tema geral. */
+body.family-workspace-open{
+ background:
+ radial-gradient(ellipse at 5% 0%,color-mix(in srgb,var(--theme) 54%,transparent),transparent 58%),
+ radial-gradient(ellipse at 96% 42%,color-mix(in srgb,var(--theme-alt) 48%,transparent),transparent 60%),
+ linear-gradient(145deg,color-mix(in srgb,var(--bg) 72%,var(--theme) 28%),color-mix(in srgb,var(--bg) 78%,var(--theme-alt) 22%))!important;
+ color:var(--txt)!important;
+}
+body.family-workspace-open #familyWorkspace{background:transparent!important}
+body.family-workspace-open #familyWorkspace .view{background:transparent!important}
+body.family-workspace-open #familyWorkspace .family-workspace-bar,
+body.family-workspace-open #familyWorkspace #tabs{
+ background:linear-gradient(100deg,color-mix(in srgb,var(--panel) 62%,var(--theme) 38%),color-mix(in srgb,var(--panel) 66%,var(--theme-alt) 34%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace .card,
+body.family-workspace-open #familyWorkspace .guide-card,
+body.family-workspace-open #familyWorkspace .guide-scenario-result{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 72%,var(--theme) 28%),color-mix(in srgb,var(--panel) 82%,var(--theme-alt) 18%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace input,
+body.family-workspace-open #familyWorkspace select,
+body.family-workspace-open #familyWorkspace textarea{
+ background:color-mix(in srgb,var(--panel2) 76%,var(--theme) 24%)!important;
+ color:var(--txt)!important;border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
+body.family-workspace-open #familyWorkspace .day,
+body.family-workspace-open #familyWorkspace .pill,
+body.family-workspace-open #familyWorkspace .notice,
+body.family-workspace-open #familyWorkspace .guide-example{
+ background:color-mix(in srgb,var(--panel2) 72%,var(--theme) 28%)!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;color:var(--txt);
+}
+body.family-workspace-open #familyWorkspace .section-head h2,
+body.family-workspace-open #familyWorkspace .accent{color:var(--theme)!important}
+body.family-workspace-open #familyWorkspace .btn.primary{
+ background:linear-gradient(120deg,var(--theme),var(--theme-alt))!important;color:#101018!important;
+}
+body.family-workspace-open .modal-box{
+ background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 72%,var(--theme) 28%),color-mix(in srgb,var(--panel) 82%,var(--theme-alt) 18%))!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;color:var(--txt);
+}
+body.family-workspace-open .modal-box input,
+body.family-workspace-open .modal-box select,
+body.family-workspace-open .modal-box textarea{
+ background:color-mix(in srgb,var(--panel2) 76%,var(--theme) 24%)!important;color:var(--txt)!important;
+ border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
+}
 /* Paleta com cores fortes, mas conteúdo e leitura sempre em primeiro plano. */
 body.family-workspace-open{
  background:
