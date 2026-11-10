@@ -1,6 +1,6 @@
 {
-  "appId": "br.com.gama.finance.teste",
-  "appName": "GAMA FINANCE TESTE",
+  "appId": "br.com.gama.finance",
+  "appName": "GAMA FINANCE",
   "webDir": "www",
   "bundledWebRuntime": false,
   "android": {}
