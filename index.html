@@ -336,15 +336,15 @@ function formatMoneyTyping(el){
  let formatted='';
  if(el.dataset.moneyManual==='1'){
   const parts=raw.replace(/[^0-9,]/g,'').split(',');
-  let whole=(parts[0]||'').replace(/^0+(?=\\d)/,'')||'0';
-  let cents=(parts[1]||'').replace(/\\D/g,'').slice(0,2);
-  whole=whole.replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.');
+  let whole=(parts[0]||'').replace(/^0+(?=\d)/,'')||'0';
+  let cents=(parts[1]||'').replace(/\D/g,'').slice(0,2);
+  whole=whole.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
   formatted=whole+','+cents;
  }else{
-  let digits=raw.replace(/\\D/g,'');
+  let digits=raw.replace(/\D/g,'');
   if(!digits){el.value='';return}
-  digits=digits.replace(/^0+(?=\\d)/,'').padStart(3,'0');
-  formatted=digits.slice(0,-2).replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')+','+digits.slice(-2);
+  digits=digits.replace(/^0+(?=\d)/,'').padStart(3,'0');
+  formatted=digits.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+digits.slice(-2);
  }
  if(el.value!==formatted)el.value=formatted;
  const pos=atEnd?formatted.length:Math.min(caret,formatted.length);
@@ -353,9 +353,9 @@ function formatMoneyTyping(el){
 document.addEventListener('beforeinput',e=>{
  const el=e.target;if(!el?.matches?.('input[data-money]')||e.inputType!=='insertText'||!/[,.]/.test(e.data||''))return;
  e.preventDefault();
- const digits=el.value.replace(/\\D/g,'').replace(/^0+(?=\\d)/,'')||'0';
+ const digits=el.value.replace(/\D/g,'').replace(/^0+(?=\d)/,'')||'0';
  el.dataset.moneyManual='1';
- el.value=digits.replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.')+',';
+ el.value=digits.replace(/\B(?=(\d{3})+(?!\d))/g,'.')+',';
  try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
 });
 document.addEventListener('paste',e=>{
@@ -363,9 +363,9 @@ document.addEventListener('paste',e=>{
  const pasted=e.clipboardData?.getData('text')||'';
  if(!/[,.]/.test(pasted))return;
  e.preventDefault();el.dataset.moneyManual='1';
- let normalized=pasted.replace(/R\\$\\s?/gi,'').replace(/\\s/g,'');
- if(normalized.includes(','))normalized=normalized.replace(/\\./g,'').replace(',','.');
- else if((normalized.match(/\\./g)||[]).length>1||/\\.\\d{3}$/.test(normalized))normalized=normalized.replace(/\\./g,'');
+ let normalized=pasted.replace(/R\$\s?/gi,'').replace(/\s/g,'');
+ if(normalized.includes(','))normalized=normalized.replace(/\./g,'').replace(',','.');
+ else if((normalized.match(/\./g)||[]).length>1||/\.\d{3}$/.test(normalized))normalized=normalized.replace(/\./g,'');
  const value=Number(normalized);if(!Number.isFinite(value))return;
  el.value=value.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
  try{el.setSelectionRange(el.value.length,el.value.length)}catch(_){}
