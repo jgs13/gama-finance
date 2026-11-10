@@ -165,7 +165,7 @@ body.family-workspace-open #familyWorkspace .accent,
 body.family-workspace-open #familyWorkspace .section-head h2{color:var(--theme)}
 body.family-workspace-open #familyWorkspace .bar{background:var(--panel2)}
 body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90deg,var(--theme),var(--theme-alt))}
-.profile-card[data-family-open-profile="me"],
+.profile-card-managed{position:relative;align-items:stretch;gap:8px}.profile-card-managed .profile-card-open{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:left}.profile-card-managed .profile-delete-btn{align-self:flex-start;margin-top:3px}.profile-card[data-family-open-profile="me"],
 .profile-card[data-family-open-profile="partner"],
 #familyAdditionalProfiles .profile-card:not(.family-combined-card){background:linear-gradient(135deg,var(--profile-start,#153e4c),var(--profile-end,#172033))!important;border-color:var(--profile-border,#52717d)!important}
 .profile-card[data-family-open-profile="me"] .profile-card-foot,
@@ -765,7 +765,7 @@ function renderFamilyHub(){
  setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
  $('#familyTotalBalance').textContent=money(familyDemo.profiles.reduce((n,p)=>n+profileBalance(p),0));
  $('#familyAllColor').style.background='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';
- $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<button type="button" class="profile-card" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button>').join('');
+ $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<div class="profile-card profile-card-managed"><button type="button" class="profile-card-open" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button><button type="button" class="btn danger small profile-delete-btn" data-family-delete-profile="'+esc(p.id)+'">Excluir perfil</button></div>').join('');
  familyDemo.profiles.forEach(p=>{const card=document.querySelector('[data-family-open-profile="'+p.id+'"]');if(card){const t=familyThemeForProfile(p);card.style.setProperty('--profile-start',t.primary);card.style.setProperty('--profile-end',t.secondary);card.style.setProperty('--profile-border',t.primary);}});
 
 }
@@ -809,11 +809,32 @@ function initFamilyWorkspace(){
  profileSwitch.onchange=()=>activateFamilyProfile(profileSwitch.value);
  $('#family').hidden=false;
 }
+function refreshFamilyProfileSwitch(){
+ const profileSwitch=$('#familyProfileSwitch');if(!profileSwitch)return;
+ profileSwitch.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';
+ profileSwitch.value=familyDemo.scope==='all'?'all':familyDemo.scope;
+}
+function deleteFamilyProfile(id){
+ const p=profileById(id);if(!p||['me','partner'].includes(id))return;
+ const counts=FAMILY_ARRAYS.reduce((n,key)=>n+(p.data?.[key]?.length||0),0);
+ const detail=counts?counts+' registros financeiros (lançamentos, rendas, cartões, contas, benefícios e metas)':'nenhum registro financeiro';
+ if(!confirm('Excluir o perfil "'+p.name+'" permanentemente?\n\nTambém serão apagados '+detail+' vinculados a ele. Esta ação não pode ser desfeita.'))return;
+ if(familyReady)persistFamilyState();
+ familyDemo.profiles=familyDemo.profiles.filter(x=>x.id!==id);
+ if(familyDemo.lastProfile===id)familyDemo.lastProfile='me';
+ const wasActive=familyDemo.scope===id;
+ if(wasActive){familyDemo.scope='me';familyDemo.active='me';state=profileById('me').data;}
+ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+ refreshFamilyProfileSwitch();renderFamilyHub();
+ if(wasActive)showFamilyHome();
+}
 $('#family').addEventListener('click',e=>{
+ const remove=e.target.closest('[data-family-delete-profile]');
+ if(remove){e.stopPropagation();deleteFamilyProfile(remove.dataset.familyDeleteProfile);return;}
  const open=e.target.closest('[data-family-open-profile]');
  if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
 });
-$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color:'#78A9D8',themeId:'midnight',data:emptyFinancialState()});$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color:'#78A9D8',themeId:'midnight',data:emptyFinancialState()});refreshFamilyProfileSwitch();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
 $('#familyWorkspace').addEventListener('click',e=>{
  const swatch=e.target.closest('[data-family-color-choice]');if(!swatch||familyDemo.scope==='all')return;
  const p=profileById(familyDemo.scope),preset=FAMILY_THEME_PRESETS[swatch.dataset.familyColorChoice];if(!p||!preset)return;
