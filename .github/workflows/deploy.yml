@@ -32,7 +32,7 @@ jobs:
           const ids = html.split('id="').slice(1).map(part => part.split('"')[0]);
           const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
           if (duplicates.length) throw new Error('Duplicate HTML IDs: ' + [...new Set(duplicates)].join(', '));
-          const used = js.split("$('").slice(1).map(part => part.split("'")[0]).filter(selector => selector.startsWith('#')).map(selector => selector.slice(1));
+          const used = js.split("$('").slice(1).map(part => part.split("'")[0]).filter(selector => /^#[A-Za-z][\\w-]*$/.test(selector)).map(selector => selector.slice(1));
           const missing = [...new Set(used)].filter(id => !ids.includes(id));
           if (missing.length) throw new Error('Missing HTML elements: ' + missing.join(', '));
           const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
