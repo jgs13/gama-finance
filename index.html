@@ -130,7 +130,17 @@ body.family-workspace-open #familyWorkspace #tabs{background:color-mix(in srgb,v
 body.family-workspace-open #familyWorkspace .profile-switch-compact{border-color:color-mix(in srgb,var(--theme) 45%,var(--line))}
 #familyProfileSwitch{accent-color:var(--theme)}
 </style><style id="family-theme-presets">
-body.family-workspace-open{background:var(--bg)!important;color:var(--txt)}
+body.family-workspace-open{background:radial-gradient(ellipse at 8% 8%,color-mix(in srgb,var(--theme) 46%,transparent),transparent 54%),radial-gradient(ellipse at 92% 30%,color-mix(in srgb,var(--theme-alt) 43%,transparent),transparent 58%),linear-gradient(145deg,var(--bg),color-mix(in srgb,var(--bg) 82%,var(--theme) 18%))!important;color:var(--txt)}
+body.family-workspace-open #familyWorkspace{background:transparent!important}
+body.family-workspace-open #familyWorkspace .view{background:transparent}
+.family-theme-palette{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.family-theme-palette[hidden]{display:none!important}
+.theme-palette-label{font-size:11px;color:var(--muted);white-space:nowrap}
+.theme-swatch-list{display:flex;align-items:center;gap:7px}
+.theme-swatch{width:27px;height:27px;min-width:27px;padding:0;border-radius:50%;border:2px solid #ffffff55;background:var(--swatch);box-shadow:0 0 0 1px #0008;position:relative}
+.theme-swatch.selected{outline:2px solid var(--txt);outline-offset:3px;transform:scale(1.04)}
+.theme-swatch.selected:after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:#101018;font-size:13px;font-weight:900;text-shadow:0 1px 2px #fff8}
+@media(max-width:720px){#familyWorkspace .family-workspace-bar{flex-wrap:wrap}#familyThemePalette{width:100%;padding:4px 2px 2px}.theme-swatch{width:25px;height:25px;min-width:25px}}
 body.family-workspace-open #familyWorkspace{background:var(--bg)}
 body.family-workspace-open #familyWorkspace .family-workspace-bar,
 body.family-workspace-open #familyWorkspace #tabs{background:linear-gradient(110deg,color-mix(in srgb,var(--bg) 88%,var(--theme) 12%),color-mix(in srgb,var(--bg) 88%,var(--theme-alt) 12%))!important;border-color:var(--line)!important}
@@ -155,17 +165,6 @@ body.family-workspace-open #familyWorkspace .accent,
 body.family-workspace-open #familyWorkspace .section-head h2{color:var(--theme)}
 body.family-workspace-open #familyWorkspace .bar{background:var(--panel2)}
 body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90deg,var(--theme),var(--theme-alt))}
-.family-appearance{margin:18px 0 8px}
-.family-appearance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:12px}
-.family-appearance-card{border:1px solid var(--line);border-radius:15px;padding:13px;background:var(--panel);min-width:0}
-.family-appearance-card h3{font-size:14px;margin:0 0 10px}
-.family-appearance-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.family-appearance-controls select{flex:1;min-width:150px}
-.family-appearance-controls input[type=color]{width:42px;height:38px;padding:3px}
-.family-theme-preview{height:74px;border-radius:12px;margin-top:10px;padding:9px;display:flex;align-items:flex-end;gap:7px;border:1px solid #ffffff22;overflow:hidden}
-.family-theme-preview span{display:block;border-radius:8px;height:27px;flex:1;border:1px solid #ffffff20}
-.family-theme-preview b{font-size:10px;color:#fff;text-shadow:0 1px 4px #000;align-self:flex-start}
-.family-appearance-card small{display:block;color:var(--muted);font-size:11px;margin-top:7px}
 .profile-card[data-family-open-profile="me"],
 .profile-card[data-family-open-profile="partner"],
 #familyAdditionalProfiles .profile-card:not(.family-combined-card){background:linear-gradient(135deg,var(--profile-start,#153e4c),var(--profile-end,#172033))!important;border-color:var(--profile-border,#52717d)!important}
@@ -203,7 +202,7 @@ body.family-workspace-open #familyWorkspace .bar i{background:linear-gradient(90
 </div>
 <div id="familyAdditionalProfiles" class="profile-grid"></div>
 <div class="actions"><button type="button" class="btn" id="familyCreateProfile">+ Criar outro perfil</button></div>
-<section class="family-appearance"><div class="section-head"><div><h2>Temas e aparência</h2><p>Escolha um visual para cada perfil. A alteração aparece ao abrir o respectivo cartão.</p></div></div><div id="familyProfileSettings" class="family-appearance-grid"></div></section>
+
 </section><section class="view" id="guide">
 <div class="section-head"><div><h2>GAMA Guia</h2><p>Manual passo a passo: o que cadastrar, quando fazer e como evitar erros.</p></div></div>
 <div class="card" style="margin-bottom:12px"><h3>Como usar este manual</h3><p class="muted" style="font-size:13px;margin:0">Use a busca para localizar uma função. Abra um tópico para ver a explicação e toque no botão ao final para ir à tela correspondente ou iniciar o cadastro descrito. Os botões executam somente a ação indicada.</p></div>
@@ -663,16 +662,16 @@ function applyFamilyTheme(scope=familyDemo.scope){
  for(const [k,v] of Object.entries(values))root.style.setProperty('--'+k,v);
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme.bg);
 }
-function renderFamilyAppearance(){
- const host=$('#familyProfileSettings');if(!host)return;
- const groups=['Femininos','Masculinos','Neutros'];
- host.innerHTML=familyDemo.profiles.map(p=>{
-  const current=FAMILY_THEME_PRESETS[p.themeId]?p.themeId:'custom';
-  const options=groups.map(g=>'<optgroup label="'+g+'">'+Object.entries(FAMILY_THEME_PRESETS).filter(([,v])=>v.group===g).map(([id,v])=>'<option value="'+id+'" '+(current===id?'selected':'')+'>'+v.label+'</option>').join('')+'</optgroup>').join('');
-  const t=familyThemeForProfile(p),custom=current==='custom';
-  return '<div class="family-appearance-card" data-profile-theme-card="'+esc(p.id)+'"><h3>'+esc(p.name)+'</h3><div class="family-appearance-controls"><select aria-label="Tema de '+esc(p.name)+'" data-family-theme="'+esc(p.id)+'"><option value="custom" '+(custom?'selected':'')+'>Cor personalizada</option>'+options+'</select><input type="color" aria-label="Cor personalizada de '+esc(p.name)+'" value="'+esc(p.color||t.primary)+'" data-family-color="'+esc(p.id)+'"></div><div class="family-theme-preview" style="background:linear-gradient(120deg,'+esc(t.bg)+','+esc(t.panel)+')"><b>'+esc(t.label)+'</b><span style="background:'+esc(t.primary)+'"></span><span style="background:'+esc(t.secondary)+'"></span><span style="background:'+esc(t.panel2)+'"></span></div><small>Prévia do fundo, cor principal e cor secundária</small></div>';
- }).join('');
+const FAMILY_THEME_SWATCHES=Object.entries(FAMILY_THEME_PRESETS).map(([id,t])=>({id,color:t.primary,label:t.label}));
+function renderFamilyThemePalette(scope=familyDemo.scope){
+ const host=$('#familyThemePalette');if(!host)return;
+ if(scope==='all'){host.hidden=true;host.innerHTML='';return}
+ const p=profileById(scope);if(!p){host.hidden=true;return}
+ host.hidden=false;
+ const current=familyThemeForProfile(p).primary.toLowerCase();
+ host.innerHTML='<span class="theme-palette-label">Tema</span><div class="theme-swatch-list">'+FAMILY_THEME_SWATCHES.map(t=>'<button type="button" class="theme-swatch '+(current===t.color.toLowerCase()?'selected':'')+'" style="--swatch:'+t.color+'" data-family-color-choice="'+t.id+'" aria-label="Selecionar cor '+esc(t.label)+'" aria-pressed="'+(current===t.color.toLowerCase())+'"></button>').join('')+'</div>';
 }
+
 
 function renderFamilyHub(){
  if(!familyDemo)return;
@@ -691,7 +690,7 @@ function renderFamilyHub(){
  $('#familyAllColor').style.background='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';
  $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<button type="button" class="profile-card" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button>').join('');
  familyDemo.profiles.forEach(p=>{const card=document.querySelector('[data-family-open-profile="'+p.id+'"]');if(card){const t=familyThemeForProfile(p);card.style.setProperty('--profile-start',t.primary);card.style.setProperty('--profile-end',t.secondary);card.style.setProperty('--profile-border',t.primary);}});
- renderFamilyAppearance();
+
 }
 function showFamilyHome(){
  persistFamilyState();
@@ -707,7 +706,7 @@ function activateFamilyProfile(scope){
  state=scope==='all'?buildCombinedState():profileById(scope).data;
  document.body.classList.add('family-workspace-open');
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
- applyFamilyTheme(scope);
+ applyFamilyTheme(scope);renderFamilyThemePalette(scope);
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
  const color=scope==='all'?'#fff':profileById(scope).color;
  $('#familyProfileSwitch').style.color=color;
@@ -729,6 +728,7 @@ function initFamilyWorkspace(){
  $('#familyBackBtn').onclick=showFamilyHome;
  const profileSwitch=$('#familyProfileSwitch');
  profileSwitch.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';
+ const palette=document.createElement('div');palette.id='familyThemePalette';palette.className='family-theme-palette';bar.appendChild(palette);
  profileSwitch.onchange=()=>activateFamilyProfile(profileSwitch.value);
  $('#family').hidden=false;
 }
@@ -736,24 +736,18 @@ $('#family').addEventListener('click',e=>{
  const open=e.target.closest('[data-family-open-profile]');
  if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
 });
-$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
-$('#familyProfileSettings').addEventListener('change',e=>{
- const select=e.target.closest('[data-family-theme]');
- if(select){
-  const p=profileById(select.dataset.familyTheme);if(!p)return;
-  p.themeId=select.value==='custom'?'custom':select.value;
-  const t=familyThemeForProfile(p);p.color=t.primary;
-  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();return;
- }
- const input=e.target.closest('[data-family-color]');
- if(!input)return;
- const p=profileById(input.dataset.familyColor);if(!p)return;
- p.color=input.value;p.themeId='custom';
- localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
+$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color:'#78A9D8',themeId:'midnight',data:emptyFinancialState()});$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+$('#familyWorkspace').addEventListener('click',e=>{
+ const swatch=e.target.closest('[data-family-color-choice]');if(!swatch||familyDemo.scope==='all')return;
+ const p=profileById(familyDemo.scope),preset=FAMILY_THEME_PRESETS[swatch.dataset.familyColorChoice];if(!p||!preset)return;
+ p.themeId=swatch.dataset.familyColorChoice;p.color=preset.primary;
+ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+ applyFamilyTheme(p.id);renderFamilyThemePalette(p.id);renderFamilyHub();
 });
 applyFamilyTheme('home');
 renderFamilyHub();
 initFamilyWorkspace();
+renderFamilyThemePalette(familyDemo.scope);
 familyReady=true;
 localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
 
