@@ -111,6 +111,24 @@ body.family-workspace-open #familyWorkspace #tabs .tab{flex:0 0 auto;min-width:m
 body.family-workspace-open #familyWorkspace .view{order:2;flex:1 1 0;min-height:0}
 @media(max-width:720px){body.family-workspace-open #familyWorkspace .family-workspace-bar{min-height:38px;padding:3px 6px;gap:5px}body.family-workspace-open #familyWorkspace .profile-switch-compact{max-width:45vw;height:28px;font-size:11px}body.family-workspace-open #familyWorkspace .family-workspace-bar #familyBackBtn{width:28px;min-width:28px;height:28px}body.family-workspace-open #familyWorkspace .family-workspace-bar .owner-control select{max-width:95px;height:28px;font-size:9px}body.family-workspace-open #familyWorkspace #tabs{padding:4px 6px;gap:4px}body.family-workspace-open #familyWorkspace #tabs .tab{height:28px;min-height:28px;padding:4px 8px;font-size:10px}}
 
+</style><style id="family-dynamic-theme">
+:root{--theme:#36d6c5;--theme-alt:#d36be7;--theme-soft:#173c42;--theme-border:#2b817d;--theme-glow:#36d6c533}
+body{background:radial-gradient(ellipse at 15% -10%,color-mix(in srgb,var(--theme) 16%,transparent) 0,transparent 42%),var(--bg)}
+.logo{background:linear-gradient(135deg,var(--theme),var(--theme-alt));box-shadow:0 8px 30px var(--theme-glow)}
+.btn.primary{background:linear-gradient(120deg,var(--theme),var(--theme-alt));color:#071018}
+.tabs{background:color-mix(in srgb,var(--bg) 96%,var(--theme))}
+.tab.active{background:var(--theme-soft);border-color:var(--theme-border);color:var(--txt)}
+.card{background:linear-gradient(145deg,color-mix(in srgb,var(--panel) 88%,var(--theme) 12%),var(--panel))}
+input:focus,select:focus,textarea:focus{border-color:var(--theme);box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 18%,transparent)}
+.bar i{background:linear-gradient(90deg,var(--theme),var(--theme-alt))}
+.accent{color:var(--theme)}
+.profile-card-foot{color:var(--theme)}
+.family-welcome,.family-combined-card{background:linear-gradient(125deg,color-mix(in srgb,var(--theme) 38%,#101722),color-mix(in srgb,var(--theme-alt) 34%,#211d32));border-color:color-mix(in srgb,var(--theme) 42%,var(--line))}
+.family-workspace-bar{background:linear-gradient(100deg,color-mix(in srgb,var(--theme) 22%,#142b39),color-mix(in srgb,var(--theme-alt) 18%,#211d32))}
+body.family-workspace-open #familyWorkspace .family-workspace-bar{background:color-mix(in srgb,var(--bg) 94%,var(--theme))}
+body.family-workspace-open #familyWorkspace #tabs{background:color-mix(in srgb,var(--bg) 94%,var(--theme))}
+body.family-workspace-open #familyWorkspace .profile-switch-compact{border-color:color-mix(in srgb,var(--theme) 45%,var(--line))}
+#familyProfileSwitch{accent-color:var(--theme)}
 </style></head>
 <body><main class="app">
 <header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE TESTE</h1><small>VERSÃO EXPERIMENTAL · DADOS ISOLADOS</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
@@ -566,8 +584,25 @@ function persistFamilyState(){
 function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
+function applyFamilyTheme(scope=familyDemo.scope){
+ const valid=c=>/^#[0-9a-fA-F]{6}$/.test(c||'')?c:'#36d6c5';
+ const me=profileById('me'),partner=profileById('partner');
+ const primary=scope==='all'||scope==='home'?valid(me?.color):valid(profileById(scope)?.color);
+ const secondary=scope==='all'||scope==='home'?valid(partner?.color):valid(primary);
+ const root=document.documentElement;
+ root.style.setProperty('--theme',primary);
+ root.style.setProperty('--theme-alt',secondary);
+ root.style.setProperty('--cyan',primary);
+ root.style.setProperty('--blue',secondary);
+ root.style.setProperty('--theme-soft','color-mix(in srgb,'+primary+' 24%,#101722)');
+ root.style.setProperty('--theme-border','color-mix(in srgb,'+primary+' 62%,#263345)');
+ root.style.setProperty('--theme-glow','color-mix(in srgb,'+primary+' 22%,transparent)');
+ const meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.setAttribute('content',primary);
+}
 function renderFamilyHub(){
  if(!familyDemo)return;
+ applyFamilyTheme(familyDemo.scope==='all'?'all':familyDemo.scope||'home');
  const me=profileById('me'),partner=profileById('partner');
  const setProfile=(p,prefix,avatar)=>{
   if(!p)return;
@@ -585,6 +620,7 @@ function renderFamilyHub(){
 }
 function showFamilyHome(){
  persistFamilyState();
+ applyFamilyTheme('home');
  document.body.classList.remove('family-workspace-open');
  $('#family').hidden=false;$('#familyWorkspace').hidden=true;$('#tabs').hidden=false;
  renderFamilyHub();
@@ -594,6 +630,7 @@ function activateFamilyProfile(scope){
  familyDemo.scope=scope;familyDemo.active=scope;
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
+ applyFamilyTheme(scope);
  document.body.classList.add('family-workspace-open');
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
@@ -628,7 +665,7 @@ $('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:')
 $('#familyProfileSettings').addEventListener('input',e=>{
  const input=e.target.closest('[data-family-color]');if(!input)return;
  const p=profileById(input.dataset.familyColor);if(!p)return;
- p.color=input.value;localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
+ p.color=input.value;localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));if(familyDemo.scope==='all'||familyDemo.scope===p.id)applyFamilyTheme(familyDemo.scope);renderFamilyHub();
 });
 renderFamilyHub();
 initFamilyWorkspace();
