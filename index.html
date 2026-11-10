@@ -49,17 +49,15 @@
 <section class="view" id="goals"><div class="section-head"><div><h2>Metas financeiras</h2><p>Defina objetivos, acompanhe o progresso e registre aportes.</p></div><button class="btn primary" id="newGoal">+ Nova meta</button></div><div class="notice">O valor acumulado é informado manualmente. O GAMA FINANCE não movimenta dinheiro nem transfere valores automaticamente.</div><div id="goalGrid" class="grid"></div></section>
 <section class="view" id="settings"><div class="section-head"><div><h2>Configurações e dados</h2><p>Personalize o controle e proteja seus registros.</p></div></div><div class="two"><div class="card"><h3>Descrições e categorias dos lançamentos</h3><p class="muted" style="font-size:12px">Cadastre aqui as opções que aparecerão nos campos de descrição e categoria ao adicionar lançamentos.</p><div class="two" style="margin-top:8px"><div><strong>Descrições</strong><div id="descriptionOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addDescription" style="margin-top:10px">+ Adicionar descrição</button></div><div><strong>Categorias</strong><div id="categoryOptions" class="list" style="margin-top:8px"></div><button class="btn" id="addCategory" style="margin-top:10px">+ Adicionar categoria</button></div></div></div><div class="card"><h3>Dados fictícios para teste</h3><p class="muted" style="font-size:12px">Adicione exemplos identificados como TESTE para conferir descrições, categorias, filtros, calendário e análises. Eles não são dados reais.</p><div id="testDataStatus" class="muted" style="font-size:12px;margin:8px 0">Nenhum exemplo de teste adicionado.</div><div class="actions"><button class="btn primary" id="addTestData">Adicionar exemplos</button><button class="btn danger" id="removeTestData">Remover exemplos</button></div></div><div class="card"><h3>Benefícios e descontos informativos</h3><p class="muted" style="font-size:12px">Cadastre valores que deseja acompanhar sem alterar o saldo do salário líquido.</p><div id="benefitRows" class="list"></div><button class="btn" id="addBenefit" style="margin-top:12px">+ Adicionar item</button></div><div class="card"><h3>Backup e restauração</h3><p class="muted" style="font-size:12px">Exporte uma cópia completa dos seus dados. Antes de restaurar, o GAMA FINANCE valida o arquivo, mostra um resumo e permite salvar uma cópia dos dados atuais.</p><div class="actions"><button class="btn primary" id="exportBtn">Exportar backup</button><label class="btn" for="importFile">Selecionar backup para restaurar</label><input id="importFile" type="file" accept=".json,application/json" hidden></div><div id="backupStatus" class="notice" style="margin-top:12px">Backup manual: exporte um arquivo e guarde-o fora do celular para se proteger contra perda ou troca do aparelho.</div><hr style="border-color:var(--line);margin:20px 0"><h3>Privacidade</h3><p class="muted" style="font-size:12px">Os dados desta versão ficam no armazenamento local do navegador. Não há conta, servidor ou sincronização automática.</p><button class="btn danger" id="clearData">Apagar todos os dados</button></div></div></section>
 <section id="family" class="family-home">
-<div class="section-head"><div><h2>GAMA FINANCE FAMÍLIA</h2><p>Escolha um perfil para acessar o aplicativo financeiro completo.</p></div><span class="pill">ESPAÇO FAMILIAR</span></div>
-<div class="card family-welcome"><div class="family-kicker">UM ÚNICO APLICATIVO · PERFIS INTEGRADOS</div><h2>Nossa vida financeira</h2><p>O GAMA FINANCE completo dentro de cada perfil. Cada pessoa tem seus próprios registros e a visão familiar reúne tudo sem perder a identificação.</p></div>
-<div class="section-head"><div><h3>Entrar em um perfil</h3><p>As mesmas ferramentas financeiras ficam disponíveis em todos os perfis.</p></div></div>
+<div class="section-head"><div><h2>Escolha um perfil</h2><p>Entre no seu espaço financeiro. Cada perfil abre em uma tela independente.</p></div></div>
 <div class="profile-grid">
-<button type="button" class="profile-card" data-family-open-profile="me"><span class="profile-card-top"><span class="profile-avatar" id="familyMeColor">EU</span><span class="pill">PERFIL INDIVIDUAL</span></span><strong id="familyMeName">Meu perfil</strong><small id="familyMeEmail">Dados pessoais</small><span class="profile-card-balance" id="familyMeBalance">R$ 0,00</span><span class="profile-card-foot" id="familyMeCount">Abrir painel completo →</span></button>
-<button type="button" class="profile-card" data-family-open-profile="partner"><span class="profile-card-top"><span class="profile-avatar" id="familyPartnerColor">ELA</span><span class="pill">PERFIL INDIVIDUAL</span></span><strong id="familyPartnerName">Perfil dela</strong><small id="familyPartnerEmail">Dados pessoais</small><span class="profile-card-balance" id="familyPartnerBalance">R$ 0,00</span><span class="profile-card-foot" id="familyPartnerCount">Abrir painel completo →</span></button>
-<button type="button" class="profile-card family-combined-card" data-family-open-profile="all"><span class="profile-card-top"><span class="profile-avatar" id="familyAllColor">+</span><span class="pill">VISÃO CONJUNTA</span></span><strong>Família inteira</strong><small>Todos os registros dos perfis</small><span class="profile-card-balance" id="familyTotalBalance">R$ 0,00</span><span class="profile-card-foot">Abrir painel familiar completo →</span></button>
+<button type="button" class="profile-card" data-family-open-profile="me"><span class="profile-card-top"><span class="profile-avatar" id="familyMeColor">EU</span><span class="pill">INDIVIDUAL</span></span><strong id="familyMeName">Meu perfil</strong><small id="familyMeEmail">Dados pessoais</small><span class="profile-card-balance" id="familyMeBalance">R$ 0,00</span><span class="profile-card-foot" id="familyMeCount">Abrir perfil →</span></button>
+<button type="button" class="profile-card" data-family-open-profile="partner"><span class="profile-card-top"><span class="profile-avatar" id="familyPartnerColor">ELA</span><span class="pill">INDIVIDUAL</span></span><strong id="familyPartnerName">Perfil dela</strong><small id="familyPartnerEmail">Dados pessoais</small><span class="profile-card-balance" id="familyPartnerBalance">R$ 0,00</span><span class="profile-card-foot" id="familyPartnerCount">Abrir perfil →</span></button>
+<button type="button" class="profile-card family-combined-card" data-family-open-profile="all"><span class="profile-card-top"><span class="profile-avatar" id="familyAllColor">+</span><span class="pill">CONJUNTO</span></span><strong>Família inteira</strong><small>Visão conjunta dos perfis</small><span class="profile-card-balance" id="familyTotalBalance">R$ 0,00</span><span class="profile-card-foot">Abrir visão familiar →</span></button>
 </div>
-<div class="actions" style="margin:-5px 0 14px"><button type="button" class="btn" id="familyCreateProfile">+ Criar outro perfil</button></div><div id="familyAdditionalProfiles" class="profile-grid"></div>
-<div class="card family-profile-settings"><div class="section-head"><div><h3>Identidade dos perfis</h3><p>Personalize as cores para identificar os registros dentro do aplicativo.</p></div></div><div id="familyProfileSettings" class="list"></div></div>
-<div class="notice" style="margin-top:12px"><b>Importante:</b> esta versão mantém os perfis e os dados neste aparelho. Ainda não há autenticação real nem sincronização entre celulares. Cada perfil tem seu próprio conjunto de lançamentos, rendas, cartões, contas, metas e configurações.</div>
+<div id="familyAdditionalProfiles" class="profile-grid"></div>
+<div class="actions"><button type="button" class="btn" id="familyCreateProfile">+ Criar outro perfil</button></div>
+<div id="familyProfileSettings" class="hidden"></div>
 </section><section class="view" id="guide">
 <div class="section-head"><div><h2>GAMA Guia</h2><p>Manual passo a passo: o que cadastrar, quando fazer e como evitar erros.</p></div></div>
 <div class="card" style="margin-bottom:12px"><h3>Como usar este manual</h3><p class="muted" style="font-size:13px;margin:0">Leia na ordem para configurar o aplicativo. Depois, use a busca para encontrar uma dúvida específica. Cada tópico explica quando entrar naquela seção, o que preencher, um exemplo e o que fazer em seguida.</p></div>
@@ -365,10 +363,12 @@ function renderFamilyHub(){
  $('#familyProfileSettings').innerHTML=familyDemo.profiles.map(p=>'<div class="item"><div><strong><span style="color:'+esc(p.color)+'">●</span> '+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small></div><input aria-label="Cor do '+esc(p.name)+'" type="color" value="'+esc(p.color)+'" data-family-color="'+esc(p.id)+'" style="width:48px;height:38px;padding:3px"></div>').join('');
 }
 function showFamilyHome(){
- $('#family').hidden=false;$('#familyWorkspace').hidden=true;$('#familyHomeBtn').hidden=true;
+ persistFamilyState();
+ $('#family').hidden=false;$('#familyWorkspace').hidden=true;
  renderFamilyHub();
 }
 function activateFamilyProfile(scope){
+ if(familyReady)persistFamilyState();
  familyDemo.scope=scope;familyDemo.active=scope;
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
@@ -377,6 +377,7 @@ function activateFamilyProfile(scope){
  const color=scope==='all'?'#fff':profileById(scope).color;
  $('#familyWorkspaceName').textContent=name;$('#familyWorkspaceName').style.color=color;
  $('#familyWorkspaceOwner').value=familyDemo.lastProfile;
+ $('#familyProfileSwitch').value=scope;
  $('#familyWorkspaceOwnerWrap').hidden=scope!=='all';
  $$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view==='dashboard'));
  $$('.view').forEach(x=>x.classList.toggle('active',x.id==='dashboard'));
@@ -386,15 +387,14 @@ function initFamilyWorkspace(){
  const family=$('#family'),tabs=$('#tabs'),workspace=document.createElement('div');
  workspace.id='familyWorkspace';workspace.hidden=true;
  const bar=document.createElement('div');bar.className='family-workspace-bar';
- bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">← Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
+ bar.innerHTML='<button type="button" class="btn small" id="familyBackBtn">Perfis</button><strong id="familyWorkspaceName">Meu perfil</strong><label class="owner-control">Trocar perfil <select id="familyProfileSwitch" aria-label="Trocar perfil"></select></label><label class="owner-control" id="familyWorkspaceOwnerWrap">Responsável por novos cadastros <select id="familyWorkspaceOwner"></select></label>';
  workspace.appendChild(bar);family.after(workspace);
  const nodes=[tabs,...$$('.view').filter(v=>v.id!=='family')];
  nodes.forEach(node=>workspace.appendChild(node));
- const actions=$('.top-actions');
- if(actions&&!$('#familyHomeBtn')){
-  const btn=document.createElement('button');btn.type='button';btn.id='familyHomeBtn';btn.className='btn small';btn.textContent='Perfis da família';btn.hidden=true;actions.appendChild(btn);btn.onclick=showFamilyHome;
- }
  $('#familyBackBtn').onclick=showFamilyHome;
+ const profileSwitch=$('#familyProfileSwitch');
+ profileSwitch.innerHTML='<option value="me">Meu perfil</option><option value="partner">Perfil dela</option><option value="all">Família inteira</option>';
+ profileSwitch.onchange=()=>activateFamilyProfile(profileSwitch.value);
  const owner=$('#familyWorkspaceOwner');
  owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');
  owner.value=familyDemo.lastProfile;
@@ -405,7 +405,7 @@ $('#family').addEventListener('click',e=>{
  const open=e.target.closest('[data-family-open-profile]');
  if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
 });
-$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});const owner=$('#familyWorkspaceOwner');owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+$('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});const owner=$('#familyWorkspaceOwner');owner.innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('');$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
 $('#familyProfileSettings').addEventListener('input',e=>{
  const input=e.target.closest('[data-family-color]');if(!input)return;
  const p=profileById(input.dataset.familyColor);if(!p)return;
