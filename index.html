@@ -825,7 +825,12 @@ const FAMILY_THEME_PRESETS={
  emerald:{label:'Esmeralda',group:'Tons mistos',primary:'#00F0B5',secondary:'#008DAD',bg:'#061512',panel:'#0D2420',panel2:'#15352E',line:'#286157',txt:'#EFFFFA',muted:'#A6CEC2'},
  ocean:{label:'Oceano',group:'Tons mistos',primary:'#00D9FF',secondary:'#344BFF',bg:'#07121C',panel:'#102331',panel2:'#183346',line:'#2B536B',txt:'#F0FAFF',muted:'#AAC6D5'},
  blush:{label:'Rosa bebê',group:'Tons claros',primary:'#FF4FA3',secondary:'#D92D83',bg:'#FFF0F7',panel:'#FFE3F0',panel2:'#FFD4E8',line:'#E7A9C6',txt:'#24101B',muted:'#624254'},
- pearl:{label:'Branco gelo',group:'Tons claros',primary:'#426BFF',secondary:'#7B4DFF',bg:'#F5F7FC',panel:'#FFFFFF',panel2:'#E9EEF7',line:'#C8D1E2',txt:'#111827',muted:'#4B5568'}
+ pearl:{label:'Branco gelo',group:'Tons claros',primary:'#426BFF',secondary:'#7B4DFF',bg:'#F5F7FC',panel:'#FFFFFF',panel2:'#E9EEF7',line:'#C8D1E2',txt:'#111827',muted:'#4B5568'},
+ black:{label:'Preto',group:'Tons escuros',audience:'me',primary:'#17191F',secondary:'#050608',bg:'#030405',panel:'#0B0D11',panel2:'#14171D',line:'#30343D',txt:'#F7F8FA',muted:'#B2B7C2'},
+ charcoal:{label:'Cinza quase preto',group:'Tons escuros',audience:'me',primary:'#343A40',secondary:'#171B20',bg:'#090B0E',panel:'#12161B',panel2:'#1C2229',line:'#39414B',txt:'#F5F7FA',muted:'#B0B8C2'},
+ lantern:{label:'Verde intenso',group:'Tons vibrantes',audience:'me',primary:'#27C94A',secondary:'#159B35',bg:'#07190C',panel:'#102619',panel2:'#193823',line:'#326B42',txt:'#F1FFF3',muted:'#B0D8B7'},
+ brown:{label:'Marrom',group:'Tons terrosos',audience:'partner',primary:'#B8794F',secondary:'#80502F',bg:'#1B100A',panel:'#2A1A12',panel2:'#3A2519',line:'#684832',txt:'#FFF5ED',muted:'#D9BCA8'},
+ pinklight:{label:'Rosa claro',group:'Tons claros',audience:'partner',primary:'#F8B8D0',secondary:'#E98FB2',bg:'#FFF1F6',panel:'#FFE4ED',panel2:'#FFD5E3',line:'#E8AFC2',txt:'#24121A',muted:'#684A56'}
 };
 for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
 function readableThemeText(hex){
@@ -856,14 +861,14 @@ function applyFamilyTheme(scope=familyDemo.scope){
  for(const [k,v] of Object.entries(values))root.style.setProperty('--'+k,v);
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme.bg);
 }
-const FAMILY_THEME_SWATCHES=Object.entries(FAMILY_THEME_PRESETS).map(([id,t])=>({id,color:t.primary,label:t.label}));
+const FAMILY_THEME_SWATCHES=Object.entries(FAMILY_THEME_PRESETS).map(([id,t])=>({id,color:t.primary,label:t.label,audience:t.audience||'both'}));
 function renderFamilyThemePalette(scope=familyDemo.scope){
  const host=$('#familyThemePalette');if(!host)return;
  if(scope==='all'){host.hidden=true;host.innerHTML='';return}
  const p=profileById(scope);if(!p){host.hidden=true;return}
  host.hidden=false;
  const current=familyThemeForProfile(p).primary.toLowerCase();
- host.innerHTML='<button type="button" class="theme-palette-toggle" aria-expanded="false" aria-controls="familyThemeSwatches"><span>Tema e cores</span><span class="theme-palette-arrow" aria-hidden="true">›</span></button><div class="theme-swatch-list" id="familyThemeSwatches" hidden>'+FAMILY_THEME_SWATCHES.map(t=>'<button type="button" class="theme-swatch '+(current===t.color.toLowerCase()?'selected':'')+'" style="--swatch:'+t.color+'" data-family-color-choice="'+t.id+'" aria-label="Selecionar cor '+esc(t.label)+'" aria-pressed="'+(current===t.color.toLowerCase())+'"></button>').join('')+'</div>';
+ host.innerHTML='<button type="button" class="theme-palette-toggle" aria-expanded="false" aria-controls="familyThemeSwatches"><span>Tema e cores</span><span class="theme-palette-arrow" aria-hidden="true">›</span></button><div class="theme-swatch-list" id="familyThemeSwatches" hidden>'+FAMILY_THEME_SWATCHES.filter(t=>t.audience==='both'||t.audience===scope).map(t=>'<button type="button" class="theme-swatch '+(current===t.color.toLowerCase()?'selected':'')+'" style="--swatch:'+t.color+'" data-family-color-choice="'+t.id+'" aria-label="Selecionar cor '+esc(t.label)+'" aria-pressed="'+(current===t.color.toLowerCase())+'"></button>').join('')+'</div>';
 }
 
 
@@ -881,7 +886,7 @@ function renderFamilyHub(){
  };
  setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
  $('#familyTotalBalance').textContent=money(familyDemo.profiles.reduce((n,p)=>n+profileBalance(p),0));
- $('#familyAllColor').style.background='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';
+ const familyGradient='linear-gradient(120deg,'+(me?.color||'#36d6c5')+','+(partner?.color||'#d36be7')+')';$('#familyAllColor').style.background=familyGradient;const familyCard=document.querySelector('[data-family-open-profile="all"]');if(familyCard){familyCard.style.background=familyGradient;familyCard.style.borderColor='color-mix(in srgb,'+(me?.color||'#36d6c5')+' 50%,'+(partner?.color||'#d36be7')+' 50%)';familyCard.style.color='#FFFFFF';}
  $('#familyAdditionalProfiles').innerHTML=familyDemo.profiles.filter(p=>!['me','partner'].includes(p.id)).map(p=>'<div class="profile-card profile-card-managed"><button type="button" class="profile-card-open" data-family-open-profile="'+esc(p.id)+'"><span class="profile-avatar" style="background:'+esc(p.color)+'">'+esc(p.name.slice(0,2).toUpperCase())+'</span><strong>'+esc(p.name)+'</strong><small>'+esc(p.email||'Perfil local')+'</small><span class="profile-card-balance">'+money(profileBalance(p))+'</span><span class="profile-card-foot">Abrir painel completo →</span></button><button type="button" class="btn danger small profile-delete-btn" data-family-delete-profile="'+esc(p.id)+'">Excluir perfil</button></div>').join('');
  familyDemo.profiles.forEach(p=>{const card=document.querySelector('[data-family-open-profile="'+p.id+'"]');if(card){const t=familyThemeForProfile(p);if(p.id==='me'){card.style.setProperty('--profile-start','color-mix(in srgb,'+t.bg+' 76%,'+t.primary+' 24%)');card.style.setProperty('--profile-end','color-mix(in srgb,'+t.bg+' 78%,'+t.secondary+' 22%)');card.style.setProperty('--profile-border','color-mix(in srgb,'+t.bg+' 42%,'+t.primary+' 58%)');}else{card.style.setProperty('--profile-start',t.primary);card.style.setProperty('--profile-end',t.secondary);card.style.setProperty('--profile-border',t.primary);}}});
 
