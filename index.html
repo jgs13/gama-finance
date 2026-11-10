@@ -695,7 +695,7 @@ document.addEventListener('click',e=>{
  const b=e.target.closest('#tabs [data-view]');
  if(!b)return;
  const active=$('#tabs .tab.active')?.dataset.view;
- if(active!==b.dataset.view&&familyDemo&&document.body.classList.contains('family-workspace-open'))pushGamaRoute(familyDemo.scope,b.dataset.view);
+ if(!restoringGamaRoute&&active!==b.dataset.view&&familyDemo&&document.body.classList.contains('family-workspace-open'))pushGamaRoute(familyDemo.scope,b.dataset.view);
  $('#tabs .tab').forEach(x=>x.classList.toggle('active',x===b));
  $('.view').forEach(x=>x.classList.toggle('active',x.id===b.dataset.view));
  window.scrollTo(0,0);
@@ -893,7 +893,9 @@ function renderFamilyHub(){
  familyDemo.profiles.forEach(p=>{const card=document.querySelector('[data-family-open-profile="'+p.id+'"]');if(card){const t=familyThemeForProfile(p);if(p.id==='me'){card.style.setProperty('--profile-start','color-mix(in srgb,'+t.bg+' 76%,'+t.primary+' 24%)');card.style.setProperty('--profile-end','color-mix(in srgb,'+t.bg+' 78%,'+t.secondary+' 22%)');card.style.setProperty('--profile-border','color-mix(in srgb,'+t.bg+' 42%,'+t.primary+' 58%)');}else{card.style.setProperty('--profile-start',t.primary);card.style.setProperty('--profile-end',t.secondary);card.style.setProperty('--profile-border',t.primary);}}});
 
 }
+let restoringGamaRoute=false;
 function pushGamaRoute(scope,view='dashboard'){
+ if(restoringGamaRoute)return;
  const current=history.state?.gamaFinanceRoute;
  if(current&&current.scope===scope&&current.view===view)return;
  history.pushState({gamaFinanceRoute:{scope,view}},'','#'+(scope==='home'?'home':encodeURIComponent(scope)+'/'+encodeURIComponent(view)));
@@ -986,10 +988,13 @@ localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
 history.replaceState({gamaFinanceRoute:{scope:'home',view:'home'}},'','#home');
 window.addEventListener('popstate',e=>{
  const route=e.state?.gamaFinanceRoute||{scope:'home',view:'home'};
- if(route.scope==='home'){showFamilyHome(true);return}
- activateFamilyProfile(route.scope,true);
- const target=$('#tabs [data-view="'+CSS.escape(route.view||'dashboard')+'"]');
- if(target)target.click();
+ restoringGamaRoute=true;
+ try{
+  if(route.scope==='home'){showFamilyHome(true);return}
+  activateFamilyProfile(route.scope,true);
+  const target=$('#tabs [data-view="'+CSS.escape(route.view||'dashboard')+'"]');
+  if(target)target.click();
+ }finally{restoringGamaRoute=false}
 });
 render();
 </script></body></html>
