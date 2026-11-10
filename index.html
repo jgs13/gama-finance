@@ -706,7 +706,6 @@ function activateFamilyProfile(scope){
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
  document.body.classList.add('family-workspace-open');
- applyFamilyTheme(scope);
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
  applyFamilyTheme(scope);
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
@@ -740,14 +739,14 @@ $('#family').addEventListener('click',e=>{
 $('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const color=prompt('Cor hexadecimal do perfil (ex.: #5b9cff):','#5b9cff')||'#5b9cff';if(!/^#[0-9a-fA-F]{6}$/.test(color)){alert('Informe uma cor válida, como #5b9cff.');return}const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color,data:emptyFinancialState()});$('#familyProfileSwitch').innerHTML=familyDemo.profiles.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+'</option>').join('')+'<option value="all">Família inteira</option>';localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
 $('#familyProfileSettings').addEventListener('change',e=>{
  const select=e.target.closest('[data-family-theme]');
- if(!select)return;
- const p=profileById(select.dataset.familyTheme);if(!p)return;
- p.themeId=select.value==='custom'?'custom':select.value;
- const t=familyThemeForProfile(p);p.color=t.primary;
- localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
-});
-$('#familyProfileSettings').addEventListener('input',e=>{
- const input=e.target.closest('[data-family-color]');if(!input)return;
+ if(select){
+  const p=profileById(select.dataset.familyTheme);if(!p)return;
+  p.themeId=select.value==='custom'?'custom':select.value;
+  const t=familyThemeForProfile(p);p.color=t.primary;
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();return;
+ }
+ const input=e.target.closest('[data-family-color]');
+ if(!input)return;
  const p=profileById(input.dataset.familyColor);if(!p)return;
  p.color=input.value;p.themeId='custom';
  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();
