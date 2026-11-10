@@ -638,7 +638,7 @@ function backupSummary(d){return ['Lançamentos: '+d.entries.length,'Fontes de r
 $('#backupBtn').onclick=exportData;$('#exportBtn').onclick=exportData;$('#importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>10*1024*1024)throw Error('O arquivo ultrapassa o limite de 10 MB.');const parsed=JSON.parse(await file.text()),restored=validateBackup(parsed);const exported=parsed.exportedAt?new Date(parsed.exportedAt).toLocaleString('pt-BR'):'Data não informada';const summary=backupSummary(restored);if(!confirm('BACKUP VALIDADO\nArquivo: '+file.name+'\nExportado em: '+exported+'\n\n'+summary+'\n\nA restauração substituirá os dados atuais. Antes disso, será baixada uma cópia de segurança do estado atual. Deseja continuar?'))return;downloadBackup(state,'antes-da-restauracao');state=restored;try{persistFamilyState()}catch(err){throw Error('Não foi possível gravar os dados restaurados. Seus dados atuais continuam no aplicativo. Verifique o espaço disponível.')}render();renderFamilyHub();const s=$('#backupStatus');if(s)s.textContent='Restauração concluída. A cópia dos dados anteriores também foi exportada; guarde os dois arquivos em local seguro.';alert('Backup restaurado com sucesso.\n\n'+summary+'\n\nA cópia dos dados anteriores foi baixada separadamente.')}catch(err){alert('Não foi possível restaurar o backup.\n'+(err?.message||'Arquivo inválido ou incompatível')+'\n\nOs dados atuais foram preservados.')}finally{e.target.value=''}};
 $('#clearData').onclick=()=>{if(confirm('Isso apagará todos os dados locais. Exporte um backup antes. Continuar?')&&confirm('Confirmação final: apagar tudo?')){localStorage.removeItem('gama-finance-v1');state={...defaultState};save()}};
 let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true}};
-if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+const runningInNativeApp=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==='function'&&window.Capacitor.isNativePlatform());if(!runningInNativeApp&&'serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 const GAMA_DOWNLOAD_PAGE='https://jgs13.github.io/gama-finance/download/';
 async function checkForUpdates(){const box=$('#updateNotice'),title=$('#updateTitle'),info=$('#updateText'),link=$('#updateLink');if(!box)return;try{const [currentRes,latestRes]=await Promise.all([fetch('./app-version.json?ts='+Date.now(),{cache:'no-store'}),fetch('https://jgs13.github.io/gama-finance/latest.json?ts='+Date.now(),{cache:'no-store'})]);if(!currentRes.ok||!latestRes.ok)throw Error('Versão indisponível');const current=await currentRes.json(),latest=await latestRes.json();const cv=String(current.version||'0.0.0'),lv=String(latest.version||'0.0.0');const newer=lv.localeCompare(cv,undefined,{numeric:true,sensitivity:'base'})>0;if(newer){title.textContent='Atualização disponível — versão '+lv;info.textContent='Você está usando a versão '+cv+'. Veja as novidades e baixe a versão mais recente. Seus dados permanecem no aparelho se instalar por cima da versão atual.';link.href=latest.downloadPage||GAMA_DOWNLOAD_PAGE;link.textContent='Ver atualização';box.hidden=false}else{box.hidden=true}}catch(e){console.info('GAMA FINANCE: não foi possível consultar atualizações.',e)}}
 checkForUpdates();document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkForUpdates()});
@@ -835,6 +835,8 @@ $('#family').addEventListener('click',e=>{
  if(open)activateFamilyProfile(open.dataset.familyOpenProfile);
 });
 $('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:');if(!name||!name.trim())return;const email=prompt('E-mail de identificação (opcional):')||'';const id='profile-'+uid();familyDemo.profiles.push({id,name:name.trim(),email:email.trim(),color:'#78A9D8',themeId:'midnight',data:emptyFinancialState()});refreshFamilyProfileSwitch();localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));renderFamilyHub();activateFamilyProfile(id)};
+/* Cria o workspace antes de registrar eventos nele. */
+initFamilyWorkspace();
 $('#familyWorkspace').addEventListener('click',e=>{
  const swatch=e.target.closest('[data-family-color-choice]');if(!swatch||familyDemo.scope==='all')return;
  const p=profileById(familyDemo.scope),preset=FAMILY_THEME_PRESETS[swatch.dataset.familyColorChoice];if(!p||!preset)return;
@@ -844,7 +846,6 @@ $('#familyWorkspace').addEventListener('click',e=>{
 });
 applyFamilyTheme('home');
 renderFamilyHub();
-initFamilyWorkspace();
 renderFamilyThemePalette(familyDemo.scope);
 familyReady=true;
 localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
