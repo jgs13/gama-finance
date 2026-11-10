@@ -319,6 +319,18 @@ body.family-workspace-open .modal-box textarea{
  background:color-mix(in srgb,var(--panel2) 76%,var(--theme) 24%)!important;color:var(--txt)!important;
  border-color:color-mix(in srgb,var(--line) 55%,var(--theme) 45%)!important;
 }
+.family-theme-palette{display:flex;align-items:center;gap:10px;min-width:0;max-width:100%;overflow:visible}
+.theme-palette-toggle{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--theme-border);border-radius:999px;background:var(--panel2);color:var(--txt);padding:7px 12px;font-size:12px;font-weight:700;white-space:nowrap}
+.theme-palette-arrow{font-size:20px;line-height:12px;transition:transform .18s ease}
+.theme-palette-toggle[aria-expanded="true"] .theme-palette-arrow{transform:rotate(90deg)}
+.theme-swatch-list[hidden]{display:none!important}
+.theme-swatch-list{display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding:5px 3px}
+.theme-swatch{width:29px;height:29px;min-width:29px;border:2px solid #ffffff99;box-shadow:0 0 0 1px #0008}
+body.family-workspace-open #familyWorkspace .section-head h2,body.family-workspace-open #familyWorkspace .accent{color:var(--txt)!important}
+body.family-workspace-open #familyWorkspace,body.family-workspace-open #familyWorkspace :is(h1,h2,h3,h4,p,label,strong,small,li,.muted,.section-head,.guide-card summary){color:var(--txt)}
+body.family-workspace-open #familyWorkspace .profile-switch-compact,body.family-workspace-open #familyWorkspace .btn:not(.primary){color:var(--txt)!important}
+body.family-workspace-open #familyWorkspace input,body.family-workspace-open #familyWorkspace select,body.family-workspace-open #familyWorkspace textarea{color:var(--txt)!important}
+@media(max-width:720px){#familyWorkspace .family-workspace-bar{align-items:center}#familyThemePalette{width:auto;flex:1;flex-wrap:wrap;padding:3px 0}.theme-swatch{width:27px;height:27px;min-width:27px}}
 </style>
 </head>
 <body><main class="app">
@@ -802,23 +814,30 @@ function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
 const FAMILY_THEME_PRESETS={
- rose:{label:'Rosa intenso',group:'Tons vibrantes',primary:'#F0448B',secondary:'#A92765',bg:'#160A12',panel:'#21101B',panel2:'#301525',line:'#63304A',txt:'#FFF4FA',muted:'#D6B7C7'},
- mauve:{label:'Roxo ameixa',group:'Tons vibrantes',primary:'#C05AE8',secondary:'#7137B8',bg:'#100A18',panel:'#1D1228',panel2:'#2B193A',line:'#50336B',txt:'#FAF3FF',muted:'#C5B1D8'},
- lavender:{label:'Violeta elétrico',group:'Tons vibrantes',primary:'#9875FF',secondary:'#4D5FE0',bg:'#0C0B1B',panel:'#17152B',panel2:'#24213D',line:'#45416F',txt:'#F5F3FF',muted:'#B9B5D8'},
- wine:{label:'Vinho profundo',group:'Tons vibrantes',primary:'#E34D75',secondary:'#8F234B',bg:'#160910',panel:'#24111B',panel2:'#351725',line:'#633044',txt:'#FFF2F5',muted:'#D2AFBA'},
+ rose:{label:'Rosa intenso',group:'Tons vibrantes',primary:'#FF168A',secondary:'#C90065',bg:'#160A12',panel:'#21101B',panel2:'#301525',line:'#63304A',txt:'#FFF4FA',muted:'#D6B7C7'},
+ mauve:{label:'Roxo ameixa',group:'Tons vibrantes',primary:'#D52BFF',secondary:'#7A16D8',bg:'#100A18',panel:'#1D1228',panel2:'#2B193A',line:'#50336B',txt:'#FAF3FF',muted:'#C5B1D8'},
+ lavender:{label:'Violeta elétrico',group:'Tons vibrantes',primary:'#8B5CFF',secondary:'#4932F5',bg:'#0C0B1B',panel:'#17152B',panel2:'#24213D',line:'#45416F',txt:'#F5F3FF',muted:'#B9B5D8'},
+ wine:{label:'Vinho profundo',group:'Tons vibrantes',primary:'#FF315F',secondary:'#B90045',bg:'#160910',panel:'#24111B',panel2:'#351725',line:'#633044',txt:'#FFF2F5',muted:'#D2AFBA'},
  graphite:{label:'Black absoluto',group:'Tons escuros',primary:'#D8E0EA',secondary:'#718096',bg:'#05070B',panel:'#0D1118',panel2:'#151C27',line:'#303B4B',txt:'#F7FAFF',muted:'#B1BDCC'},
- midnight:{label:'Azul elétrico',group:'Tons escuros',primary:'#398BFF',secondary:'#1749A6',bg:'#070D18',panel:'#101A2B',panel2:'#172640',line:'#2B456C',txt:'#F2F7FF',muted:'#AFC1DA'},
- forest:{label:'Verde floresta',group:'Tons escuros',primary:'#27D18A',secondary:'#08764F',bg:'#06130E',panel:'#0D2118',panel2:'#143326',line:'#285B43',txt:'#F0FFF7',muted:'#A9D0BA'},
- steel:{label:'Azul aço',group:'Tons escuros',primary:'#42B8E8',secondary:'#27658F',bg:'#07121A',panel:'#10212C',panel2:'#173242',line:'#2B5368',txt:'#F0FAFF',muted:'#A9C4D1'},
- emerald:{label:'Esmeralda',group:'Tons mistos',primary:'#00D6A3',secondary:'#087F91',bg:'#061512',panel:'#0D2420',panel2:'#15352E',line:'#286157',txt:'#EFFFFA',muted:'#A6CEC2'},
- ocean:{label:'Oceano',group:'Tons mistos',primary:'#20C7E8',secondary:'#435FE8',bg:'#07121C',panel:'#102331',panel2:'#183346',line:'#2B536B',txt:'#F0FAFF',muted:'#AAC6D5'}
+ midnight:{label:'Azul elétrico',group:'Tons escuros',primary:'#1677FF',secondary:'#0047D6',bg:'#070D18',panel:'#101A2B',panel2:'#172640',line:'#2B456C',txt:'#F2F7FF',muted:'#AFC1DA'},
+ forest:{label:'Verde floresta',group:'Tons escuros',primary:'#00E676',secondary:'#008F50',bg:'#06130E',panel:'#0D2118',panel2:'#143326',line:'#285B43',txt:'#F0FFF7',muted:'#A9D0BA'},
+ steel:{label:'Azul aço',group:'Tons escuros',primary:'#00C8FF',secondary:'#0877B8',bg:'#07121A',panel:'#10212C',panel2:'#173242',line:'#2B5368',txt:'#F0FAFF',muted:'#A9C4D1'},
+ emerald:{label:'Esmeralda',group:'Tons mistos',primary:'#00F0B5',secondary:'#008DAD',bg:'#061512',panel:'#0D2420',panel2:'#15352E',line:'#286157',txt:'#EFFFFA',muted:'#A6CEC2'},
+ ocean:{label:'Oceano',group:'Tons mistos',primary:'#00D9FF',secondary:'#344BFF',bg:'#07121C',panel:'#102331',panel2:'#183346',line:'#2B536B',txt:'#F0FAFF',muted:'#AAC6D5'},
+ blush:{label:'Rosa bebê',group:'Tons claros',primary:'#FF4FA3',secondary:'#D92D83',bg:'#FFF0F7',panel:'#FFE3F0',panel2:'#FFD4E8',line:'#E7A9C6',txt:'#24101B',muted:'#624254'},
+ pearl:{label:'Branco gelo',group:'Tons claros',primary:'#426BFF',secondary:'#7B4DFF',bg:'#F5F7FC',panel:'#FFFFFF',panel2:'#E9EEF7',line:'#C8D1E2',txt:'#111827',muted:'#4B5568'}
 };
 for(const p of familyDemo.profiles){if(!p.themeId||p.themeId==='custom'){const matching=Object.entries(FAMILY_THEME_PRESETS).find(([,t])=>t.primary.toLowerCase()===(p.color||'').toLowerCase());p.themeId=matching?.[0]||(p.id==='partner'?'rose':'midnight');if(!matching)p.color=FAMILY_THEME_PRESETS[p.themeId].primary;}}
+function readableThemeText(hex){
+ const raw=String(hex||'#080b12').replace('#','');if(!/^[0-9a-f]{6}$/i.test(raw))return '#FFFFFF';
+ const channels=[0,2,4].map(i=>parseInt(raw.slice(i,i+2),16)/255).map(v=>v<=.04045?v/12.92:Math.pow((v+.055)/1.055,2.4));
+ const luminance=.2126*channels[0]+.7152*channels[1]+.0722*channels[2];return luminance>.52?'#111827':'#FFFFFF';
+}
 function familyThemeForProfile(p){
  const preset=FAMILY_THEME_PRESETS[p?.themeId]||null;
- if(preset)return preset;
+ if(preset)return {...preset,txt:readableThemeText(preset.bg)};
  const c=/^#[0-9a-fA-F]{6}$/.test(p?.color||'')?p.color:'#36d6c5';
- return {label:'Personalizado',primary:c,secondary:c,bg:'#0B1018',panel:'#151D28',panel2:'#202B39',line:'#354456',txt:'#EDF3FB',muted:'#9DABBC'};
+ return {label:'Personalizado',primary:c,secondary:c,bg:'#0B1018',panel:'#151D28',panel2:'#202B39',line:'#354456',txt:'#FFFFFF',muted:'#9DABBC'};
 }
 function applyFamilyTheme(scope=familyDemo.scope){
  const root=document.documentElement;
@@ -844,7 +863,7 @@ function renderFamilyThemePalette(scope=familyDemo.scope){
  const p=profileById(scope);if(!p){host.hidden=true;return}
  host.hidden=false;
  const current=familyThemeForProfile(p).primary.toLowerCase();
- host.innerHTML='<span class="theme-palette-label">Tema</span><div class="theme-swatch-list">'+FAMILY_THEME_SWATCHES.map(t=>'<button type="button" class="theme-swatch '+(current===t.color.toLowerCase()?'selected':'')+'" style="--swatch:'+t.color+'" data-family-color-choice="'+t.id+'" aria-label="Selecionar cor '+esc(t.label)+'" aria-pressed="'+(current===t.color.toLowerCase())+'"></button>').join('')+'</div>';
+ host.innerHTML='<button type="button" class="theme-palette-toggle" aria-expanded="false" aria-controls="familyThemeSwatches"><span>Tema e cores</span><span class="theme-palette-arrow" aria-hidden="true">›</span></button><div class="theme-swatch-list" id="familyThemeSwatches" hidden>'+FAMILY_THEME_SWATCHES.map(t=>'<button type="button" class="theme-swatch '+(current===t.color.toLowerCase()?'selected':'')+'" style="--swatch:'+t.color+'" data-family-color-choice="'+t.id+'" aria-label="Selecionar cor '+esc(t.label)+'" aria-pressed="'+(current===t.color.toLowerCase())+'"></button>').join('')+'</div>';
 }
 
 
@@ -857,7 +876,7 @@ function renderFamilyHub(){
   const name=$('#'+prefix+'Name'),email=$('#'+prefix+'Email'),color=$('#'+prefix+'Color'),balance=$('#'+prefix+'Balance'),count=$('#'+prefix+'Count');
   if(name)name.textContent=p.name;if(email)email.textContent=p.id==='me'?'Acessar e administrar somente seus dados.':p.id==='partner'?'Acessar e administrar somente os dados dela.':'Acessar este espaço individual.';
   if(color){color.textContent=avatar;color.style.background=p.color;color.style.color='#071018'}
-  if(balance){const currentBalance=profileBalance(p);balance.textContent=money(currentBalance);balance.style.color=Number(currentBalance)===0?'#F7FAFF':'var(--green,#51d69b)'}
+  if(balance){const currentBalance=profileBalance(p);balance.textContent=money(currentBalance);balance.style.color=currentBalance===0?'#FFFFFF':currentBalance<0?'#FF5364':'#35D98B'}
   if(count)count.textContent=(p.data.entries||[]).length+' lançamento(s) · Abrir painel completo →';
  };
  setProfile(me,'familyMe','EU');setProfile(partner,'familyPartner','ELA');
@@ -936,6 +955,7 @@ $('#familyCreateProfile').onclick=()=>{const name=prompt('Nome do novo perfil:')
 /* Cria o workspace antes de registrar eventos nele. */
 initFamilyWorkspace();
 $('#familyWorkspace').addEventListener('click',e=>{
+ const paletteToggle=e.target.closest('.theme-palette-toggle');if(paletteToggle){const list=$('#familyThemeSwatches'),open=paletteToggle.getAttribute('aria-expanded')!=='true';if(list){list.hidden=!open;paletteToggle.setAttribute('aria-expanded',String(open));}return;}
  const swatch=e.target.closest('[data-family-color-choice]');if(!swatch||familyDemo.scope==='all')return;
  const p=profileById(familyDemo.scope),preset=FAMILY_THEME_PRESETS[swatch.dataset.familyColorChoice];if(!p||!preset)return;
  p.themeId=swatch.dataset.familyColorChoice;p.color=preset.primary;
