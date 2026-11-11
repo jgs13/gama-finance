@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 
 const root = "android/app/src/main/res";
 const logo = `<path android:pathData="M256,58 C145,58 65,140 65,256 C65,372 145,454 256,454 C331,454 391,420 426,361 L426,246 L257,246 L257,309 L355,309 C337,360 301,391 256,391 C177,391 130,333 130,256 C130,179 178,121 256,121 C302,121 338,139 367,174 L414,127 C374,82 321,58 256,58 Z">
@@ -44,13 +44,30 @@ for (const [path, body] of Object.entries(files)) {
   await mkdir(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
   await writeFile(fullPath, body + "\n", "utf8");
 }
+
+// Remove os PNGs padrão criados pelo Capacitor. Eles podem continuar sendo
+// escolhidos pelo Android no lugar do vetor oficial do GAMA FINANCE.
+for (const entry of await readdir(root, { withFileTypes: true })) {
+  if (!entry.isDirectory() || !entry.name.startsWith("mipmap-") || entry.name === "mipmap-anydpi" || entry.name === "mipmap-anydpi-v26") continue;
+  const dir = `${root}/${entry.name}`;
+  for (const name of await readdir(dir)) {
+    if (/^ic_launcher(?:_round|_foreground)?\\.(?:png|webp)$/i.test(name)) {
+      await unlink(`${dir}/${name}`);
+    }
+  }
+}
 const manifestPath = "android/app/src/main/AndroidManifest.xml";
 let manifest = await readFile(manifestPath, "utf8");
 manifest = manifest.replace(/<application\b[^>]*>/, tag => {
-  let updated = tag.replace(/android:icon="[^"]*"/, 'android:icon="@mipmap/ic_launcher"');
-  updated = updated.replace(/android:roundIcon="[^"]*"/, 'android:roundIcon="@mipmap/ic_launcher_round"');
+  let updated = tag;
+  if (/\bandroid:icon="/.test(updated)) updated = updated.replace(/android:icon="[^"]*"/, 'android:icon="@mipmap/ic_launcher"');
+  else updated = updated.replace(/>$/, ' android:icon="@mipmap/ic_launcher">');
+  if (/\bandroid:roundIcon="/.test(updated)) updated = updated.replace(/android:roundIcon="[^"]*"/, 'android:roundIcon="@mipmap/ic_launcher_round"');
+  else updated = updated.replace(/>$/, ' android:roundIcon="@mipmap/ic_launcher_round">');
   return updated;
 });
+if (!/android:icon="@mipmap\/ic_launcher"/.test(manifest)) throw new Error("Manifesto Android não aponta para o ícone oficial");
+console.log("Launcher icon resources:", (await readdir(root)).filter(name => name.startsWith("mipmap-")).join(", "));
 if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
   manifest = manifest.replace("</application>", '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>');
 }
