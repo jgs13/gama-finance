@@ -1,13 +1,13 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { initializeApp } from "firebase/app";
 import {
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
   signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
   updateProfile
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+} from "firebase/auth";
 import {
   getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot,
   addDoc, serverTimestamp, Timestamp, writeBatch
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+} from "firebase/firestore";
 import firebaseConfig from "./firebase-config.js";
 
 const configured = Boolean(firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId);
