@@ -332,9 +332,39 @@ body.family-workspace-open #familyWorkspace .profile-switch-compact,body.family-
 body.family-workspace-open #familyWorkspace input,body.family-workspace-open #familyWorkspace select,body.family-workspace-open #familyWorkspace textarea{color:var(--txt)!important}
 @media(max-width:720px){#familyWorkspace .family-workspace-bar{align-items:center}#familyThemePalette{width:auto;flex:1;flex-wrap:wrap;padding:3px 0}.theme-swatch{width:27px;height:27px;min-width:27px}}
 </style>
-</head>
-<body><main class="app">
-<header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE</h1><small>CONTROLE FINANCEIRO PESSOAL E FAMILIAR</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
+<style>
+#authGate{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:18px;background:#05080deF;overflow:auto}
+#authGate[hidden]{display:none!important}
+.auth-card{width:min(460px,100%);max-height:94dvh;overflow:auto;background:#111a26;border:1px solid #314257;border-radius:20px;padding:22px;box-shadow:0 25px 90px #000b}
+.auth-card h2{font-size:22px;margin:0 0 6px}.auth-card p{color:#9aabc0;font-size:13px;margin:0 0 18px}
+.auth-card .field{margin:10px 0}.auth-card .actions{margin-top:14px}
+.auth-switch{display:flex;gap:8px;margin:12px 0}.auth-switch .btn{flex:1}
+.auth-status{font-size:12px;color:#91e6d6;min-height:18px;margin-top:12px}.auth-status[data-error="true"]{color:#ff8792}
+.auth-card ul{padding-left:20px;color:#c5d2e0;font-size:13px}
+.auth-card input{margin-top:3px}.auth-card .auth-close{float:right}
+</style></head>
+<body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
+<button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
+<div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
+<section id="authLogin"><h2>Entre na sua conta</h2><p>Crie seu acesso individual ou entre com seu e-mail e senha.</p>
+<div class="auth-switch"><button type="button" class="btn" id="authModeLogin">Entrar</button><button type="button" class="btn" id="authModeCreate">Criar conta</button></div>
+<form id="authForm">
+<div class="field" id="authNameField" hidden><label for="authName">Seu nome</label><input id="authName" autocomplete="name" placeholder="Como deseja aparecer"></div>
+<div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" required placeholder="seu@email.com"></div>
+<div class="field"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres"></div>
+<div class="actions"><button class="btn primary" id="authSubmit" type="submit">Entrar</button><button class="btn" id="authForgot" type="button">Esqueci a senha</button></div>
+</form></section>
+<section id="authSignedIn" hidden><h2>Conta conectada</h2><p id="authSignedEmail"></p>
+<div id="authFamily" hidden>
+<div id="authCreateFamilyPanel" hidden><div class="field"><label for="authFamilyName">Nome da família</label><input id="authFamilyName" value="Nossa família" maxlength="60"></div><button class="btn primary" id="authCreateFamily" type="button">Criar espaço familiar</button></div>
+<div id="authFamilyMembers"><h3 style="margin:14px 0 6px">Membros da família</h3><ul id="authMembers"></ul></div>
+<div id="authInvite" hidden><h3 style="margin:14px 0 6px">Convidar pessoa</h3><p>O convite será enviado para o e-mail informado. A outra pessoa deverá criar a própria conta com esse mesmo e-mail.</p><div class="field"><label for="authInviteEmail">E-mail da pessoa</label><input id="authInviteEmail" type="email" placeholder="email dela" autocomplete="email"></div><button class="btn primary" id="authSendInvite" type="button">Gerar convite</button><div id="authInviteResult" hidden><div class="field"><label for="authInviteLink">Link exclusivo (válido por 7 dias)</label><input id="authInviteLink" readonly></div><button class="btn" id="authCopyInvite" type="button">Copiar link</button></div></div>
+<button class="btn primary" id="authAcceptInvite" type="button" hidden>Aceitar convite recebido</button>
+</div>
+<div class="actions"><button class="btn" id="authSignOut" type="button">Sair da conta</button></div></section>
+<div id="authStatus" class="auth-status" role="status" aria-live="polite"></div>
+</div></section><main class="app">
+<header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE</h1><small>CONTROLE FINANCEIRO PESSOAL E FAMILIAR</small></div></div><div class="top-actions"><button class="btn small" id="authAccountBtn" hidden>Conta</button><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
 <section id="updateNotice" class="card" hidden style="margin:0 0 16px;border:1px solid var(--cyan);padding:16px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><strong id="updateTitle">Atualização disponível</strong><p id="updateText" class="muted" style="margin:5px 0 0">Há uma nova versão do GAMA FINANCE.</p></div><a id="updateLink" class="btn primary" href="https://jgs13.github.io/gama-finance/download/" target="_blank" rel="noopener">Ver atualização</a></div></section>
 <nav class="tabs" id="tabs"><button class="tab active" data-view="dashboard">Visão geral</button><button class="tab" data-view="entries">Lançamentos</button><button class="tab" data-view="calendar">Calendário</button><button class="tab" data-view="income">Rendas</button><button class="tab" data-view="cards">Cartões</button><button class="tab" data-view="bills">Contas</button><button class="tab" data-view="analysis">Análises</button><button class="tab" data-view="goals">Metas</button><button class="tab" data-view="settings">Configurações</button><button class="tab guide-tab" data-view="guide">GAMA Guia</button></nav>
 <section class="view active" id="dashboard"><div class="section-head"><div><h2>Painel financeiro</h2><p id="monthLabel"></p></div><input id="dashMonth" type="month" style="max-width:160px"></div><div class="grid">
@@ -448,7 +478,7 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
 const uid=()=>Math.random().toString(36).slice(2,10);
 const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],goals:[],descriptions:['Água','Energia','Internet','Aluguel','Mercado','Compra de lanche','Combustível','Farmácia','Transporte','Salário','Shopee','Diálogo','Amazon','99','Extra','Outros'],categories:['Casa','Alimentação','Combustível','Transporte','Saúde','Lazer','Cartão de crédito','Mercado','Contas','Renda','Entregas','Outros'],selectedDay:today()};
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
-let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady)renderFamilyHub()}
+let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady){renderFamilyHub();const selected=familyDemo.scope==='all'?familyDemo.profiles:[profileById(familyDemo.scope)].filter(Boolean);if(window.GamaAuth?.saveProfiles&&selected.length)window.GamaAuth.saveProfiles(selected.map(p=>({uid:p.uid,name:p.name,email:p.email,data:p.data}))).catch(e=>console.warn('Falha ao sincronizar perfil:',e));}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:NaN}if(/[.]/.test(s)){const digits=s.replace(/\D/g,'');if(!digits)return 0;return Number(digits)/100}const n=Number(s);return Number.isFinite(n)?n:NaN}
 function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''}
@@ -815,6 +845,60 @@ function persistFamilyState(){
 function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
+window.GamaFinance={
+ applyCloudMembers(currentUid,members,cloudProfiles){
+  const oldMe=profileById('me'),oldPartner=profileById('partner');
+  const self=members.find(m=>m.uid===currentUid);
+  const others=members.filter(m=>m.uid!==currentUid);
+  if(!self)throw new Error('Sua conta não aparece como membro desta família.');
+  const mergeData=(localData,remoteData)=>{
+   const local=localData||emptyFinancialState(),remote=remoteData||emptyFinancialState(),merged={...remote};
+   for(const key of FAMILY_ARRAYS){
+    const items=[...(remote[key]||[]),...(local[key]||[])],seen=new Set();
+    merged[key]=items.filter(item=>{const k=String(item.id||JSON.stringify(item));if(seen.has(k))return false;seen.add(k);return true;});
+   }
+   merged.descriptions=[...new Set([...(remote.descriptions||[]),...(local.descriptions||[])])];
+   merged.categories=[...new Set([...(remote.categories||[]),...(local.categories||[])])];
+   merged.selectedDay=remote.selectedDay||local.selectedDay||today();
+   return merged;
+  };
+  if(!localStorage.getItem('gama-finance-pre-cloud-backup-v1'))localStorage.setItem('gama-finance-pre-cloud-backup-v1',JSON.stringify(familyDemo));
+  const make=(member,id,local)=>{
+   const remote=cloudProfiles[member.uid];
+   const p={...(local||{}),id,uid:member.uid,name:id==='me'?'Meu perfil':(member.displayName||'Perfil dela'),email:member.email||'',color:local?.color||(id==='me'?'#36d6c5':'#d36be7'),data:mergeData(local?.data,remote?.data)};
+   ensureProfileData(p);return p;
+  };
+  const profiles=[make(self,'me',oldMe)];
+  if(others[0])profiles.push(make(others[0],'partner',oldPartner));
+  else profiles.push({...oldPartner,id:'partner',uid:null,name:'Aguardando convite',email:'',data:oldPartner?.data||emptyFinancialState()});
+  others.slice(1).forEach(m=>profiles.push(make(m,'member_'+m.uid,{color:'#8da6ff',data:emptyFinancialState()})));
+  familyDemo.profiles=profiles;
+  if(!profileById(familyDemo.scope))familyDemo.scope='me';
+  familyDemo.lastProfile='me';
+  state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profiles[0].data);
+  familyReady=true;
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+  render();renderFamilyHub();
+  const own=profiles.find(p=>p.uid===currentUid);
+  return own&&JSON.stringify(own.data)!==JSON.stringify(cloudProfiles[own.uid]?.data||null)
+   ?[{uid:own.uid,name:own.name,email:own.email,data:own.data}]:[];
+ },
+ applyCloudProfiles(cloudProfiles){
+  if(!familyDemo)return;
+  for(const p of familyDemo.profiles){
+   const remote=cloudProfiles[p.uid]?.data;
+   if(remote){
+    // O snapshot remoto é a fonte oficial após a migração inicial. Assim exclusões
+    // também chegam ao outro aparelho, em vez de ressuscitarem pelo merge local.
+    p.data={...emptyFinancialState(),...remote};
+    ensureProfileData(p);
+   }
+  }
+  state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profileById('me').data);
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+  render();renderFamilyHub();
+ }
+};
 const FAMILY_THEME_PRESETS={
  rose:{label:'Rosa intenso',group:'Tons vibrantes',primary:'#FF168A',secondary:'#C90065',bg:'#160A12',panel:'#21101B',panel2:'#301525',line:'#63304A',txt:'#FFF4FA',muted:'#D6B7C7'},
  mauve:{label:'Roxo ameixa',group:'Tons vibrantes',primary:'#D52BFF',secondary:'#7A16D8',bg:'#100A18',panel:'#1D1228',panel2:'#2B193A',line:'#50336B',txt:'#FAF3FF',muted:'#C5B1D8'},
@@ -998,5 +1082,5 @@ window.addEventListener('popstate',e=>{
  }finally{restoringGamaRoute=false}
 });
 render();
-</script></body></html>
+</script><script type="module" src="./firebase-client.js"></script></body></html>
 <!-- APK experimental: rebuild da versão com exclusão de perfis. -->
