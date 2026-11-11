@@ -2,15 +2,13 @@ import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 
 const root = "android/app/src/main/res";
 const gPath = "M350,165c-27-24-58-36-98-36-84,0-144,56-144,135s60,135,144,135c40,0,75-12,102-37V252H254v58h35v28c-12,7-24,10-38,10-47,0-79-34-79-84s32-84,79-84c24,0,45,8,64,25z";
-const logo = `<path android:pathData="M140,44 H372 A96,96 0 0 1 468,140 V372 A96,96 0 0 1 372,468 H140 A96,96 0 0 1 44,372 V140 A96,96 0 0 1 140,44 Z">
-        <aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="44" android:startY="44" android:endX="468" android:endY="468"><item android:offset="0" android:color="#36D6C5"/><item android:offset="1" android:color="#628CFF"/></gradient></aapt:attr>
+const logo = `<path android:pathData="${gPath}">
+        <aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="120" android:startY="120" android:endX="390" android:endY="390"><item android:offset="0" android:color="#36D6C5"/><item android:offset="1" android:color="#628CFF"/></gradient></aapt:attr>
     </path>
-    <path android:fillColor="#071018" android:pathData="${gPath}"/>`;
-const fallback = `<path android:fillColor="#080B12" android:pathData="M112,0 H400 A112,112 0 0 1 512,112 V400 A112,112 0 0 1 400,512 H112 A112,112 0 0 1 0,400 V112 A112,112 0 0 1 112,0 Z"/>
-    <path android:pathData="M140,44 H372 A96,96 0 0 1 468,140 V372 A96,96 0 0 1 372,468 H140 A96,96 0 0 1 44,372 V140 A96,96 0 0 1 140,44 Z">
-        <aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="44" android:startY="44" android:endX="468" android:endY="468"><item android:offset="0" android:color="#36D6C5"/><item android:offset="1" android:color="#628CFF"/></gradient></aapt:attr>
-    </path>
-    <path android:fillColor="#071018" android:pathData="${gPath}"/>`;
+    <path android:fillColor="#080B12" android:pathData="M292,270 h34 v92 h-34 z M340,238 h34 v124 h-34 z M388,202 h28 v160 h-28 z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M292,258 L402,148 L402,190 L446,128 L364,140 L384,158 L274,268 Z"/>`;
+const fallback = `<path android:fillColor="#000000" android:pathData="M112,0 H400 A112,112 0 0 1 512,112 V400 A112,112 0 0 1 400,512 H112 A112,112 0 0 1 0,400 V112 A112,112 0 0 1 112,0 Z"/>
+    ${logo}`;
 const vector = (width, height, body) => `<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
