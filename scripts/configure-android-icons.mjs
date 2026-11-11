@@ -25,7 +25,7 @@ const files = {
     android:height="24dp"
     android:viewportWidth="512"
     android:viewportHeight="512">
-    <path android:fillColor="#FFFFFFFF" android:pathData="M350,165 C323,141 292,129 252,129 C168,129 108,185 108,264 C108,343 168,399 252,399 C292,399 327,387 354,362 V252 H254 V310 H289 V338 C277,345 265,348 251,348 C204,348 172,314 172,264 C172,214 204,180 251,180 C275,180 296,188 315,205 Z"/>
+    <path android:fillColor="#FFFFFFFF" android:pathData="M350,165c-27-24-58-36-98-36-84,0-144,56-144,135s60,135,144,135c40,0,75-12,102-37V252H254v58h35v28c-12,7-24,10-38,10-47,0-79-34-79-84s32-84,79-84c24,0,45,8,64,25z"/>
 </vector>`,
   "mipmap-anydpi/ic_launcher.xml": `<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
