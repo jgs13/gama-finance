@@ -1,0 +1,79 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isFamilyMember(familyId) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+    }
+    function isInviteRecipient() {
+      return signedIn()
+        && resource.data.inviteeEmail == request.auth.token.email
+        && resource.data.status == 'pending'
+        && resource.data.expiresAt > request.time;
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['email', 'displayName', 'familyId', 'updatedAt'])
+        && request.resource.data.email == request.auth.token.email;
+      allow delete: if false;
+    }
+
+    match /families/{familyId} {
+      allow read: if isFamilyMember(familyId);
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.keys().hasOnly(['ownerId', 'name', 'createdAt']);
+      allow update, delete: if false;
+
+      match /members/{uid} {
+        allow read: if isFamilyMember(familyId);
+        allow create: if signedIn() && request.auth.uid == uid
+          && get(/databases/$(database)/documents/families/$(familyId)).data.ownerId
+             == request.auth.uid;
+        allow update: if signedIn() && request.auth.uid == uid
+          && isFamilyMember(familyId);
+        allow delete: if false;
+      }
+
+      match /profiles/{uid} {
+        allow read: if isFamilyMember(familyId);
+        allow create, update: if signedIn() && request.auth.uid == uid
+          && isFamilyMember(familyId)
+          && request.resource.data.updatedBy == request.auth.uid;
+        allow delete: if false;
+      }
+
+      match /audit/{eventId} {
+        allow read: if isFamilyMember(familyId);
+        allow create: if signedIn() && isFamilyMember(familyId)
+          && request.resource.data.actorUid == request.auth.uid
+          && request.resource.data.keys().hasOnly(['actorUid', 'actorEmail', 'action', 'profileUid', 'recordId', 'createdAt', 'summary']);
+        allow update, delete: if false;
+      }
+    }
+
+    match /invitations/{inviteId} {
+      allow create: if signedIn()
+        && request.resource.data.inviterUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.keys().hasOnly(['familyId', 'inviteeEmail', 'inviterUid', 'inviterEmail', 'status', 'createdAt', 'expiresAt']);
+      allow get: if signedIn()
+        && (resource.data.inviteeEmail == request.auth.token.email
+          || isFamilyMember(resource.data.familyId));
+      allow list: if false;
+      allow update: if signedIn()
+        && resource.data.inviteeEmail == request.auth.token.email
+        && resource.data.status == 'pending'
+        && request.resource.data.status == 'accepted'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'acceptedBy', 'acceptedAt'])
+        && request.resource.data.acceptedBy == request.auth.uid;
+      allow delete: if signedIn()
+        && resource.data.inviterUid == request.auth.uid
+        && resource.data.status == 'pending';
+    }
+  }
+}
