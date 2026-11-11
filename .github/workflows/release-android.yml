@@ -132,8 +132,8 @@ jobs:
           unzip -Z1 "$APK" | grep -Fxq "$ICON_PATH" || { echo "::error::Arquivo do ícone principal não encontrado no APK."; exit 1; }
 
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > /tmp/gama-manifest.txt
-          ICON_ID=$(sed -nE 's/.*android:icon[^=]*=@([^ ]+).*/\\1/p' /tmp/gama-manifest.txt | head -n 1)
-          ROUND_ICON_ID=$(sed -nE 's/.*android:roundIcon[^=]*=@([^ ]+).*/\\1/p' /tmp/gama-manifest.txt | head -n 1)
+                    ICON_ID=$(sed -nE 's/.*android:icon[^=]*=@([^ ]+).*/\1/p' /tmp/gama-manifest.txt | head -n 1)
+          ROUND_ICON_ID=$(sed -nE 's/.*android:roundIcon[^=]*=@([^ ]+).*/\1/p' /tmp/gama-manifest.txt | head -n 1)
           test -n "$ICON_ID" || { echo "::error::Manifesto sem referência válida para android:icon."; cat /tmp/gama-manifest.txt; exit 1; }
           test -n "$ROUND_ICON_ID" || { echo "::error::Manifesto sem referência válida para android:roundIcon."; cat /tmp/gama-manifest.txt; exit 1; }
 
