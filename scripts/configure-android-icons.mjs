@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const root = "android/app/src/main/res";
 const files = {
@@ -46,5 +46,14 @@ for (const [path, content] of Object.entries(files)) {
   const fullPath = `${root}/${path}`;
   await mkdir(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
   await writeFile(fullPath, content + "\n", "utf8");
+}
+const manifestPath = "android/app/src/main/AndroidManifest.xml";
+let manifest = await readFile(manifestPath, "utf8");
+if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
+  manifest = manifest.replace(
+    "</application>",
+    '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\\n    </application>'
+  );
+  await writeFile(manifestPath, manifest, "utf8");
 }
 console.log("GAMA FINANCE launcher and monochrome notification icons configured.");
