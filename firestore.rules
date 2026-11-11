@@ -41,8 +41,7 @@ service cloud.firestore {
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.inviteeEmail == request.auth.token.email
             )
           );
-        allow update: if signedIn() && request.auth.uid == uid
-          && isFamilyMember(familyId);
+        allow update: if false;
         allow delete: if false;
       }
 
