@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import {
   getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot,
-  addDoc, updateDoc, serverTimestamp, Timestamp, writeBatch
+  addDoc, serverTimestamp, Timestamp, writeBatch
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import firebaseConfig from "./firebase-config.js";
 
@@ -20,6 +20,11 @@ const memberList = document.getElementById("authMembers");
 const inviteLink = document.getElementById("authInviteLink");
 const inviteEmail = document.getElementById("authInviteEmail");
 const inviteIdFromUrl = new URLSearchParams(location.search).get("convite");
+const RECORD_ARRAYS = ["entries", "sources", "cards", "bills", "benefits", "goals"];
+const RECORD_LABELS = {
+  entries: "Lançamento", sources: "Fonte de renda", cards: "Cartão",
+  bills: "Conta", benefits: "Benefício", goals: "Meta"
+};
 
 let auth = null, db = null, currentUser = null, currentFamilyId = null, unsubscribeProfiles = null;
 const setStatus = (message, error = false) => {
@@ -31,19 +36,50 @@ const show = (id, yes) => { const el=document.getElementById(id); if(el) el.hidd
 const cleanEmail = value => String(value || "").trim().toLowerCase();
 const familyRef = id => doc(db, "families", id);
 const userRef = uid => doc(db, "users", uid);
-
+const stable = value => JSON.stringify(value ?? null);
 
 async function persistProfiles(profiles) {
-  if(!currentUser || !currentFamilyId || !profiles?.length)return;
-  const batch=writeBatch(db);
-  for(const profile of profiles) {
-    if(!profile.uid)continue;
-    const ref=doc(db,"families",currentFamilyId,"profiles",profile.uid);
-    batch.set(ref,{uid:profile.uid,email:profile.email||"",displayName:profile.name||"",data:profile.data,updatedBy:currentUser.uid,updatedAt:serverTimestamp()},{merge:true});
-    const auditRef=doc(collection(db,"families",currentFamilyId,"audit"));
-    batch.set(auditRef,{actorUid:currentUser.uid,actorEmail:currentUser.email||"",action:"profile_saved",profileUid:profile.uid,recordId:null,createdAt:serverTimestamp(),summary:"Dados do perfil sincronizados"});
+  if (!currentUser || !currentFamilyId || !profiles?.length) return;
+  for (const profile of profiles) {
+    if (!profile.uid) continue;
+    const profileRef = doc(db, "families", currentFamilyId, "profiles", profile.uid);
+    const previousSnap = await getDoc(profileRef);
+    const previous = previousSnap.exists() ? (previousSnap.data().data || {}) : {};
+    const next = profile.data || {};
+    const auditEvents = [];
+    for (const key of RECORD_ARRAYS) {
+      const before = new Map((Array.isArray(previous[key]) ? previous[key] : []).map(item => [String(item.id ?? stable(item)), item]));
+      const after = new Map((Array.isArray(next[key]) ? next[key] : []).map(item => [String(item.id ?? stable(item)), item]));
+      for (const [id, item] of after) {
+        const oldItem = before.get(id);
+        if (!oldItem) auditEvents.push({action:"record_created", profileUid:profile.uid, recordId:id, summary:RECORD_LABELS[key] + " criado"});
+        else if (stable(oldItem) !== stable(item)) auditEvents.push({action:"record_updated", profileUid:profile.uid, recordId:id, summary:RECORD_LABELS[key] + " editado"});
+      }
+      for (const [id] of before) {
+        if (!after.has(id)) auditEvents.push({action:"record_deleted", profileUid:profile.uid, recordId:id, summary:RECORD_LABELS[key] + " excluído"});
+      }
+    }
+
+    // Firestore batches are limited to 500 writes; keep a margin for safe commits.
+    const writes = [];
+    writes.push(batch => batch.set(profileRef, {
+      uid:profile.uid, email:profile.email || "", displayName:profile.name || "",
+      data:next, updatedBy:currentUser.uid, updatedAt:serverTimestamp()
+    }, {merge:true}));
+    for (const event of auditEvents) {
+      const auditRef = doc(collection(db, "families", currentFamilyId, "audit"));
+      writes.push(batch => batch.set(auditRef, {
+        actorUid:currentUser.uid, actorEmail:currentUser.email || "",
+        action:event.action, profileUid:event.profileUid, recordId:event.recordId,
+        createdAt:serverTimestamp(), summary:event.summary
+      }));
+    }
+    for (let offset=0; offset<writes.length; offset+=450) {
+      const batch=writeBatch(db);
+      for (const write of writes.slice(offset,offset+450)) write(batch);
+      await batch.commit();
+    }
   }
-  await batch.commit();
 }
 
 async function loadFamily() {
@@ -75,6 +111,7 @@ async function loadFamily() {
   if(unsubscribeProfiles)unsubscribeProfiles();
   unsubscribeProfiles=onSnapshot(collection(db,"families",currentFamilyId,"profiles"),snapshot=>{
     const latest={};snapshot.forEach(item=>latest[item.id]=item.data());
+    // Cloud snapshots are authoritative: this propagates deletions as well as additions/edits.
     window.GamaFinance?.applyCloudProfiles(latest);
   },error=>setStatus(error.message||"Falha ao acompanhar sincronização.",true));
   setStatus("Conta conectada à família. Os perfis estão sincronizados pela nuvem.");
@@ -161,7 +198,13 @@ if (!configured) {
     show("authLogin", !user);
     show("authSignedIn", Boolean(user));
     show("authAccountBtn", Boolean(user));
-    if (!user) { currentFamilyId=null;show("authGate",true);return; }
+    if (!user) {
+      currentFamilyId=null;
+      if(unsubscribeProfiles)unsubscribeProfiles();
+      unsubscribeProfiles=null;
+      show("authGate",true);
+      return;
+    }
     const emailLabel=document.getElementById("authSignedEmail");
     if(emailLabel)emailLabel.textContent=user.email || "";
     try {
@@ -189,8 +232,8 @@ if (!configured) {
     const password=document.getElementById("authPassword").value;
     try {
       if(document.getElementById("authSubmit").textContent==="Criar conta") {
-        const credential=await createUserWithEmailAndPassword(auth,email,password);
         const name=document.getElementById("authName").value.trim();
+        const credential=await createUserWithEmailAndPassword(auth,email,password);
         if(name) await updateProfile(credential.user,{displayName:name});
         await setDoc(userRef(credential.user.uid),{email,displayName:name,familyId:null,updatedAt:serverTimestamp()});
       } else await signInWithEmailAndPassword(auth,email,password);
