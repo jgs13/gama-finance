@@ -1,37 +1,52 @@
-name: GAMA FINANCE - Publicar APK assinado
+name: GAMA FINANCE - Publicar APK automaticamente
 'on':
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'firebase-client.js'
+      - 'firebase-config.js'
+      - 'native-back.js'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.*'
+      - 'scripts/**'
+      - 'assets/**'
+      - 'manifest.json'
+      - 'sw.js'
+      - 'icon.svg'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag da versão (ex.: v1.0.0)'
-        required: true
-        type: string
 permissions:
   contents: write
+concurrency:
+  group: gama-finance-release
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
+      code: ${{ steps.version.outputs.code }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.ref }}
-      - name: Definir versão do APK e do app
-        env:
-          VERSION_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+          ref: main
+      - name: Gerar próxima versão automaticamente
+        id: version
         run: |
-          VERSION_TAG="${VERSION_TAG%.}"
-          VERSION="${VERSION_TAG#v}"
-          IFS=. read -r MAJOR MINOR PATCH <<< "$VERSION"
+          CURRENT=$(node -p "require('./latest.json').version")
+          IFS=. read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          PATCH=$((PATCH + 1))
+          VERSION="$MAJOR.$MINOR.$PATCH"
+          TAG="v$VERSION"
           CODE=$((MAJOR*10000 + MINOR*100 + PATCH))
-          cat > app-version.json <<EOF
-          {
-            "version": "$VERSION",
-            "versionCode": $CODE
-          }
-          EOF
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
+          printf '{\n  "version": "%s",\n  "versionCode": %s\n}\n' "$VERSION" "$CODE" > app-version.json
+          echo "Publicando automaticamente GAMA FINANCE $VERSION"
       - name: Conferir credenciais de assinatura
         env:
           KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -58,11 +73,9 @@ jobs:
       - name: Configurar assinatura e versão
         env:
           KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          VERSION_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
           echo "$KS" | base64 --decode > "$RUNNER_TEMP/gama-release.jks"
-          VERSION_TAG="${VERSION_TAG%.}"
-          VERSION="${VERSION_TAG#v}"
           python3 - "$VERSION" <<'PY'
           import re, sys
           from pathlib import Path
@@ -85,8 +98,8 @@ jobs:
           if start < 0 or pos < 0:
               raise SystemExit("Bloco buildTypes/release não encontrado")
           s=s[:pos]+s[pos:].replace("release {", "release {\n            signingConfig signingConfigs.release", 1)
-          s=re.sub(r"versionCode\s+\d+", f"versionCode {code}", s, count=1)
-          s=re.sub(r'versionName\s+"[^"]+"', f'versionName "{version}"', s, count=1)
+          s=re.sub(r"versionCode\\s+\\d+", f"versionCode {code}", s, count=1)
+          s=re.sub(r'versionName\\s+"[^"]+"', f'versionName "{version}"', s, count=1)
           p.write_text(s)
           PY
       - name: Compilar APK de distribuição
@@ -114,32 +127,19 @@ jobs:
         with:
           name: GamaFinance-release
           path: release
-      - name: Definir versão
-        id: v
-        env:
-          INPUT_TAG: ${{ github.event.inputs.tag }}
-          REF_NAME: ${{ github.ref_name }}
-        run: |
-          TAG="${INPUT_TAG:-$REF_NAME}"
-          TAG="${TAG%.}"
-          VERSION="${TAG#v}"
-          IFS=. read -r MAJOR MINOR PATCH <<< "$VERSION"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "code=$((MAJOR*10000 + MINOR*100 + PATCH))" >> "$GITHUB_OUTPUT"
       - name: Publicar Release com APK
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.v.outputs.tag }}
-          name: GAMA FINANCE ${{ steps.v.outputs.version }}
+          tag_name: ${{ needs.build.outputs.tag }}
+          name: GAMA FINANCE ${{ needs.build.outputs.version }}
           generate_release_notes: true
           files: release/GamaFinance.apk
       - name: Atualizar versão pública e aviso no aplicativo
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.v.outputs.version }}
-          VERSION_CODE: ${{ steps.v.outputs.code }}
-          TAG: ${{ steps.v.outputs.tag }}
+          VERSION: ${{ needs.build.outputs.version }}
+          VERSION_CODE: ${{ needs.build.outputs.code }}
+          TAG: ${{ needs.build.outputs.tag }}
         run: |
           git clone "https://x-access-token:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git" repo
           cd repo
@@ -149,5 +149,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add app-version.json latest.json
-          git commit -m "Publish GAMA FINANCE $VERSION metadata" || true
+          git commit -m "Publish GAMA FINANCE $VERSION metadata"
           git push origin main
