@@ -116,20 +116,26 @@ jobs:
       - name: Validar ícones dentro do APK final
         working-directory: android
         run: |
+          set -euo pipefail
           APK="app/build/outputs/apk/release/app-release.apk"
           AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -n 1)
           test -n "$AAPT"
           "$AAPT" dump badging "$APK" | tee /tmp/gama-badging.txt
-          grep -q "application-icon" /tmp/gama-badging.txt
+          grep -q "^application-icon-" /tmp/gama-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > /tmp/gama-manifest.txt
           grep -q "android:icon" /tmp/gama-manifest.txt
           grep -q "android:roundIcon" /tmp/gama-manifest.txt
           "$AAPT" dump resources "$APK" > /tmp/gama-resources.txt
-          grep -q "mipmap/ic_launcher" /tmp/gama-resources.txt
-          grep -q "mipmap/ic_launcher_round" /tmp/gama-resources.txt
-          grep -q "drawable/ic_launcher_foreground" /tmp/gama-resources.txt
+          grep -q "mipmap/gama_launcher" /tmp/gama-resources.txt
+          grep -q "mipmap/gama_launcher_round" /tmp/gama-resources.txt
+          grep -q "drawable/gama_launcher_foreground" /tmp/gama-resources.txt
           grep -q "drawable/ic_stat_gama" /tmp/gama-resources.txt
-          echo "APK validado: launcher e round launcher apontam para os recursos GAMA; notificação usa o G branco."
+          if grep -Eq "mipmap/ic_launcher(_round|_foreground)?([.]| |$)" /tmp/gama-resources.txt; then
+            echo "::error::APK ainda contém recursos de launcher genéricos do template Android."
+            exit 1
+          fi
+          unzip -l "$APK" | grep -E "gama_launcher(_round)?[.]xml|gama_launcher_foreground[.]xml"
+          echo "APK validado: manifesto e recursos compilados usam exclusivamente os launchers GAMA."
       - name: Preparar APK
         run: |
           mkdir -p release
