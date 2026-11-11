@@ -332,9 +332,39 @@ body.family-workspace-open #familyWorkspace .profile-switch-compact,body.family-
 body.family-workspace-open #familyWorkspace input,body.family-workspace-open #familyWorkspace select,body.family-workspace-open #familyWorkspace textarea{color:var(--txt)!important}
 @media(max-width:720px){#familyWorkspace .family-workspace-bar{align-items:center}#familyThemePalette{width:auto;flex:1;flex-wrap:wrap;padding:3px 0}.theme-swatch{width:27px;height:27px;min-width:27px}}
 </style>
-</head>
-<body><main class="app">
-<header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE</h1><small>CONTROLE FINANCEIRO PESSOAL E FAMILIAR</small></div></div><div class="top-actions"><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
+<style>
+#authGate{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:18px;background:#05080deF;overflow:auto}
+#authGate[hidden]{display:none!important}
+.auth-card{width:min(460px,100%);max-height:94dvh;overflow:auto;background:#111a26;border:1px solid #314257;border-radius:20px;padding:22px;box-shadow:0 25px 90px #000b}
+.auth-card h2{font-size:22px;margin:0 0 6px}.auth-card p{color:#9aabc0;font-size:13px;margin:0 0 18px}
+.auth-card .field{margin:10px 0}.auth-card .actions{margin-top:14px}
+.auth-switch{display:flex;gap:8px;margin:12px 0}.auth-switch .btn{flex:1}
+.auth-status{font-size:12px;color:#91e6d6;min-height:18px;margin-top:12px}.auth-status[data-error="true"]{color:#ff8792}
+.auth-card ul{padding-left:20px;color:#c5d2e0;font-size:13px}
+.auth-card input{margin-top:3px}.auth-card .auth-close{float:right}
+</style></head>
+<body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
+<button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
+<div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
+<section id="authLogin"><h2>Entre na sua conta</h2><p>Crie seu acesso individual ou entre com seu e-mail e senha.</p>
+<div class="auth-switch"><button type="button" class="btn" id="authModeLogin">Entrar</button><button type="button" class="btn" id="authModeCreate">Criar conta</button></div>
+<form id="authForm">
+<div class="field" id="authNameField" hidden><label for="authName">Seu nome</label><input id="authName" autocomplete="name" placeholder="Como deseja aparecer"></div>
+<div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" required placeholder="seu@email.com"></div>
+<div class="field"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres"></div>
+<div class="actions"><button class="btn primary" id="authSubmit" type="submit">Entrar</button><button class="btn" id="authForgot" type="button">Esqueci a senha</button></div>
+</form></section>
+<section id="authSignedIn" hidden><h2>Conta conectada</h2><p id="authSignedEmail"></p>
+<div id="authFamily" hidden>
+<div id="authCreateFamily" hidden><div class="field"><label for="authFamilyName">Nome da família</label><input id="authFamilyName" value="Nossa família" maxlength="60"></div><button class="btn primary" id="authCreateFamily" type="button">Criar espaço familiar</button></div>
+<div id="authFamilyMembers"><h3 style="margin:14px 0 6px">Membros da família</h3><ul id="authMembers"></ul></div>
+<div id="authInvite" hidden><h3 style="margin:14px 0 6px">Convidar pessoa</h3><p>O convite será enviado para o e-mail informado. A outra pessoa deverá criar a própria conta com esse mesmo e-mail.</p><div class="field"><label for="authInviteEmail">E-mail da pessoa</label><input id="authInviteEmail" type="email" placeholder="email dela" autocomplete="email"></div><button class="btn primary" id="authSendInvite" type="button">Gerar convite</button><div id="authInviteResult" hidden><div class="field"><label for="authInviteLink">Link exclusivo (válido por 7 dias)</label><input id="authInviteLink" readonly></div><button class="btn" id="authCopyInvite" type="button">Copiar link</button></div></div>
+<button class="btn primary" id="authAcceptInvite" type="button" hidden>Aceitar convite recebido</button>
+</div>
+<div class="actions"><button class="btn" id="authSignOut" type="button">Sair da conta</button></div></section>
+<div id="authStatus" class="auth-status" role="status" aria-live="polite"></div>
+</div></section><main class="app">
+<header class="top"><div class="brand"><div class="logo">G</div><div><h1>GAMA FINANCE</h1><small>CONTROLE FINANCEIRO PESSOAL E FAMILIAR</small></div></div><div class="top-actions"><button class="btn small" id="authAccountBtn" hidden>Conta</button><button class="btn small" id="backupBtn">Backup</button><button class="btn small" id="installBtn" hidden>Instalar</button></div></header>
 <section id="updateNotice" class="card" hidden style="margin:0 0 16px;border:1px solid var(--cyan);padding:16px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><strong id="updateTitle">Atualização disponível</strong><p id="updateText" class="muted" style="margin:5px 0 0">Há uma nova versão do GAMA FINANCE.</p></div><a id="updateLink" class="btn primary" href="https://jgs13.github.io/gama-finance/download/" target="_blank" rel="noopener">Ver atualização</a></div></section>
 <nav class="tabs" id="tabs"><button class="tab active" data-view="dashboard">Visão geral</button><button class="tab" data-view="entries">Lançamentos</button><button class="tab" data-view="calendar">Calendário</button><button class="tab" data-view="income">Rendas</button><button class="tab" data-view="cards">Cartões</button><button class="tab" data-view="bills">Contas</button><button class="tab" data-view="analysis">Análises</button><button class="tab" data-view="goals">Metas</button><button class="tab" data-view="settings">Configurações</button><button class="tab guide-tab" data-view="guide">GAMA Guia</button></nav>
 <section class="view active" id="dashboard"><div class="section-head"><div><h2>Painel financeiro</h2><p id="monthLabel"></p></div><input id="dashMonth" type="month" style="max-width:160px"></div><div class="grid">
@@ -998,5 +1028,5 @@ window.addEventListener('popstate',e=>{
  }finally{restoringGamaRoute=false}
 });
 render();
-</script></body></html>
+</script><script type="module" src="./firebase-client.js"></script></body></html>
 <!-- APK experimental: rebuild da versão com exclusão de perfis. -->
