@@ -121,11 +121,15 @@ jobs:
           test -n "$AAPT"
           "$AAPT" dump badging "$APK" | tee /tmp/gama-badging.txt
           grep -q "application-icon" /tmp/gama-badging.txt
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > /tmp/gama-manifest.txt
+          grep -q "android:icon" /tmp/gama-manifest.txt
+          grep -q "android:roundIcon" /tmp/gama-manifest.txt
           "$AAPT" dump resources "$APK" > /tmp/gama-resources.txt
           grep -q "mipmap/ic_launcher" /tmp/gama-resources.txt
+          grep -q "mipmap/ic_launcher_round" /tmp/gama-resources.txt
           grep -q "drawable/ic_launcher_foreground" /tmp/gama-resources.txt
           grep -q "drawable/ic_stat_gama" /tmp/gama-resources.txt
-          echo "APK contém os recursos oficiais do launcher e da notificação."
+          echo "APK validado: launcher e round launcher apontam para os recursos GAMA; notificação usa o G branco."
       - name: Preparar APK
         run: |
           mkdir -p release
