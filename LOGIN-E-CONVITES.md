@@ -19,5 +19,11 @@ A configuração Web do Firebase contém identificadores públicos do app; não 
 - Aceitação somente pela conta autenticada com o mesmo e-mail convidado.
 - Listagem de membros e saída da conta.
 
-## Limite desta etapa
-A autenticação e o vínculo familiar estão preparados, mas os lançamentos financeiros ainda não foram migrados/sincronizados no Firestore. O app permanece no modo local quando `firebase-config.js` está vazio. A próxima etapa é integrar os perfis financeiros ao Firestore, importar os dados locais de forma explícita e registrar auditoria de cada alteração. Não publique esta branch como versão oficial antes de concluir os testes e a sincronização.
+## Sincronização financeira
+- Cada perfil é armazenado em `families/{familyId}/profiles/{uid}`.
+- Os membros da família podem consultar os dois perfis e editar dados compartilhados; cada gravação registra o UID e o e-mail do autor em `families/{familyId}/audit`.
+- O app mantém uma cópia local e acompanha atualizações do Firestore em tempo real.
+- Na primeira conexão, os dados locais são preservados em uma cópia local chamada `gama-finance-pre-cloud-backup-v1`; dados locais e remotos são combinados por identificador antes de continuar.
+
+## Antes de liberar
+Esta branch ainda precisa ser testada com um projeto Firebase de testes real: cadastro em dois aparelhos, convite, aceitação, sincronização simultânea, edição/exclusão, regras e recuperação de senha. O Firebase não está conectado enquanto `firebase-config.js` estiver vazio. Não publique esta branch como versão oficial antes desses testes.
