@@ -851,14 +851,27 @@ window.GamaFinance={
   const self=members.find(m=>m.uid===currentUid);
   const others=members.filter(m=>m.uid!==currentUid);
   if(!self)throw new Error('Sua conta não aparece como membro desta família.');
+  const mergeData=(localData,remoteData)=>{
+   const local=localData||emptyFinancialState(),remote=remoteData||emptyFinancialState(),merged={...remote};
+   for(const key of FAMILY_ARRAYS){
+    const items=[...(remote[key]||[]),...(local[key]||[])],seen=new Set();
+    merged[key]=items.filter(item=>{const k=String(item.id||JSON.stringify(item));if(seen.has(k))return false;seen.add(k);return true;});
+   }
+   merged.descriptions=[...new Set([...(remote.descriptions||[]),...(local.descriptions||[])])];
+   merged.categories=[...new Set([...(remote.categories||[]),...(local.categories||[])])];
+   merged.selectedDay=remote.selectedDay||local.selectedDay||today();
+   return merged;
+  };
+  if(!localStorage.getItem('gama-finance-pre-cloud-backup-v1'))localStorage.setItem('gama-finance-pre-cloud-backup-v1',JSON.stringify(familyDemo));
   const make=(member,id,local)=>{
    const remote=cloudProfiles[member.uid];
-   const p={...(local||{}),id,uid:member.uid,name:id==='me'?'Meu perfil':(member.displayName||'Perfil dela'),email:member.email||'',color:local?.color||(id==='me'?'#36d6c5':'#d36be7'),data:remote?.data?JSON.parse(JSON.stringify(remote.data)):(local?.data||emptyFinancialState())};
+   const p={...(local||{}),id,uid:member.uid,name:id==='me'?'Meu perfil':(member.displayName||'Perfil dela'),email:member.email||'',color:local?.color||(id==='me'?'#36d6c5':'#d36be7'),data:mergeData(local?.data,remote?.data)};
    ensureProfileData(p);return p;
   };
   const profiles=[make(self,'me',oldMe)];
   if(others[0])profiles.push(make(others[0],'partner',oldPartner));
-  others.slice(1).forEach((m,i)=>profiles.push(make(m,'member_'+m.uid,{color:'#8da6ff',data:emptyFinancialState()})));
+  else profiles.push({...oldPartner,id:'partner',uid:null,name:'Aguardando convite',email:'',data:oldPartner?.data||emptyFinancialState()});
+  others.slice(1).forEach(m=>profiles.push(make(m,'member_'+m.uid,{color:'#8da6ff',data:emptyFinancialState()})));
   familyDemo.profiles=profiles;
   if(!profileById(familyDemo.scope))familyDemo.scope='me';
   familyDemo.lastProfile='me';
@@ -866,11 +879,18 @@ window.GamaFinance={
   familyReady=true;
   localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
   render();renderFamilyHub();
-  return profiles.filter(p=>!cloudProfiles[p.uid]&&p.uid===currentUid).map(p=>({uid:p.uid,name:p.name,email:p.email,data:p.data}));
+  const own=profiles.find(p=>p.uid===currentUid);
+  return own?[{uid:own.uid,name:own.name,email:own.email,data:own.data}]:[];
  },
  applyCloudProfiles(cloudProfiles){
   if(!familyDemo)return;
-  for(const p of familyDemo.profiles)if(cloudProfiles[p.uid]?.data)p.data=JSON.parse(JSON.stringify(cloudProfiles[p.uid].data));
+  for(const p of familyDemo.profiles)if(cloudProfiles[p.uid]?.data){
+   const remote=cloudProfiles[p.uid].data,local=p.data||emptyFinancialState(),merged={...remote};
+   for(const key of FAMILY_ARRAYS){const items=[...(remote[key]||[]),...(local[key]||[])],seen=new Set();merged[key]=items.filter(item=>{const k=String(item.id||JSON.stringify(item));if(seen.has(k))return false;seen.add(k);return true;});}
+   merged.descriptions=[...new Set([...(remote.descriptions||[]),...(local.descriptions||[])])];
+   merged.categories=[...new Set([...(remote.categories||[]),...(local.categories||[])])];
+   p.data=merged;
+  }
   state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profileById('me').data);
   localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
   render();renderFamilyHub();
