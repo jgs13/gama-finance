@@ -36,7 +36,7 @@ async function loadFamily() {
   const userDoc = await getDoc(userRef(currentUser.uid));
   currentFamilyId = userDoc.exists() ? userDoc.data().familyId || null : null;
   show("authFamily", true);
-  show("authCreateFamily", !currentFamilyId);
+  show("authCreateFamilyPanel", !currentFamilyId);
   show("authInvite", Boolean(currentFamilyId));
   if (!currentFamilyId) {
     setStatus("Conta conectada. Crie sua família para gerar um convite.");
@@ -97,7 +97,7 @@ async function acceptInvite(inviteId) {
   batch.update(ref,{status:"accepted",acceptedBy:currentUser.uid,acceptedAt:serverTimestamp()});
   batch.set(doc(db,"families",invite.familyId,"members",currentUser.uid),{
     uid:currentUser.uid,email:currentUser.email,displayName:currentUser.displayName || "Membro",
-    role:"member",joinedAt:serverTimestamp()
+    role:"member",invitationId:inviteId,joinedAt:serverTimestamp()
   });
   batch.set(userRef(currentUser.uid),{
     email:currentUser.email,displayName:currentUser.displayName || "",
@@ -127,11 +127,16 @@ if (!configured) {
   window.dispatchEvent(new CustomEvent("gama-auth-ready"));
   onAuthStateChanged(auth, async user => {
     currentUser=user;
-    show("authGate", !user);
+    show("authLogin", !user);
     show("authSignedIn", Boolean(user));
-    if (!user) { currentFamilyId=null; return; }
+    show("authAccountBtn", Boolean(user));
+    if (!user) { currentFamilyId=null;show("authGate",true);return; }
+    const emailLabel=document.getElementById("authSignedEmail");
+    if(emailLabel)emailLabel.textContent=user.email || "";
     try {
       await loadFamily();
+      show("authGate", !currentFamilyId);
+      show("authClose", Boolean(currentFamilyId));
       if (inviteIdFromUrl && !currentFamilyId) {
         show("authAcceptInvite",true);
         document.getElementById("authAcceptInvite").onclick=async()=>{
@@ -145,6 +150,8 @@ if (!configured) {
 
   document.getElementById("authModeLogin").onclick=()=>{document.getElementById("authSubmit").textContent="Entrar";document.getElementById("authNameField").hidden=true;};
   document.getElementById("authModeCreate").onclick=()=>{document.getElementById("authSubmit").textContent="Criar conta";document.getElementById("authNameField").hidden=false;};
+  document.getElementById("authAccountBtn").onclick=()=>{show("authGate",true);show("authClose",true);};
+  document.getElementById("authClose").onclick=()=>{if(currentFamilyId)show("authGate",false);};
   form.addEventListener("submit",async event=>{
     event.preventDefault();
     const email=cleanEmail(document.getElementById("authEmail").value);
