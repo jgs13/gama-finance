@@ -1,8 +1,8 @@
 {
-  "version": "1.0.3",
-  "versionCode": 10003,
-  "name": "GAMA FINANCE 1.0.3",
+  "version": "1.0.4",
+  "versionCode": 10004,
+  "name": "GAMA FINANCE 1.0.4",
   "releaseNotes": "Consulte as notas deste lançamento no GitHub.",
-  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.3/GamaFinance.apk",
+  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.4/GamaFinance.apk",
   "downloadPage": "https://jgs13.github.io/gama-finance/download/"
 }
