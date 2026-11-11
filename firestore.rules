@@ -48,7 +48,7 @@ service cloud.firestore {
 
       match /profiles/{uid} {
         allow read: if isFamilyMember(familyId);
-        allow create, update: if signedIn() && request.auth.uid == uid
+        allow create, update: if signedIn()
           && isFamilyMember(familyId)
           && request.resource.data.updatedBy == request.auth.uid;
         allow delete: if false;
@@ -79,7 +79,8 @@ service cloud.firestore {
         && resource.data.status == 'pending'
         && request.resource.data.status == 'accepted'
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'acceptedBy', 'acceptedAt'])
-        && request.resource.data.acceptedBy == request.auth.uid;
+        && request.resource.data.acceptedBy == request.auth.uid
+        && resource.data.expiresAt > request.time;
       allow delete: if signedIn()
         && resource.data.inviterUid == request.auth.uid
         && resource.data.status == 'pending';
