@@ -49,6 +49,8 @@ async function persistProfiles(profiles) {
 async function loadFamily() {
   const userDoc = await getDoc(userRef(currentUser.uid));
   currentFamilyId = userDoc.exists() ? userDoc.data().familyId || null : null;
+  show("authGate", !currentFamilyId);
+  show("authClose", Boolean(currentFamilyId));
   show("authFamily", true);
   show("authCreateFamilyPanel", !currentFamilyId);
   show("authInvite", Boolean(currentFamilyId));
