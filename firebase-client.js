@@ -146,8 +146,9 @@ async function sendInvite() {
     familyId:currentFamilyId,inviteeEmail:email,inviterUid:currentUser.uid,
     inviterEmail:currentUser.email,status:"pending",createdAt:serverTimestamp(),expiresAt
   });
-  const url=new URL(location.href);
+  const url=new URL("https://jgs13.github.io/gama-finance/");
   url.searchParams.set("convite",invitation.id);
+  url.hash="home";
   inviteLink.value=url.toString();
   show("authInviteResult",true);
   setStatus("Convite criado. Envie o link para a outra pessoa.");
