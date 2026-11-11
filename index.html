@@ -885,12 +885,14 @@ window.GamaFinance={
  },
  applyCloudProfiles(cloudProfiles){
   if(!familyDemo)return;
-  for(const p of familyDemo.profiles)if(cloudProfiles[p.uid]?.data){
-   const remote=cloudProfiles[p.uid].data,local=p.data||emptyFinancialState(),merged={...remote};
-   for(const key of FAMILY_ARRAYS){const items=[...(remote[key]||[]),...(local[key]||[])],seen=new Set();merged[key]=items.filter(item=>{const k=String(item.id||JSON.stringify(item));if(seen.has(k))return false;seen.add(k);return true;});}
-   merged.descriptions=[...new Set([...(remote.descriptions||[]),...(local.descriptions||[])])];
-   merged.categories=[...new Set([...(remote.categories||[]),...(local.categories||[])])];
-   p.data=merged;
+  for(const p of familyDemo.profiles){
+   const remote=cloudProfiles[p.uid]?.data;
+   if(remote){
+    // O snapshot remoto é a fonte oficial após a migração inicial. Assim exclusões
+    // também chegam ao outro aparelho, em vez de ressuscitarem pelo merge local.
+    p.data={...emptyFinancialState(),...remote};
+    ensureProfileData(p);
+   }
   }
   state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profileById('me').data);
   localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
