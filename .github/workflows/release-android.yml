@@ -16,6 +16,7 @@ name: GAMA FINANCE - Publicar APK automaticamente
       - 'manifest.json'
       - 'sw.js'
       - 'icon.svg'
+      - '.github/workflows/release-android.yml'
   workflow_dispatch:
 permissions:
   contents: write
@@ -98,8 +99,8 @@ jobs:
           if start < 0 or pos < 0:
               raise SystemExit("Bloco buildTypes/release não encontrado")
           s=s[:pos]+s[pos:].replace("release {", "release {\n            signingConfig signingConfigs.release", 1)
-          s=re.sub(r"versionCode\\s+\\d+", f"versionCode {code}", s, count=1)
-          s=re.sub(r'versionName\\s+"[^"]+"', f'versionName "{version}"', s, count=1)
+          s=re.sub(r"versionCode\s+\d+", f"versionCode {code}", s, count=1)
+          s=re.sub(r'versionName\s+"[^"]+"', f'versionName "{version}"', s, count=1)
           p.write_text(s)
           PY
       - name: Compilar APK de distribuição
