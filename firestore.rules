@@ -6,12 +6,6 @@ service cloud.firestore {
       return signedIn()
         && exists(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
     }
-    function isInviteRecipient() {
-      return signedIn()
-        && resource.data.inviteeEmail == request.auth.token.email
-        && resource.data.status == 'pending'
-        && resource.data.expiresAt > request.time;
-    }
 
     match /users/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
@@ -25,8 +19,20 @@ service cloud.firestore {
       allow read: if isFamilyMember(familyId);
       allow create: if signedIn()
         && request.resource.data.ownerId == request.auth.uid
-        && request.resource.data.keys().hasOnly(['ownerId', 'name', 'createdAt']);
-      allow update, delete: if false;
+        && request.resource.data.memberCount == 1
+        && request.resource.data.keys().hasOnly(['ownerId', 'name', 'memberCount', 'createdAt']);
+      allow update: if signedIn()
+        && resource.data.memberCount == 1
+        && request.resource.data.memberCount == 2
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.lastAcceptedInviteId is string
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberCount', 'lastAcceptedInviteId', 'updatedAt'])
+        && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.lastAcceptedInviteId)).data.familyId == familyId
+        && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.lastAcceptedInviteId)).data.status == 'accepted'
+        && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.lastAcceptedInviteId)).data.acceptedBy == request.auth.uid
+        && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.lastAcceptedInviteId)).data.inviteeEmail == request.auth.token.email
+        && existsAfter(/databases/$(database)/documents/families/$(familyId)/members/$(request.auth.uid));
+      allow delete: if false;
 
       match /members/{uid} {
         allow read: if isFamilyMember(familyId);
@@ -35,14 +41,15 @@ service cloud.firestore {
             getAfter(/databases/$(database)/documents/families/$(familyId)).data.ownerId == request.auth.uid
             || (
               request.resource.data.invitationId is string
+              && getAfter(/databases/$(database)/documents/families/$(familyId)).data.memberCount == 2
+              && getAfter(/databases/$(database)/documents/families/$(familyId)).data.lastAcceptedInviteId == request.resource.data.invitationId
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.familyId == familyId
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.status == 'accepted'
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.acceptedBy == request.auth.uid
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.inviteeEmail == request.auth.token.email
             )
           );
-        allow update: if false;
-        allow delete: if false;
+        allow update, delete: if false;
       }
 
       match /profiles/{uid} {
@@ -64,8 +71,9 @@ service cloud.firestore {
 
     match /invitations/{inviteId} {
       allow create: if signedIn()
-        && request.resource.data.inviterUid == request.auth.uid
         && isFamilyMember(request.resource.data.familyId)
+        && get(/databases/$(database)/documents/families/$(request.resource.data.familyId)).data.memberCount == 1
+        && request.resource.data.inviterUid == request.auth.uid
         && request.resource.data.status == 'pending'
         && request.resource.data.expiresAt > request.time
         && request.resource.data.keys().hasOnly(['familyId', 'inviteeEmail', 'inviterUid', 'inviterEmail', 'status', 'createdAt', 'expiresAt']);
