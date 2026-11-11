@@ -60,11 +60,11 @@ const launcherFiles = [];
 for (const entry of await readdir(root, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
   for (const name of await readdir(`${root}/${entry.name}`)) {
-    if (/^ic_launcher(?:_round|_foreground)?\\.(?:png|webp)$/i.test(name)) launcherFiles.push(`${entry.name}/${name}`);
+    if (/^ic_launcher(?:_round|_foreground)?\.(?:png|webp)$/i.test(name)) launcherFiles.push(`${entry.name}/${name}`);
   }
 }
 if (launcherFiles.length) throw new Error(`Ícones padrão antigos ainda presentes: ${launcherFiles.join(", ")}`);
-console.log("Manifest launcher:", manifest.match(/<application\\b[^>]*>/)?.[0]);
+console.log("Manifest launcher:", manifest.match(/<application\b[^>]*>/)?.[0]);
 console.log("Launcher icon resources:", (await readdir(root)).filter(name => name.startsWith("mipmap-")).join(", "));
 if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
   manifest = manifest.replace("</application>", '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>');
