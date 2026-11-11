@@ -132,6 +132,7 @@ async function createFamily() {
   });
   await batch.commit();
   await loadFamily();
+  if(currentFamilyId)window.dispatchEvent(new CustomEvent("gama-authenticated",{detail:{uid:currentUser.uid,email:currentUser.email,familyId:currentFamilyId}}));
 }
 
 async function sendInvite() {
