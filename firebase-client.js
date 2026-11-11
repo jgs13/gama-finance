@@ -5,7 +5,8 @@ import {
   updateProfile
 } from "firebase/auth";
 import {
-  getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot,
+  getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
+  doc, getDoc, setDoc, collection, getDocs, onSnapshot,
   addDoc, serverTimestamp, Timestamp, writeBatch
 } from "firebase/firestore";
 import firebaseConfig from "./firebase-config.js";
@@ -43,8 +44,14 @@ async function persistProfiles(profiles) {
   for (const profile of profiles) {
     if (!profile.uid) continue;
     const profileRef = doc(db, "families", currentFamilyId, "profiles", profile.uid);
-    const previousSnap = await getDoc(profileRef);
-    const previous = previousSnap.exists() ? (previousSnap.data().data || {}) : {};
+    let previous = {};
+    try {
+      const previousSnap = await getDoc(profileRef);
+      previous = previousSnap.exists() ? (previousSnap.data().data || {}) : {};
+    } catch (error) {
+      // Sem rede/cache, a gravação continua sendo enfileirada pelo cache persistente do Firestore.
+      console.info("GAMA FINANCE: comparação de auditoria adiada até a conexão voltar.", error?.code || error?.message);
+    }
     const next = profile.data || {};
     const auditEvents = [];
     for (const key of RECORD_ARRAYS) {
@@ -83,8 +90,23 @@ async function persistProfiles(profiles) {
 }
 
 async function loadFamily() {
-  const userDoc = await getDoc(userRef(currentUser.uid));
-  currentFamilyId = userDoc.exists() ? userDoc.data().familyId || null : null;
+  const cachedFamilyId = localStorage.getItem("gama-finance-family-id:" + currentUser.uid);
+  try {
+    const userDoc = await getDoc(userRef(currentUser.uid));
+    currentFamilyId = userDoc.exists() ? userDoc.data().familyId || null : cachedFamilyId;
+  } catch (error) {
+    currentFamilyId = cachedFamilyId;
+    if (!currentFamilyId) throw error;
+    setStatus("Sem internet. Abrindo os dados já salvos neste aparelho.");
+    show("authGate", false);
+    show("authClose", true);
+    show("authFamily", true);
+    show("authInvite", false);
+    window.dispatchEvent(new CustomEvent("gama-offline-ready", {detail:{uid:currentUser.uid,familyId:currentFamilyId}}));
+    return;
+  }
+  if (currentFamilyId) localStorage.setItem("gama-finance-family-id:" + currentUser.uid, currentFamilyId);
+  else localStorage.removeItem("gama-finance-family-id:" + currentUser.uid);
   show("authGate", !currentFamilyId);
   show("authClose", Boolean(currentFamilyId));
   show("authFamily", true);
@@ -94,7 +116,14 @@ async function loadFamily() {
     setStatus("Conta conectada. Crie sua família para gerar um convite.");
     return;
   }
-  const members = await getDocs(collection(db, "families", currentFamilyId, "members"));
+  let members;
+  try {
+    members = await getDocs(collection(db, "families", currentFamilyId, "members"));
+  } catch (error) {
+    setStatus("Sem internet. Seus dados locais continuam disponíveis; a sincronização será retomada quando a conexão voltar.");
+    window.dispatchEvent(new CustomEvent("gama-offline-ready", {detail:{uid:currentUser.uid,familyId:currentFamilyId}}));
+    return;
+  }
   memberList.innerHTML = "";
   const memberData=[];
   members.forEach(item => {
@@ -104,7 +133,14 @@ async function loadFamily() {
     memberList.appendChild(li);
   });
   show("authInvite",memberData.length<2);
-  const profileDocs=await getDocs(collection(db,"families",currentFamilyId,"profiles"));
+  let profileDocs;
+  try {
+    profileDocs=await getDocs(collection(db,"families",currentFamilyId,"profiles"));
+  } catch (error) {
+    setStatus("Sem internet. Seus dados locais continuam disponíveis; a sincronização será retomada quando a conexão voltar.");
+    window.dispatchEvent(new CustomEvent("gama-offline-ready", {detail:{uid:currentUser.uid,familyId:currentFamilyId}}));
+    return;
+  }
   const cloudProfiles={};profileDocs.forEach(item=>cloudProfiles[item.id]=item.data());
   const missing=window.GamaFinance?.applyCloudMembers(currentUser.uid,memberData,cloudProfiles)||[];
   if(missing.length)await persistProfiles(missing);
@@ -185,7 +221,15 @@ if (!configured) {
   console.info("GAMA FINANCE: Firebase ainda não configurado; modo local preservado.");
 } else {
   const app=initializeApp(firebaseConfig);
-  auth=getAuth(app);db=getFirestore(app);
+  auth=getAuth(app);
+  try {
+    db=initializeFirestore(app,{
+      localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})
+    });
+  } catch (error) {
+    console.warn("GAMA FINANCE: não foi possível ativar o cache persistente do Firestore; usando a instância padrão.",error);
+    db=getFirestore(app);
+  }
   show("authGate", true);
   window.GamaAuth = {
     configured:true,
