@@ -67,6 +67,7 @@ async function loadFamily() {
     li.textContent = (data.displayName || data.email || "Membro") + (data.uid===currentUser.uid ? " (você)" : "");
     memberList.appendChild(li);
   });
+  show("authInvite",memberData.length<2);
   const profileDocs=await getDocs(collection(db,"families",currentFamilyId,"profiles"));
   const cloudProfiles={};profileDocs.forEach(item=>cloudProfiles[item.id]=item.data());
   const missing=window.GamaFinance?.applyCloudMembers(currentUser.uid,memberData,cloudProfiles)||[];
@@ -83,7 +84,7 @@ async function createFamily() {
   const name=(document.getElementById("authFamilyName").value || "Minha família").trim();
   const familyId=crypto.randomUUID();
   const batch=writeBatch(db);
-  batch.set(familyRef(familyId), {ownerId:currentUser.uid,name,createdAt:serverTimestamp()});
+  batch.set(familyRef(familyId), {ownerId:currentUser.uid,name,memberCount:1,createdAt:serverTimestamp()});
   batch.set(doc(db,"families",familyId,"members",currentUser.uid), {
     uid:currentUser.uid,email:currentUser.email,displayName:currentUser.displayName || "Administrador",
     role:"owner",joinedAt:serverTimestamp()
@@ -97,6 +98,8 @@ async function createFamily() {
 }
 
 async function sendInvite() {
+  const familySnap=await getDoc(familyRef(currentFamilyId));
+  if(!familySnap.exists() || Number(familySnap.data().memberCount||1)>=2)throw new Error("Esta família já tem duas contas vinculadas.");
   const email=cleanEmail(inviteEmail.value);
   if (!email || !email.includes("@")) throw new Error("Digite um e-mail válido.");
   if (email===cleanEmail(currentUser.email)) throw new Error("Você não pode convidar o próprio e-mail.");
@@ -121,6 +124,7 @@ async function acceptInvite(inviteId) {
   if(invite.status!=="pending" || invite.expiresAt.toDate()<new Date()) throw new Error("Este convite expirou ou já foi utilizado.");
   const batch=writeBatch(db);
   batch.update(ref,{status:"accepted",acceptedBy:currentUser.uid,acceptedAt:serverTimestamp()});
+  batch.update(familyRef(invite.familyId),{memberCount:2,lastAcceptedInviteId:inviteId,updatedAt:serverTimestamp()});
   batch.set(doc(db,"families",invite.familyId,"members",currentUser.uid),{
     uid:currentUser.uid,email:currentUser.email,displayName:currentUser.displayName || "Membro",
     role:"member",invitationId:inviteId,joinedAt:serverTimestamp()
