@@ -5,7 +5,7 @@ import {
   updateProfile
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, collection, getDocs,
+  getFirestore, doc, getDoc, setDoc, collection, getDocs, onSnapshot,
   addDoc, updateDoc, serverTimestamp, Timestamp, writeBatch
 } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import firebaseConfig from "./firebase-config.js";
@@ -21,7 +21,7 @@ const inviteLink = document.getElementById("authInviteLink");
 const inviteEmail = document.getElementById("authInviteEmail");
 const inviteIdFromUrl = new URLSearchParams(location.search).get("convite");
 
-let auth = null, db = null, currentUser = null, currentFamilyId = null;
+let auth = null, db = null, currentUser = null, currentFamilyId = null, unsubscribeProfiles = null;
 const setStatus = (message, error = false) => {
   if (!status) return;
   status.textContent = message;
@@ -31,6 +31,20 @@ const show = (id, yes) => { const el=document.getElementById(id); if(el) el.hidd
 const cleanEmail = value => String(value || "").trim().toLowerCase();
 const familyRef = id => doc(db, "families", id);
 const userRef = uid => doc(db, "users", uid);
+
+
+async function persistProfiles(profiles) {
+  if(!currentUser || !currentFamilyId || !profiles?.length)return;
+  const batch=writeBatch(db);
+  for(const profile of profiles) {
+    if(!profile.uid)continue;
+    const ref=doc(db,"families",currentFamilyId,"profiles",profile.uid);
+    batch.set(ref,{uid:profile.uid,email:profile.email||"",displayName:profile.name||"",data:profile.data,updatedBy:currentUser.uid,updatedAt:serverTimestamp()},{merge:true});
+    const auditRef=doc(collection(db,"families",currentFamilyId,"audit"));
+    batch.set(auditRef,{actorUid:currentUser.uid,actorEmail:currentUser.email||"",action:"profile_saved",profileUid:profile.uid,recordId:null,createdAt:serverTimestamp(),summary:"Dados do perfil sincronizados"});
+  }
+  await batch.commit();
+}
 
 async function loadFamily() {
   const userDoc = await getDoc(userRef(currentUser.uid));
@@ -44,13 +58,23 @@ async function loadFamily() {
   }
   const members = await getDocs(collection(db, "families", currentFamilyId, "members"));
   memberList.innerHTML = "";
+  const memberData=[];
   members.forEach(item => {
-    const data=item.data();
+    const data={...item.data(),uid:item.id};memberData.push(data);
     const li=document.createElement("li");
     li.textContent = (data.displayName || data.email || "Membro") + (data.uid===currentUser.uid ? " (você)" : "");
     memberList.appendChild(li);
   });
-  setStatus("Conta conectada à família. Convide a outra pessoa pelo e-mail.");
+  const profileDocs=await getDocs(collection(db,"families",currentFamilyId,"profiles"));
+  const cloudProfiles={};profileDocs.forEach(item=>cloudProfiles[item.id]=item.data());
+  const missing=window.GamaFinance?.applyCloudMembers(currentUser.uid,memberData,cloudProfiles)||[];
+  if(missing.length)await persistProfiles(missing);
+  if(unsubscribeProfiles)unsubscribeProfiles();
+  unsubscribeProfiles=onSnapshot(collection(db,"families",currentFamilyId,"profiles"),snapshot=>{
+    const latest={};snapshot.forEach(item=>latest[item.id]=item.data());
+    window.GamaFinance?.applyCloudProfiles(latest);
+  },error=>setStatus(error.message||"Falha ao acompanhar sincronização.",true));
+  setStatus("Conta conectada à família. Os perfis estão sincronizados pela nuvem.");
 }
 
 async function createFamily() {
@@ -122,7 +146,8 @@ if (!configured) {
     configured:true,
     get user(){return currentUser;},
     get familyId(){return currentFamilyId;},
-    signOut:()=>signOut(auth)
+    signOut:()=>signOut(auth),
+    saveProfiles:profiles=>persistProfiles(profiles)
   };
   window.dispatchEvent(new CustomEvent("gama-auth-ready"));
   onAuthStateChanged(auth, async user => {
