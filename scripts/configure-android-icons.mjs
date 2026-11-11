@@ -28,6 +28,7 @@ const files = {
   "values/gama_icon_colors.xml": `<?xml version="1.0" encoding="utf-8"?><resources><color name="gama_icon_background">#080B12</color></resources>`
 };
 for (const [path, body] of Object.entries(files)) {
+  if (/\\n/.test(body)) throw new Error(`Quebra de linha escapada inválida no XML: ${path}`);
   const fullPath = `${root}/${path}`;
   await mkdir(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
   await writeFile(fullPath, body + "\n", "utf8");
