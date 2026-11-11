@@ -20,7 +20,7 @@ ${body}
 </vector>`;
 const files = {
   "drawable/ic_launcher_foreground.xml": vector("108dp", "108dp", logo),
-  "drawable/ic_stat_gama.xml": vector("24dp", "24dp", `<path android:fillColor="#FFFFFFFF" android:pathData="${gPath}"/>`),
+  "drawable/ic_stat_gama.xml": vector("24dp", "24dp", `<path android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="12" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="${gPath}"/>`),
   "mipmap-anydpi/ic_launcher.xml": vector("512dp", "512dp", fallback),
   "mipmap-anydpi/ic_launcher_round.xml": vector("512dp", "512dp", fallback),
   "mipmap-anydpi-v26/ic_launcher.xml": `<?xml version="1.0" encoding="utf-8"?>
@@ -62,4 +62,4 @@ if (!manifest.includes("com.google.firebase.messaging.default_notification_icon"
   manifest = manifest.replace("</application>", '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>');
 }
 await writeFile(manifestPath, manifest, "utf8");
-console.log("GAMA FINANCE Original GAMA FINANCE G launcher icon configured.");
+console.log("GAMA FINANCE Finance G launcher icon and transparent white-outline notification G configured.");
