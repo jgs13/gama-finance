@@ -52,7 +52,7 @@ let manifest = await readFile(manifestPath, "utf8");
 if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
   manifest = manifest.replace(
     "</application>",
-    '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\\n    </application>'
+    '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>'
   );
   await writeFile(manifestPath, manifest, "utf8");
 }
