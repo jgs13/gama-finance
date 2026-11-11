@@ -42,17 +42,17 @@ const files = {
 for (const [path, body] of Object.entries(files)) {
   const fullPath = `${root}/${path}`;
   await mkdir(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
-  await writeFile(fullPath, body + "\\n", "utf8");
+  await writeFile(fullPath, body + "\n", "utf8");
 }
 const manifestPath = "android/app/src/main/AndroidManifest.xml";
 let manifest = await readFile(manifestPath, "utf8");
-manifest = manifest.replace(/<application\\b[^>]*>/, tag => {
+manifest = manifest.replace(/<application\b[^>]*>/, tag => {
   let updated = tag.replace(/android:icon="[^"]*"/, 'android:icon="@mipmap/ic_launcher"');
   updated = updated.replace(/android:roundIcon="[^"]*"/, 'android:roundIcon="@mipmap/ic_launcher_round"');
   return updated;
 });
 if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
-  manifest = manifest.replace("</application>", '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\\n    </application>');
+  manifest = manifest.replace("</application>", '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>');
 }
 await writeFile(manifestPath, manifest, "utf8");
 console.log("GAMA FINANCE G + financial growth launcher icon configured.");
