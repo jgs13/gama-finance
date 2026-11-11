@@ -1,28 +1,33 @@
-# GAMA FINANCE — autenticação e nuvem (ambiente de testes)
+# GAMA FINANCE — login familiar (ambiente de testes)
 
-Esta pasta é a base do ambiente isolado `teste-login-familiar`. Não configure nem publique estes recursos no projeto oficial antes da validação.
+O projeto Firebase do GAMA FINANCE deve ser separado do projeto usado pelo Gama Drive. A autenticação e os dados financeiros não devem ser misturados.
 
-## Modelo previsto
-- Firebase Authentication com e-mail e senha: uma conta independente para cada pessoa.
-- Firestore: um documento de família, no máximo dois membros, um documento de perfil por UID e uma trilha de auditoria somente de acréscimo.
-- Cada membro pode ler os dois perfis da família, mas só pode gravar o próprio perfil.
-- A tela Família agrega os perfis; Meu perfil e Perfil dela continuam separados.
-- Cada gravação registra UID, e-mail, ação, perfil e horário do servidor.
+## Modelo ativo
+- Uma conta individual por pessoa, com e-mail e senha.
+- Um espaço familiar com no máximo duas contas vinculadas.
+- O primeiro usuário cria a família e gera um convite por link para o e-mail da segunda pessoa.
+- O convite expira em sete dias e só pode ser aceito por uma conta autenticada com o mesmo e-mail convidado.
+- Cada membro pode consultar e editar os dois perfis financeiros compartilhados.
+- O Firestore registra o autor e o horário de cada gravação de perfil em uma trilha de auditoria append-only.
+- O app mantém dados locais e sincroniza os perfis da família em tempo real.
 
 ## Configuração necessária
-1. Criar um projeto Firebase separado para testes.
-2. Ativar Authentication > Sign-in method > Email/Password.
-3. Criar o banco Firestore em modo produção.
-4. Publicar `firestore.rules` nas regras do banco.
-5. Registrar um aplicativo Web e copiar a configuração pública para `firebase/firebase-config.js`, usando `firebase/firebase-config.example.js` como modelo. Esse arquivo real não deve conter service-account/private keys e não deve ser enviado ao repositório.
-6. Configurar o domínio autorizado do site de testes no Firebase Authentication.
+1. Criar um projeto Firebase separado para o GAMA FINANCE.
+2. Ativar Authentication > Sign-in method > E-mail/senha.
+3. Criar o banco Firestore em modo de produção.
+4. Registrar um aplicativo Web e copiar a configuração pública para o arquivo raiz `firebase-config.js`.
+5. Publicar as regras do arquivo raiz `firestore.rules` no Firestore.
+6. Adicionar o domínio do site de testes em Authentication > Settings > Authorized domains.
 
-## Estrutura Firestore
-- `families/{familyId}`: ownerUid, memberUids (máximo 2), invitedEmails, createdAt, updatedAt.
-- `families/{familyId}/profiles/{uid}`: nome, dados financeiros e updatedAt.
-- `families/{familyId}/audit/{eventId}`: actorUid, actorEmail, action, profileUid, createdAt e resumo sem dados sensíveis desnecessários.
+A configuração Web contém identificadores públicos do app. Nunca coloque senhas, chaves privadas ou arquivos de service account no repositório.
 
-O convite será por e-mail: o primeiro membro cadastra a conta e cria a família; adiciona o e-mail da segunda pessoa em invitedEmails. A segunda conta só entra se o e-mail autenticado corresponder ao convite. O aceite precisa ocorrer em transação Firestore, com validação adicional nas regras antes de habilitar o uso real.
+## Coleções
+- `users/{uid}`: e-mail e vínculo familiar do usuário.
+- `families/{familyId}`: proprietário e contagem de membros.
+- `families/{familyId}/members/{uid}`: membros autorizados.
+- `families/{familyId}/profiles/{uid}`: dados financeiros do perfil.
+- `families/{familyId}/audit/{eventId}`: autor, perfil alterado e horário.
+- `invitations/{inviteId}`: convite de uso único com e-mail destinatário e validade.
 
 ## Estado
-Esta pasta contém configuração-modelo e regras iniciais. A integração com a interface e o sincronismo bidirecional ainda precisam ser conectados e testados antes de considerar o login ativo. Não instalar como atualização oficial.
+A interface, o fluxo de convite e a integração de sincronização estão implementados na branch de testes. A configuração Firebase ainda está vazia e a integração não foi testada contra um projeto real. Antes de qualquer publicação, validar cadastro, login, convite nos dois aparelhos, sincronização simultânea, regras, recuperação de senha e preservação dos dados locais.
