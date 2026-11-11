@@ -26,7 +26,12 @@ jobs:
           VERSION="${VERSION_TAG#v}"
           IFS=. read -r MAJOR MINOR PATCH <<< "$VERSION"
           CODE=$((MAJOR*10000 + MINOR*100 + PATCH))
-          printf '{\\n  "version": "%s",\\n  "versionCode": %s\\n}\\n' "$VERSION" "$CODE" > app-version.json
+          cat > app-version.json <<EOF
+          {
+            "version": "$VERSION",
+            "versionCode": $CODE
+          }
+          EOF
       - name: Conferir credenciais de assinatura
         env:
           KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
