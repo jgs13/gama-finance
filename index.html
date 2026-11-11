@@ -40,6 +40,8 @@ body{overscroll-behavior:none}
 #familyWorkspace[hidden]{display:none!important}
 #familyWorkspace{display:flex;flex:1 1 auto;flex-direction:column;min-height:0;overflow:hidden;padding:0 12px}
 #familyWorkspace .family-workspace-bar{order:0;flex:0 0 auto;position:relative;top:auto;z-index:5;margin:8px 0;padding:9px 10px;gap:8px}
+#familyWorkspace .family-workspace-bar #updateNotice{flex:0 0 100%;width:100%;margin:6px 0 0!important;padding:10px 12px}
+#familyWorkspace .family-workspace-bar #updateNotice p{font-size:12px}
 #familyWorkspace .family-workspace-bar strong{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #familyWorkspace .family-workspace-bar .owner-control{font-size:11px}
 #familyWorkspace .family-workspace-bar select{max-width:145px;padding:8px;font-size:12px}
@@ -988,6 +990,7 @@ function showFamilyHome(fromHistory=false){
  if(!fromHistory)pushGamaRoute('home','home');
  persistFamilyState();
  document.body.classList.remove('family-workspace-open');
+ $('.app>.top')?.after($('#updateNotice'));
  $('#family').hidden=false;$('#familyWorkspace').hidden=true;$('#tabs').hidden=false;
  applyFamilyTheme('home');
  renderFamilyHub();
@@ -999,6 +1002,7 @@ function activateFamilyProfile(scope,fromHistory=false){
  if(scope!=='all')familyDemo.lastProfile=scope;
  state=scope==='all'?buildCombinedState():profileById(scope).data;
  document.body.classList.add('family-workspace-open');
+ $('#familyWorkspace .family-workspace-bar')?.appendChild($('#updateNotice'));
  $('#family').hidden=true;$('#familyWorkspace').hidden=false;
  applyFamilyTheme(scope);renderFamilyThemePalette(scope);
  const name=scope==='all'?'Família inteira':profileById(scope)?.name||'Perfil';
