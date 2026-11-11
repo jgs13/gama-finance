@@ -478,7 +478,7 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth
 const uid=()=>Math.random().toString(36).slice(2,10);
 const defaultState={entries:[],sources:[],cards:[],bills:[],benefits:[],goals:[],descriptions:['Água','Energia','Internet','Aluguel','Mercado','Compra de lanche','Combustível','Farmácia','Transporte','Salário','Shopee','Diálogo','Amazon','99','Extra','Outros'],categories:['Casa','Alimentação','Combustível','Transporte','Saúde','Lazer','Cartão de crédito','Mercado','Contas','Renda','Entregas','Outros'],selectedDay:today()};
 let state;try{state={...defaultState,...JSON.parse(localStorage.getItem('gama-finance-v1')||'{}')}}catch{state={...defaultState}}
-let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady)renderFamilyHub()}
+let familyReady=false;function save(){try{if(familyReady)persistFamilyState();else localStorage.setItem('gama-finance-v1',JSON.stringify(state))}catch(e){alert('Não foi possível salvar os dados neste dispositivo. Exporte um backup e verifique o espaço disponível no navegador.')}render();if(familyReady){renderFamilyHub();const selected=familyDemo.scope==='all'?familyDemo.profiles:[profileById(familyDemo.scope)].filter(Boolean);if(window.GamaAuth?.saveProfiles&&selected.length)window.GamaAuth.saveProfiles(selected.map(p=>({uid:p.uid,name:p.name,email:p.email,data:p.data}))).catch(e=>console.warn('Falha ao sincronizar perfil:',e));}}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function moneyValue(v){if(typeof v==='number')return Number.isFinite(v)?v:0;let s=String(v??'').trim().replace(/R\$\s?/gi,'').replace(/\s/g,'');if(!s)return 0;if(s.includes(',')){s=s.replace(/\./g,'').replace(',','.');const n=Number(s);return Number.isFinite(n)?n:NaN}if(/[.]/.test(s)){const digits=s.replace(/\D/g,'');if(!digits)return 0;return Number(digits)/100}const n=Number(s);return Number.isFinite(n)?n:NaN}
 function formatMoneyInput(v){const n=moneyValue(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):''}
@@ -845,6 +845,37 @@ function persistFamilyState(){
 function profileBalance(p){
  return (p.data.entries||[]).reduce((n,e)=>n+(e.type==='income'?1:-1)*Number(e.amount||0),0);
 }
+window.GamaFinance={
+ applyCloudMembers(currentUid,members,cloudProfiles){
+  const oldMe=profileById('me'),oldPartner=profileById('partner');
+  const self=members.find(m=>m.uid===currentUid);
+  const others=members.filter(m=>m.uid!==currentUid);
+  if(!self)throw new Error('Sua conta não aparece como membro desta família.');
+  const make=(member,id,local)=>{
+   const remote=cloudProfiles[member.uid];
+   const p={...(local||{}),id,uid:member.uid,name:id==='me'?'Meu perfil':(member.displayName||'Perfil dela'),email:member.email||'',color:local?.color||(id==='me'?'#36d6c5':'#d36be7'),data:remote?.data?JSON.parse(JSON.stringify(remote.data)):(local?.data||emptyFinancialState())};
+   ensureProfileData(p);return p;
+  };
+  const profiles=[make(self,'me',oldMe)];
+  if(others[0])profiles.push(make(others[0],'partner',oldPartner));
+  others.slice(1).forEach((m,i)=>profiles.push(make(m,'member_'+m.uid,{color:'#8da6ff',data:emptyFinancialState()})));
+  familyDemo.profiles=profiles;
+  if(!profileById(familyDemo.scope))familyDemo.scope='me';
+  familyDemo.lastProfile='me';
+  state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profiles[0].data);
+  familyReady=true;
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+  render();renderFamilyHub();
+  return profiles.filter(p=>!cloudProfiles[p.uid]&&p.uid===currentUid).map(p=>({uid:p.uid,name:p.name,email:p.email,data:p.data}));
+ },
+ applyCloudProfiles(cloudProfiles){
+  if(!familyDemo)return;
+  for(const p of familyDemo.profiles)if(cloudProfiles[p.uid]?.data)p.data=JSON.parse(JSON.stringify(cloudProfiles[p.uid].data));
+  state=familyDemo.scope==='all'?buildCombinedState():(profileById(familyDemo.scope)?.data||profileById('me').data);
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
+  render();renderFamilyHub();
+ }
+};
 const FAMILY_THEME_PRESETS={
  rose:{label:'Rosa intenso',group:'Tons vibrantes',primary:'#FF168A',secondary:'#C90065',bg:'#160A12',panel:'#21101B',panel2:'#301525',line:'#63304A',txt:'#FFF4FA',muted:'#D6B7C7'},
  mauve:{label:'Roxo ameixa',group:'Tons vibrantes',primary:'#D52BFF',secondary:'#7A16D8',bg:'#100A18',panel:'#1D1228',panel2:'#2B193A',line:'#50336B',txt:'#FAF3FF',muted:'#C5B1D8'},
