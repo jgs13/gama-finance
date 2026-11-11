@@ -45,6 +45,6 @@ const files = {
 for (const [path, content] of Object.entries(files)) {
   const fullPath = `${root}/${path}`;
   await mkdir(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
-  await writeFile(fullPath, content + "\\n", "utf8");
+  await writeFile(fullPath, content + "\n", "utf8");
 }
 console.log("GAMA FINANCE launcher and monochrome notification icons configured.");
