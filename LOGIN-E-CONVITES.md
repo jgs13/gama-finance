@@ -15,7 +15,7 @@ A configuração Web do Firebase contém identificadores públicos do app; não 
 - Cadastro e login individual por e-mail/senha.
 - Recuperação de senha por e-mail.
 - Criação do espaço familiar pelo primeiro usuário.
-- Convite direcionado ao e-mail da segunda pessoa, por link exclusivo com validade de sete dias.
+- Convite direcionado ao e-mail da segunda pessoa, por link exclusivo com validade de sete dias. O link é gerado no app e precisa ser compartilhado com a pessoa (por WhatsApp, e-mail etc.).
 - Aceitação somente pela conta autenticada com o mesmo e-mail convidado.
 - Listagem de membros e saída da conta.
 
