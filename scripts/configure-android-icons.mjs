@@ -87,14 +87,14 @@ const launcherFallbackPath = `${root}/mipmap-anydpi`;
 await mkdir(launcherFallbackPath, { recursive: true });
 const manifestPath = "android/app/src/main/AndroidManifest.xml";
 let manifest = await readFile(manifestPath, "utf8");
-manifest = manifest.replace(/<application\\b[^>]*>/, (tag) => {
+manifest = manifest.replace(/<application\b[^>]*>/, (tag) => {
   let updated = tag;
-  if (/\\bandroid:icon=/.test(updated)) {
+  if (/\bandroid:icon=/.test(updated)) {
     updated = updated.replace(/android:icon="[^"]*"/, 'android:icon="@mipmap/ic_launcher"');
   } else {
     updated = updated.replace(/>$/, ' android:icon="@mipmap/ic_launcher">');
   }
-  if (/\\bandroid:roundIcon=/.test(updated)) {
+  if (/\bandroid:roundIcon=/.test(updated)) {
     updated = updated.replace(/android:roundIcon="[^"]*"/, 'android:roundIcon="@mipmap/ic_launcher_round"');
   } else {
     updated = updated.replace(/>$/, ' android:roundIcon="@mipmap/ic_launcher_round">');
@@ -104,7 +104,7 @@ manifest = manifest.replace(/<application\\b[^>]*>/, (tag) => {
 if (!manifest.includes("com.google.firebase.messaging.default_notification_icon")) {
   manifest = manifest.replace(
     "</application>",
-    '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\\n    </application>'
+    '        <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_gama" />\n    </application>'
   );
 }
 await writeFile(manifestPath, manifest, "utf8");
