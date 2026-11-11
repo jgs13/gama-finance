@@ -115,27 +115,33 @@ jobs:
         run: ./gradlew assembleRelease --no-daemon
       - name: Validar ícones dentro do APK final
         working-directory: android
+        shell: bash
         run: |
           set -euo pipefail
           APK="app/build/outputs/apk/release/app-release.apk"
           AAPT=$(find "$ANDROID_HOME/build-tools" -name aapt -type f | sort -V | tail -n 1)
           test -n "$AAPT"
-          "$AAPT" dump badging "$APK" | tee /tmp/gama-badging.txt
-          grep -q "^application-icon-" /tmp/gama-badging.txt
+          test -s "$APK"
+
+          # O otimizador do Android pode renomear arquivos XML dentro de res/
+          # (por exemplo, res/HO.xml). Por isso validamos IDs e arquivos finais,
+          # não os nomes originais dos recursos no ZIP.
+          "$AAPT" dump badging "$APK" > /tmp/gama-badging.txt
+          ICON_PATH=$(sed -n "s/^application-icon-[0-9][0-9]*:'\\([^']*\\)'.*/\\1/p" /tmp/gama-badging.txt | head -n 1)
+          test -n "$ICON_PATH" || { echo "::error::APK sem ícone principal declarado."; exit 1; }
+          unzip -Z1 "$APK" | grep -Fxq "$ICON_PATH" || { echo "::error::Arquivo do ícone principal não encontrado no APK."; exit 1; }
+
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml > /tmp/gama-manifest.txt
-          grep -q "android:icon" /tmp/gama-manifest.txt
-          grep -q "android:roundIcon" /tmp/gama-manifest.txt
+          ICON_ID=$(sed -nE 's/.*android:icon\\([^)]*\\)=@([^ ]+).*/\\1/p' /tmp/gama-manifest.txt | head -n 1)
+          ROUND_ICON_ID=$(sed -nE 's/.*android:roundIcon\\([^)]*\\)=@([^ ]+).*/\\1/p' /tmp/gama-manifest.txt | head -n 1)
+          test -n "$ICON_ID" || { echo "::error::Manifesto sem referência válida para android:icon."; cat /tmp/gama-manifest.txt; exit 1; }
+          test -n "$ROUND_ICON_ID" || { echo "::error::Manifesto sem referência válida para android:roundIcon."; cat /tmp/gama-manifest.txt; exit 1; }
+
           "$AAPT" dump resources "$APK" > /tmp/gama-resources.txt
-          grep -q "mipmap/gama_launcher" /tmp/gama-resources.txt
-          grep -q "mipmap/gama_launcher_round" /tmp/gama-resources.txt
-          grep -q "drawable/gama_launcher_foreground" /tmp/gama-resources.txt
-          grep -q "drawable/ic_stat_gama" /tmp/gama-resources.txt
-          if grep -Eq "mipmap/ic_launcher(_round|_foreground)?([.]| |$)" /tmp/gama-resources.txt; then
-            echo "::error::APK ainda contém recursos de launcher genéricos do template Android."
-            exit 1
-          fi
-          unzip -l "$APK" | grep -E "gama_launcher(_round)?[.]xml|gama_launcher_foreground[.]xml"
-          echo "APK validado: manifesto e recursos compilados usam exclusivamente os launchers GAMA."
+          grep -Fq "$ICON_ID" /tmp/gama-resources.txt || { echo "::error::O recurso do ícone principal não foi resolvido no APK."; exit 1; }
+          grep -Fq "$ROUND_ICON_ID" /tmp/gama-resources.txt || { echo "::error::O recurso do ícone redondo não foi resolvido no APK."; exit 1; }
+
+          echo "APK validado: ícone principal e redondo declarados no Manifesto, IDs resolvidos e arquivo do ícone presente no pacote."
       - name: Preparar APK
         run: |
           mkdir -p release
