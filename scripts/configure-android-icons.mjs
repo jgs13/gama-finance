@@ -51,7 +51,7 @@ for (const entry of await readdir(root, { withFileTypes: true })) {
   if (!entry.isDirectory() || !entry.name.startsWith("mipmap-") || entry.name === "mipmap-anydpi" || entry.name === "mipmap-anydpi-v26") continue;
   const dir = `${root}/${entry.name}`;
   for (const name of await readdir(dir)) {
-    if (/^ic_launcher(?:_round|_foreground)?\\.(?:png|webp)$/i.test(name)) {
+    if (/^ic_launcher(?:_round|_foreground)?\.(?:png|webp)$/i.test(name)) {
       await unlink(`${dir}/${name}`);
     }
   }
