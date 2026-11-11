@@ -42,7 +42,7 @@ for (const entry of await readdir(root, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
   const dir = `${root}/${entry.name}`;
   for (const name of await readdir(dir)) {
-    if (/^ic_launcher(?:_round|_foreground)?(?:\\.(?:png|webp|xml))?$/i.test(name)) {
+    if (/^ic_launcher(?:_round|_foreground)?(?:\.(?:png|webp|xml))?$/i.test(name)) {
       await unlink(`${dir}/${name}`);
     }
   }
@@ -50,12 +50,12 @@ for (const entry of await readdir(root, { withFileTypes: true })) {
 
 const manifestPath = "android/app/src/main/AndroidManifest.xml";
 let manifest = await readFile(manifestPath, "utf8");
-manifest = manifest.replace(/<application\\b[^>]*>/, tag => {
+manifest = manifest.replace(/<application\b[^>]*>/, tag => {
   let updated = tag;
-  updated = /\\bandroid:icon="/.test(updated)
+  updated = /\bandroid:icon="/.test(updated)
     ? updated.replace(/android:icon="[^"]*"/, 'android:icon="@mipmap/gama_launcher"')
     : updated.replace(/>$/, ' android:icon="@mipmap/gama_launcher">');
-  updated = /\\bandroid:roundIcon="/.test(updated)
+  updated = /\bandroid:roundIcon="/.test(updated)
     ? updated.replace(/android:roundIcon="[^"]*"/, 'android:roundIcon="@mipmap/gama_launcher_round"')
     : updated.replace(/>$/, ' android:roundIcon="@mipmap/gama_launcher_round">');
   return updated;
@@ -71,9 +71,9 @@ const leftovers = [];
 for (const entry of await readdir(root, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
   for (const name of await readdir(`${root}/${entry.name}`)) {
-    if (/^ic_launcher(?:_round|_foreground)(?:\\.(?:png|webp|xml))?$/i.test(name)) leftovers.push(`${entry.name}/${name}`);
+    if (/^ic_launcher(?:_round|_foreground)(?:\.(?:png|webp|xml))?$/i.test(name)) leftovers.push(`${entry.name}/${name}`);
   }
 }
 if (leftovers.length) throw new Error(`Recursos de launcher genéricos ainda presentes: ${leftovers.join(", ")}`);
 console.log("GAMA launcher resources:", Object.keys(files).join(", "));
-console.log("Manifest launcher:", manifest.match(/<application\\b[^>]*>/)?.[0]);
+console.log("Manifest launcher:", manifest.match(/<application\b[^>]*>/)?.[0]);
