@@ -8,7 +8,7 @@ service cloud.firestore {
     match /families/{familyId} {
       allow create: if signedIn() && request.resource.data.memberUids == [request.auth.uid] && request.resource.data.ownerUid == request.auth.uid;
       allow read: if isMember(familyId);
-      allow update: if isMember(familyId) && request.resource.data.ownerUid == resource.data.ownerUid && request.resource.data.memberUids.hasAll(resource.data.memberUids) && request.resource.data.memberUids.size() <= 2 && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids','invitedEmails','updatedAt']);
+      allow update: if isMember(familyId) && request.resource.data.ownerUid == resource.data.ownerUid && request.resource.data.memberUids == resource.data.memberUids && request.resource.data.memberUids.size() <= 2 && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberUids','invitedEmails','updatedAt']);
       allow delete: if false;
       match /profiles/{uid} {
         allow read: if isMember(familyId);
