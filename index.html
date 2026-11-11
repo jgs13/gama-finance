@@ -880,7 +880,8 @@ window.GamaFinance={
   localStorage.setItem(FAMILY_KEY,JSON.stringify(familyDemo));
   render();renderFamilyHub();
   const own=profiles.find(p=>p.uid===currentUid);
-  return own?[{uid:own.uid,name:own.name,email:own.email,data:own.data}]:[];
+  return own&&JSON.stringify(own.data)!==JSON.stringify(cloudProfiles[own.uid]?.data||null)
+   ?[{uid:own.uid,name:own.name,email:own.email,data:own.data}]:[];
  },
  applyCloudProfiles(cloudProfiles){
   if(!familyDemo)return;
