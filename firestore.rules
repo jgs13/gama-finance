@@ -32,7 +32,7 @@ service cloud.firestore {
         allow read: if isFamilyMember(familyId);
         allow create: if signedIn() && request.auth.uid == uid
           && (
-            get(/databases/$(database)/documents/families/$(familyId)).data.ownerId == request.auth.uid
+            getAfter(/databases/$(database)/documents/families/$(familyId)).data.ownerId == request.auth.uid
             || (
               request.resource.data.invitationId is string
               && getAfter(/databases/$(database)/documents/invitations/$(request.resource.data.invitationId)).data.familyId == familyId
