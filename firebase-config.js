@@ -1,9 +1,8 @@
-// Configuração pública do Firebase do projeto EXCLUSIVO do GAMA FINANCE.
-// Não reutilize o projeto do Gama Drive. Os valores abaixo são preenchidos
-// com as credenciais de configuração do app Web no Firebase Console.
+// Configuração pública do Firebase do projeto exclusivo GAMA FINANCE TESTE.
+// Nunca reutilizar o projeto do Gama Drive.
 export default {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  appId: ""
+  apiKey: "AIzaSyCd_t1VIvljJZxymbooaC41wSFThAEoUIE",
+  authDomain: "gama-finance-teste.firebaseapp.com",
+  projectId: "gama-finance-teste",
+  appId: "1:384596749659:web:d0c2d496e2f5398b3ffe7e"
 };
