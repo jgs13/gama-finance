@@ -66,6 +66,8 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm run android:prepare
       - run: npx cap add android
+      - name: Aplicar ícones oficiais do GAMA FINANCE
+        run: node scripts/configure-android-icons.mjs
       - name: Ajustar Gradle
         run: |
           sed -i 's/gradle-8\.14\.3-all\.zip/gradle-8.14.3-bin.zip/' android/gradle/wrapper/gradle-wrapper.properties
