@@ -100,6 +100,17 @@ const scheduleReminders = async () => {
       });
       nextIds.push(id);
     }
+    const overdueAt = localDate(item.due, 1);
+    if (overdueAt > now) {
+      const id = hashId(item.id + "|" + item.due + "|overdue");
+      notifications.push({
+        id, title: "Conta vencida",
+        body: item.name + " continua pendente. Valor: " + Number(item.amount || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) + ".",
+        schedule: { at: overdueAt, allowWhileIdle: true },
+        extra: { gamaFinanceReminder: true, itemId: item.id, due: item.due, owner: item.owner, overdue: true }
+      });
+      nextIds.push(id);
+    }
   }
   if (notifications.length) await plugin.schedule({ notifications });
   localStorage.setItem(IDS_KEY, JSON.stringify(nextIds));
