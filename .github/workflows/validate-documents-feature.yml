@@ -1,0 +1,33 @@
+name: Validate document analysis feature
+on:
+  push:
+    branches:
+      - correcao-receitas-despesas-salario-flexivel
+  pull_request:
+    branches:
+      - main
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check document-ai.js
+          node --check cloudflare/documents-worker/src/index.js
+          node --check scripts/prepare-android.mjs
+      - name: Verify app wiring
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const html = fs.readFileSync('index.html', 'utf8');
+          for (const id of ['documentAiChoose','documentAiCameraBtn','documentAiFile','documentAiCamera','documentAiStatus','documentAiResult','documentAiList']) {
+            if (!html.includes('id="' + id + '"')) throw new Error('Missing UI element: ' + id);
+          }
+          if (!html.includes('src="./document-ai.js"')) throw new Error('Document module is not loaded.');
+          if (!fs.readFileSync('scripts/prepare-android.mjs','utf8').includes('"document-ai.js"')) throw new Error('Android bundle does not include document-ai.js.');
+          console.log('Document analysis UI and Android packaging references verified.');
+          NODE
