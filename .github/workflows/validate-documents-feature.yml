@@ -38,10 +38,10 @@ jobs:
           import fs from 'node:fs';
           import { execFileSync } from 'node:child_process';
           const html = fs.readFileSync('index.html', 'utf8');
-          const scripts = [...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)];
+          const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
           let checked = 0;
           for (const [i, attrs, code] of scripts) {
-            if (/\\bsrc\\s*=/.test(attrs) || /\\btype\\s*=\\s*["']importmap["']/.test(attrs) || !code.trim()) continue;
+            if (/\bsrc\s*=/.test(attrs) || /\btype\s*=\s*["']importmap["']/.test(attrs) || !code.trim()) continue;
             const path = `/tmp/gama-inline-${checked++}.js`;
             fs.writeFileSync(path, code);
             execFileSync('node', ['--check', path], { stdio: 'inherit' });
