@@ -344,7 +344,23 @@ body.family-workspace-open #familyWorkspace input,body.family-workspace-open #fa
 .auth-status{font-size:12px;color:#91e6d6;min-height:18px;margin-top:12px}.auth-status[data-error="true"]{color:#ff8792}
 .auth-card ul{padding-left:20px;color:#c5d2e0;font-size:13px}
 .auth-card input{margin-top:3px}.auth-card .auth-close{float:right}
-</style></head>
+</style><style id="credit-card-mobile-layout-fix">
+/* Cartões: evitar que o botão Editar seja comprimido em telas estreitas. */
+#cardGrid{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:stretch}
+#cardGrid>.card{min-width:0;width:100%;overflow:hidden}
+#cardGrid>.card>.row:first-child{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#cardGrid>.card>.row:first-child>strong{flex:1 1 100%;min-width:0;overflow-wrap:anywhere}
+#cardGrid>.card>.row:first-child>.pill{max-width:100%;white-space:normal}
+#cardGrid>.card>.row:first-child>[data-edit-card]{flex:0 0 auto;margin-left:auto}
+#cardGrid>.card>.row:first-child .family-owner-tag{max-width:100%;overflow-wrap:anywhere}
+@media(max-width:430px){
+ #cardGrid{grid-template-columns:minmax(0,1fr)}
+ #cardGrid>.card{padding:14px}
+ #cardGrid>.card>.row:first-child{justify-content:flex-start}
+ #cardGrid>.card>.row:first-child>[data-edit-card]{min-width:76px;min-height:36px}
+}
+</style>
+</head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
 <button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
 <div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
