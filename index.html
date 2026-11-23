@@ -383,16 +383,16 @@ body.family-workspace-open #familyWorkspace input,body.family-workspace-open #fa
 #dashboard .finance-due-strip>strong{font-size:24px;color:var(--gold)}
 #dashboard .grid{gap:10px}#dashboard .card{border-radius:17px}#dashboard .two{margin-top:11px}
 @media(max-width:420px){#dashboard .finance-hero{padding:17px 15px}#dashboard .finance-mini strong{font-size:18px}#dashboard .finance-projection strong{font-size:15px}}
-</style></head>
+ .auth-password-wrap{position:relative;display:flex;align-items:center}.auth-password-wrap input{padding-right:52px}.auth-password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:42px;height:38px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:19px;cursor:pointer}.auth-password-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}</style></head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
 <button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
 <div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
 <section id="authLogin"><h2>Entre na sua conta</h2><p>Crie seu acesso individual ou entre com seu e-mail e senha.</p>
 <div class="auth-switch"><button type="button" class="btn" id="authModeLogin">Entrar</button><button type="button" class="btn" id="authModeCreate">Criar conta</button></div>
 <form id="authForm">
-<div class="field" id="authNameField" hidden><label for="authName">Seu nome</label><input id="authName" autocomplete="name" placeholder="Como deseja aparecer"></div>
+
 <div class="field"><label for="authEmail">E-mail</label><input id="authEmail" type="email" autocomplete="email" required placeholder="seu@email.com"></div>
-<div class="field"><label for="authPassword">Senha</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Mínimo de 6 caracteres"></div>
+<div class="field"><label for="authPassword">Senha</label><div class="auth-password-wrap"><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="Sua senha"><button type="button" class="auth-password-toggle" id="authPasswordToggle" aria-label="Mostrar senha" aria-pressed="false">◉</button></div></div>
 <div class="actions"><button class="btn primary" id="authSubmit" type="submit">Entrar</button><button class="btn" id="authForgot" type="button">Esqueci a senha</button></div>
 </form></section>
 <section id="authSignedIn" hidden><h2>Conta conectada</h2><p id="authSignedEmail"></p>
