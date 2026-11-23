@@ -1,7 +1,7 @@
 const STORAGE_KEY = "gama-finance-family-v2";
 const IDS_KEY = "gama-finance-notification-ids";
 const OVERDUE_KEY = "gama-finance-overdue-notified";
-const REMINDERS = [7, 3, 1, 0];
+const DEFAULT_REMINDERS = [7, 3, 1, 0];
 
 const isAndroidApp = () => Boolean(window.Capacitor?.isNativePlatform?.());
 const localDate = (value, offset = 0) => {
@@ -33,7 +33,7 @@ const collectItems = () => {
     const data = profile.data || {};
     for (const bill of Array.isArray(data.bills) ? data.bills : []) {
       if (bill.status === "paid" || !bill.due || !bill.id) continue;
-      items.push({ id: String(bill.id), owner, name: bill.name || "Conta", amount: bill.amount, due: bill.due, kind: "Conta" });
+      items.push({ id: String(bill.id), owner, name: bill.name || "Conta", amount: bill.amount, due: bill.due, kind: "Conta", reminderDays: bill.reminderDays });
     }
     for (const card of Array.isArray(data.cards) ? data.cards : []) {
       if (card.invoiceStatus === "paid" || !card.invoiceDue || !card.id || !(Number(card.invoiceAmount) > 0)) continue;
@@ -82,7 +82,9 @@ const scheduleReminders = async () => {
       }
       continue;
     }
-    for (const days of REMINDERS) {
+    const configuredDays = Array.isArray(item.reminderDays) ? item.reminderDays : DEFAULT_REMINDERS;
+    const reminderDays = [...new Set(configuredDays.map(Number).filter(days => Number.isInteger(days) && days >= 0 && days <= 60))].sort((a,b)=>b-a);
+    for (const days of reminderDays) {
       const at = localDate(item.due, -days);
       if (at <= now) {
         if (days === 0 && dateKey(now) === item.due) at.setTime(Date.now() + 60000);
