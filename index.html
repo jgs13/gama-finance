@@ -706,8 +706,7 @@ function openDashboardQuickAdd(){
  overlay.innerHTML='<div class="modal-box"><div class="row"><h3>O que deseja adicionar?</h3><button type="button" class="btn small" data-quick-close>Fechar</button></div><div class="list" style="margin-top:12px"><button class="btn" data-quick="expense">＋ Despesa</button><button class="btn" data-quick="income">＋ Receita</button><button class="btn" data-quick="bill">＋ Conta / compromisso</button><button class="btn" data-quick="card">＋ Cartão</button><button class="btn" data-quick="salary">＋ Salário CLT</button><button class="btn" data-quick="source">＋ Outra renda</button></div></div>';
  const finish=()=>overlay.remove();overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('[data-quick-close]')){finish();return}const choice=e.target.closest('[data-quick]');if(!choice)return;const action=choice.dataset.quick;finish();if(action==='expense')entryFormPreset('expense');else if(action==='income')entryFormPreset('income');else if(action==='bill')billForm();else if(action==='card')cardForm();else if(action==='salary')salarySourceForm(null);else if(action==='source')sourceForm()});document.body.appendChild(overlay);
 }
-$('#dashboardQuickAdd').onclick=openDashboardQuickAdd;
-document.querySelectorAll('[data-quick-template]').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.quickTemplate;if(t==='expense'||t==='income')entryFormPreset(t);else if(t==='bill')billForm();else if(t==='salary')salarySourceForm(null)}));
+/* Os atalhos antigos foram substituídos pelo botão flutuante #reminderAdd. */
 function salarySourceForm(s,preset){
  const d=s||preset||{},mode=d.salaryMode||(s?'amount':'percentage');
  const first=d.firstAmount??d.amount??'',second=d.secondAmount??d.amount??'';
