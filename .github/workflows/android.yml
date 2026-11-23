@@ -2,18 +2,6 @@ name: Build GAMA FINANCE Android APK
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "index.html"
-      - "manifest.json"
-      - "app-version.json"
-      - "sw.js"
-      - "icon.svg"
-      - "package.json"
-      - "capacitor.config.json"
-      - "scripts/**"
-      - ".github/workflows/android.yml"
 
 permissions:
   contents: read
@@ -57,6 +45,8 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
+      - name: Aplicar ícone oficial do GAMA FINANCE
+        run: node scripts/configure-android-icons.mjs
 
       - name: Build debug APK
         working-directory: android
