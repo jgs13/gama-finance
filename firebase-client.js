@@ -1,9 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, signOut, sendPasswordResetEmail,
-  updateProfile
-} from "firebase/auth";
+  signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "firebase/auth";
 import {
   getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
   doc, getDoc, setDoc, collection, getDocs, onSnapshot,
@@ -268,20 +266,28 @@ if (!configured) {
     } catch(e) { setStatus(e.message || "Falha ao carregar sua família.",true); }
   });
 
-  document.getElementById("authModeLogin").onclick=()=>{document.getElementById("authSubmit").textContent="Entrar";document.getElementById("authNameField").hidden=true;};
-  document.getElementById("authModeCreate").onclick=()=>{document.getElementById("authSubmit").textContent="Criar conta";document.getElementById("authNameField").hidden=false;};
+  document.getElementById("authModeLogin").onclick=()=>{document.getElementById("authSubmit").textContent="Entrar";};
+  document.getElementById("authModeCreate").onclick=()=>{document.getElementById("authSubmit").textContent="Criar conta";};
   document.getElementById("authAccountBtn").onclick=()=>{show("authGate",true);show("authClose",true);};
   document.getElementById("authClose").onclick=()=>{if(currentFamilyId)show("authGate",false);};
+
+  const passwordInput=document.getElementById("authPassword");
+  const passwordToggle=document.getElementById("authPasswordToggle");
+  passwordToggle?.addEventListener("click",()=>{
+    const showing=passwordInput.type==="text";
+    passwordInput.type=showing?"password":"text";
+    passwordToggle.textContent=showing?"◉":"⊘";
+    passwordToggle.setAttribute("aria-label",showing?"Mostrar senha":"Ocultar senha");
+    passwordToggle.setAttribute("aria-pressed",String(!showing));
+  });
   form.addEventListener("submit",async event=>{
     event.preventDefault();
     const email=cleanEmail(document.getElementById("authEmail").value);
     const password=document.getElementById("authPassword").value;
     try {
       if(document.getElementById("authSubmit").textContent==="Criar conta") {
-        const name=document.getElementById("authName").value.trim();
         const credential=await createUserWithEmailAndPassword(auth,email,password);
-        if(name) await updateProfile(credential.user,{displayName:name});
-        await setDoc(userRef(credential.user.uid),{email,displayName:name,familyId:null,updatedAt:serverTimestamp()});
+        await setDoc(userRef(credential.user.uid),{email,displayName:"",familyId:null,updatedAt:serverTimestamp()});
       } else await signInWithEmailAndPassword(auth,email,password);
       setStatus("Acesso realizado.");
     } catch(e) { setStatus(e.message || "Não foi possível autenticar.",true); }
