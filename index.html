@@ -385,54 +385,43 @@ body.family-workspace-open #familyWorkspace input,body.family-workspace-open #fa
 @media(max-width:420px){#dashboard .finance-hero{padding:17px 15px}#dashboard .finance-mini strong{font-size:18px}#dashboard .finance-projection strong{font-size:15px}}
  .auth-password-wrap{position:relative;display:flex;align-items:center}.auth-password-wrap input{padding-right:52px}.auth-password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:42px;height:38px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:19px;cursor:pointer}.auth-password-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}</style>
 <style id="gama-finance-premium-reference">
-/* Painel de referência: grafite e dourado, compacto e sem cartões redundantes. */
-#dashboard .section-head{align-items:center;margin:5px 0 11px}
-#dashboard .section-head h2{font-size:18px;font-weight:750;letter-spacing:-.25px}
-#dashboard .section-head p{font-size:11px}
-#dashboard #dashMonth{max-width:142px!important;padding:8px 10px;font-size:12px;border-radius:10px}
-#dashboard .finance-hero{padding:17px 16px!important;border-radius:17px!important;background:linear-gradient(145deg,#22262d,#191d23)!important;border:1px solid #373d46!important;box-shadow:0 8px 22px #0002!important;margin-bottom:9px!important}
-#dashboard .finance-hero .metric-label{font-size:10px;letter-spacing:1.1px;color:#b7bbc2}
-#dashboard .finance-balance{font-size:clamp(29px,7vw,37px)!important;line-height:1.12;margin:7px 0 13px!important;color:#f2f2ef}
-#dashboard .finance-projection{padding-top:10px;gap:10px;border-color:#3a4049}
-#dashboard .finance-projection small,#dashboard .finance-mini small{font-size:9px;letter-spacing:.75px}
-#dashboard .finance-projection strong{font-size:14px;color:#c5a46d}
-#dashboard .finance-mini-grid{gap:8px;margin-bottom:9px}
-#dashboard .finance-mini{padding:11px 13px!important;border-radius:14px!important;background:linear-gradient(145deg,#20252c,#191e25)!important;border:1px solid #343b44!important}
-#dashboard .finance-mini strong{font-size:18px}
-#dashboard .income-mini{border-left:3px solid #6d9b7c!important}
-#dashboard .expense-mini{border-left:3px solid #b87583!important}
-#dashboard .finance-due-strip{padding:10px 13px!important;margin-bottom:10px!important;border-radius:13px!important;background:#1b2027!important;border:1px solid #343b44!important}
-#dashboard .finance-due-strip b{font-size:12px}
-#dashboard .finance-due-strip small{font-size:10px}
-#dashboard .finance-due-strip>strong{font-size:19px;color:#c5a46d}
+/* Layout principal baseado no painel de referência do GAMA FINANCE. */
+#dashboard .section-head{align-items:center;margin:5px 0 13px}
+#dashboard .section-head h2{font-size:20px;font-weight:800;letter-spacing:-.35px}
+#dashboard .section-head p{font-size:12px}
+#dashboard #dashMonth{max-width:155px!important;padding:9px 11px;font-size:12px;border-radius:12px}
+#dashboard .finance-hero{padding:19px 17px!important;border-radius:22px!important;margin-bottom:11px!important}
+#dashboard .finance-balance{font-size:clamp(32px,8vw,42px)!important;line-height:1.1;margin:8px 0 14px!important}
+#dashboard .finance-projection{padding-top:12px;gap:12px}
+#dashboard .finance-projection small,#dashboard .finance-mini small{font-size:10px;letter-spacing:.8px}
+#dashboard .finance-projection strong{font-size:15px}
+#dashboard .finance-mini-grid{gap:10px;margin-bottom:12px}
+#dashboard .finance-mini{padding:14px!important;border-radius:17px!important}
+#dashboard .finance-mini strong{font-size:20px}
+#dashboard .finance-due-strip{padding:13px 15px!important;margin:12px 0!important;border-radius:16px!important}
+#dashboard .finance-due-strip b{font-size:14px}
+#dashboard .finance-due-strip small{font-size:11px}
+#dashboard .finance-due-strip>strong{font-size:22px;color:var(--theme)}
 #dashboard>.grid{display:none!important}
-#dashboard>.two{grid-template-columns:1fr;gap:9px;margin-top:9px}
-#dashboard>.two .card{padding:13px 14px;border-radius:14px}
-#dashboard>.two h3{font-size:13px;margin-bottom:8px}
-#dashboard .item{padding:9px 0;gap:8px}
-#dashboard .item strong{font-size:12px}
-#dashboard .item small{font-size:10px}
-#dashboard .amount{font-size:12px}
-#dashboard>.card[style*="margin-top"]{padding:13px 14px!important;border-radius:14px!important;margin-top:9px!important}
-#dashboard .btn,#familyWorkspace .btn{min-height:34px;padding:7px 11px;border-radius:9px;font-size:12px;font-weight:650;letter-spacing:.05px;box-shadow:none;transition:filter .15s ease,transform .15s ease}
-#dashboard .btn:active,#familyWorkspace .btn:active{transform:translateY(1px)}
-#familyWorkspace .btn.primary{background:linear-gradient(135deg,var(--theme),var(--theme-alt))!important;color:#101318!important;border:0!important}
-#familyWorkspace .tab{font-weight:650;letter-spacing:.05px}
-#familyWorkspace .tab.active{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme) 35%,transparent)}
-#familyThemePalette{gap:8px}
-#familyThemePalette .theme-palette-toggle{min-height:31px;padding:6px 10px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);font-size:11px;font-weight:650}
-#familyThemePalette .theme-swatch-list{gap:9px;padding:8px 3px}
-#familyThemePalette .theme-swatch{width:24px;height:24px;min-width:24px;border:2px solid color-mix(in srgb,var(--txt) 35%,transparent);box-shadow:0 0 0 1px #0005}
-#familyThemePalette .theme-swatch.selected{outline:2px solid var(--theme);outline-offset:3px;transform:none}
-#familyThemePalette .theme-swatch.selected:after{font-size:11px;color:#fff;text-shadow:0 1px 3px #000}
-@media(max-width:430px){
- #dashboard .finance-hero{padding:15px 13px!important}
- #dashboard .finance-balance{font-size:30px!important}
- #dashboard .finance-mini{padding:10px 11px!important}
- #dashboard .finance-mini strong{font-size:16px}
- #dashboard>.two .card{padding:11px 12px}
- #familyWorkspace .family-workspace-bar{gap:5px}
-}
+#dashboard>.two{grid-template-columns:1fr;gap:12px;margin-top:12px}
+#dashboard>.two .card{padding:15px;border-radius:18px}
+#dashboard>.two h3{font-size:15px;margin-bottom:10px}
+#dashboard .item{padding:11px 0;gap:9px}
+#dashboard .item strong{font-size:13px}
+#dashboard .item small{font-size:11px}
+#dashboard .amount{font-size:13px}
+#dashboard>.card[style*="margin-top"]{padding:15px!important;border-radius:18px!important;margin-top:12px!important}
+#dashboard .finance-quick-add{display:flex;align-items:center;gap:13px;padding:15px 14px;margin:13px 0;border:1px solid color-mix(in srgb,var(--theme) 75%,var(--line));border-radius:19px;background:linear-gradient(115deg,color-mix(in srgb,var(--theme) 13%,var(--panel)),var(--panel));box-shadow:0 0 18px color-mix(in srgb,var(--theme) 12%,transparent)}
+#dashboard .finance-quick-plus{width:54px;height:54px;flex:0 0 54px;border:2px solid var(--theme);border-radius:50%;display:grid;place-items:center;color:var(--theme);font-size:35px;font-weight:400;line-height:1}
+#dashboard .finance-quick-copy{flex:1;min-width:0}
+#dashboard .finance-quick-copy strong{display:block;font-size:16px}
+#dashboard .finance-quick-copy small{display:block;color:var(--muted);font-size:11px;line-height:1.35;margin-top:3px}
+#dashboard #dashboardQuickAdd{border:0;border-radius:14px;padding:11px 13px;background:var(--theme);color:#08110f;font-size:12px;font-weight:800;white-space:nowrap}
+#dashboard .finance-template-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+#dashboard .finance-template-row button{flex:0 0 auto;border:1px solid var(--line);background:var(--panel2);color:var(--txt);border-radius:12px;padding:9px 11px;font-size:11px}
+#dashboard .btn,#familyWorkspace .btn{min-height:36px;padding:8px 11px;border-radius:10px;font-size:12px;font-weight:650;box-shadow:none}
+#familyWorkspace #tabs .tab{min-height:42px;font-size:10px}
+@media(max-width:430px){#dashboard .finance-hero{padding:17px 14px!important}#dashboard .finance-balance{font-size:32px!important}#dashboard .finance-mini{padding:12px!important}#dashboard .finance-mini strong{font-size:18px}#dashboard .finance-quick-add{gap:9px;padding:12px 10px}#dashboard .finance-quick-plus{width:46px;height:46px;flex-basis:46px;font-size:30px}#dashboard .finance-quick-copy strong{font-size:14px}#dashboard #dashboardQuickAdd{padding:10px 9px;font-size:11px}#dashboard>.two .card{padding:13px}}
 </style>
 </head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
@@ -461,7 +450,7 @@ body.family-workspace-open #familyWorkspace input,body.family-workspace-open #fa
 <nav class="tabs" id="tabs"><button class="tab active" data-view="dashboard">Visão geral</button><button class="tab" data-view="entries">Lançamentos</button><button class="tab" data-view="calendar">Calendário</button><button class="tab" data-view="income">Rendas</button><button class="tab" data-view="cards">Cartões</button><button class="tab" data-view="bills">Contas</button><button class="tab" data-view="analysis">Análises</button><button class="tab" data-view="goals">Metas</button><button class="tab" data-view="settings">Mais</button><button class="tab guide-tab" data-view="guide">GAMA Guia</button></nav>
 <section class="view active" id="dashboard"><div class="section-head"><div><h2>Resumo financeiro</h2><p id="monthLabel"></p></div><input id="dashMonth" type="month" style="max-width:160px"></div>
 <div class="finance-hero card"><div class="row"><span class="metric-label">SALDO ATUAL DO MÊS</span><span class="pill" id="financeStatus">EM DIA</span></div><div class="finance-balance" id="mBalanceHero">R$ 0,00</div><div class="finance-projection"><div><small>PROJEÇÃO ATÉ O FIM DO MÊS</small><strong id="mProjectedHero">R$ 0,00</strong></div><div class="projection-status"><small>SITUAÇÃO</small><strong id="financeProjectionStatus">Equilibrado</strong></div></div></div>
-<div class="finance-mini-grid"><div class="card finance-mini income-mini"><small>RECEITAS</small><strong id="mIncomeHero">R$ 0,00</strong></div><div class="card finance-mini expense-mini"><small>DESPESAS</small><strong id="mExpenseHero">R$ 0,00</strong></div></div>
+<div class="finance-mini-grid"><div class="card finance-mini income-mini"><small>RECEITAS</small><strong id="mIncomeHero">R$ 0,00</strong></div><div class="card finance-mini expense-mini"><small>DESPESAS</small><strong id="mExpenseHero">R$ 0,00</strong></div></div><div class="finance-quick-add"><div class="finance-quick-plus" aria-hidden="true">+</div><div class="finance-quick-copy"><strong>Adicionar lançamento</strong><small>Registre uma receita, despesa, conta ou cartão.</small></div><button type="button" id="dashboardQuickAdd">Incluir valor ›</button></div><div class="finance-template-row"><button type="button" data-quick-template="expense">＋ Despesa</button><button type="button" data-quick-template="income">＋ Receita</button><button type="button" data-quick-template="bill">＋ Conta mensal</button><button type="button" data-quick-template="salary">＋ Salário</button></div>
 <div class="finance-due-strip card"><div><b>Vencimentos próximos</b><small>Contas pendentes organizadas por urgência</small></div><strong id="dueSoonCount">0</strong></div><div class="grid">
 <div class="card"><div class="metric-label">Saldo do mês</div><div class="metric" id="mBalance">R$ 0,00</div><div class="metric-sub">Receitas menos despesas</div></div>
 <div class="card"><div class="metric-label">Receitas recebidas</div><div class="metric positive" id="mIncome">R$ 0,00</div><div class="metric-sub">Entradas confirmadas</div></div>
@@ -649,6 +638,14 @@ $('#closeModal').onclick=()=>{if(!familyOwnerDialogOpen)closeFinancialModal()};$
 function addEntry(data){state.entries.push({id:uid(),status:'pending',...data,amount:moneyValue(data.amount)});save()}
 function savedOptions(list,current){const values=[...new Set([...(list||[]),...(current?[current]:[])])];return values.map(v=>[v,v])}function entryForm(existing){const d=existing||{date:today(),type:'expense',status:'pending',description:state.descriptions[0]||'',category:state.categories[0]||'Geral',amount:'',note:''};openModal(existing?'Editar lançamento':'Novo lançamento',field('description','Descrição','select',d.description,savedOptions(state.descriptions,d.description))+field('amount','Valor (R$)','number',d.amount)+field('date','Data','date',d.date)+field('type','Tipo','select',d.type,[['income','Receita'],['expense','Despesa']])+field('category','Categoria / origem','select',d.category,savedOptions(state.categories,d.category))+field('status','Status','select',d.status,[['pending','Pendente'],['paid','Recebido / pago']])+'<div class="field full"><label>Observação (opcional)</label><input name="note" value="'+esc(d.note||'')+'"></div>',x=>{if(existing){Object.assign(existing,{...x,amount:moneyValue(x.amount)});save()}else addEntry(x)},!existing)}
 $('#newEntry').onclick=()=>entryForm();
+function entryFormPreset(type){const d={date:today(),type,status:'pending',description:type==='income'?'Receita':'Despesa',category:state.categories[0]||'Geral',amount:'',note:''};entryForm(d)}
+function openDashboardQuickAdd(){
+ const overlay=document.createElement('div');overlay.className='modal open';overlay.style.zIndex='1200';
+ overlay.innerHTML='<div class="modal-box"><div class="row"><h3>O que deseja adicionar?</h3><button type="button" class="btn small" data-quick-close>Fechar</button></div><div class="list" style="margin-top:12px"><button class="btn" data-quick="expense">＋ Despesa</button><button class="btn" data-quick="income">＋ Receita</button><button class="btn" data-quick="bill">＋ Conta / compromisso</button><button class="btn" data-quick="card">＋ Cartão</button><button class="btn" data-quick="salary">＋ Salário CLT</button><button class="btn" data-quick="source">＋ Outra renda</button></div></div>';
+ const finish=()=>overlay.remove();overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('[data-quick-close]')){finish();return}const choice=e.target.closest('[data-quick]');if(!choice)return;const action=choice.dataset.quick;finish();if(action==='expense')entryFormPreset('expense');else if(action==='income')entryFormPreset('income');else if(action==='bill')billForm();else if(action==='card')cardForm();else if(action==='salary')salarySourceForm(null);else if(action==='source')sourceForm()});document.body.appendChild(overlay);
+}
+$('#dashboardQuickAdd').onclick=openDashboardQuickAdd;
+document.querySelectorAll('[data-quick-template]').forEach(b=>b.addEventListener('click',()=>{const t=b.dataset.quickTemplate;if(t==='expense'||t==='income')entryFormPreset(t);else if(t==='bill')billForm();else if(t==='salary')salarySourceForm(null)}));
 function salarySourceForm(s,preset){
  const d=s||preset||{},mode=d.salaryMode||(s?'amount':'percentage');
  const first=d.firstAmount??d.amount??'',second=d.secondAmount??d.amount??'';
