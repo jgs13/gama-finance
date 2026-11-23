@@ -436,6 +436,55 @@ body:has(#dashboard.active){background:#111419!important}body:has(#dashboard.act
 #dashboard .reminder-bottom-space{height:150px}#dashboard .reminder-fab{position:fixed;z-index:40;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);width:94px;height:94px;border:0;border-radius:50%;background:#e2b65c;color:#17191d;font-size:48px;font-weight:500;box-shadow:0 8px 20px #0005}#dashboard .reminder-menu{position:fixed;z-index:50;right:24px;top:90px;width:min(260px,calc(100vw - 48px));padding:10px;border:1px solid #3b414c;border-radius:18px;background:#20242c;box-shadow:0 12px 35px #0009}#dashboard .reminder-menu button{display:block;width:100%;text-align:left;border:0;border-radius:10px;background:transparent;color:#eee;padding:12px;font-size:14px}#dashboard .reminder-menu button:active{background:#343b46}#dashboard .reminder-hidden{display:none!important}
 @media(max-width:480px){body:has(#dashboard.active) .app{padding:25px 26px 12px!important}#dashboard{min-height:calc(100dvh - 38px)}#dashboard .reminder-head{margin-bottom:25px}#dashboard .reminder-head h2{font-size:29px}#dashboard .reminder-month{margin-bottom:30px;gap:27px}#dashboard .reminder-balance{padding:25px 26px 22px!important;border-radius:36px!important}#dashboard .finance-balance{font-size:39px!important}#dashboard .reminder-minis{gap:26px!important;margin-bottom:48px!important}#dashboard .reminder-minis .finance-mini{padding:18px 21px!important;min-height:92px;border-radius:30px!important}#dashboard .reminder-movement{min-height:100px;padding:17px 20px;gap:18px;border-radius:28px}#dashboard .movement-title{font-size:17px}#dashboard .movement-value{font-size:18px}#dashboard .reminder-fab{width:94px;height:94px;bottom:calc(24px + env(safe-area-inset-bottom))}}
 @media(max-width:360px){body:has(#dashboard.active) .app{padding-left:15px!important;padding-right:15px!important}#dashboard .reminder-minis{gap:10px!important}#dashboard .reminder-movement{gap:12px;padding:14px}}
+
+/* Ajuste fino: proporções compactas, sem aparência de zoom */
+#dashboard .reminder-head{margin:2px 0 18px!important}
+#dashboard .reminder-head h2{font-size:25px!important}
+#dashboard .reminder-head button{width:44px!important;height:44px!important;border-radius:13px!important;font-size:20px!important}
+#dashboard .reminder-month{gap:20px!important;margin-bottom:20px!important}
+#dashboard .reminder-month strong{font-size:12px!important;letter-spacing:1.5px!important}
+#dashboard .reminder-month button{font-size:21px!important}
+#dashboard .reminder-balance{padding:18px 20px 17px!important;border-radius:24px!important;margin-bottom:12px!important}
+#dashboard .reminder-balance .metric-label{font-size:11px!important}
+#dashboard .reminder-info{font-size:16px!important}
+#dashboard .finance-balance{font-size:32px!important;margin:7px 0 15px!important}
+#dashboard .finance-projection{padding-top:12px!important}
+#dashboard .finance-projection small{font-size:10px!important}
+#dashboard .finance-projection strong{font-size:16px!important}
+#dashboard .reminder-minis{gap:12px!important;margin-bottom:30px!important}
+#dashboard .reminder-minis .finance-mini{padding:13px 15px!important;min-height:70px!important;border-radius:20px!important;gap:4px!important}
+#dashboard .reminder-minis small{font-size:10px!important}
+#dashboard .reminder-minis strong{font-size:17px!important;letter-spacing:.3px!important}
+#dashboard .reminder-movements-head{margin-bottom:18px!important}
+#dashboard .reminder-movements-head h3{font-size:20px!important}
+#dashboard .reminder-movements-head>div{gap:14px!important}
+#dashboard .reminder-movements-head button{font-size:23px!important}
+#dashboard .reminder-movements{gap:11px!important}
+#dashboard .reminder-movement{min-height:76px!important;padding:12px 15px!important;gap:14px!important;border-radius:20px!important}
+#dashboard .reminder-movement .movement-stripe{height:42px!important;width:4px!important;flex-basis:4px!important}
+#dashboard .movement-title{font-size:15px!important}
+#dashboard .movement-value{font-size:15px!important}
+#dashboard .movement-meta{font-size:11px!important;margin-top:5px!important;gap:7px!important}
+#dashboard .movement-toggle{width:24px!important;height:24px!important;flex-basis:24px!important;border-width:2px!important}
+#dashboard .reminder-bottom-space{height:95px!important}
+#dashboard .reminder-fab{width:62px!important;height:62px!important;font-size:32px!important;bottom:calc(18px + env(safe-area-inset-bottom))!important;box-shadow:0 4px 12px #0004!important}
+#dashboard .reminder-menu{top:72px!important;right:16px!important;width:min(230px,calc(100vw - 32px))!important;border-radius:14px!important;padding:7px!important}
+#dashboard .reminder-menu button{padding:10px!important;font-size:13px!important}
+@media(max-width:480px){
+ body:has(#dashboard.active) .app{padding:20px 18px 10px!important}
+ #dashboard{min-height:calc(100dvh - 30px)!important}
+ #dashboard .reminder-head{margin-bottom:17px!important}
+ #dashboard .reminder-month{margin-bottom:18px!important;gap:19px!important}
+ #dashboard .reminder-balance{padding:17px 18px 16px!important;border-radius:23px!important}
+ #dashboard .finance-balance{font-size:31px!important}
+ #dashboard .reminder-minis{gap:11px!important;margin-bottom:28px!important}
+ #dashboard .reminder-minis .finance-mini{padding:12px 13px!important;min-height:66px!important;border-radius:18px!important}
+ #dashboard .reminder-movement{min-height:72px!important;padding:11px 13px!important;gap:12px!important;border-radius:18px!important}
+ #dashboard .movement-title{font-size:14px!important}
+ #dashboard .movement-value{font-size:14px!important}
+ #dashboard .reminder-fab{width:60px!important;height:60px!important;font-size:31px!important;bottom:calc(16px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:360px){body:has(#dashboard.active) .app{padding-left:13px!important;padding-right:13px!important}#dashboard .reminder-minis{gap:8px!important}}
 </style></head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
 <button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
