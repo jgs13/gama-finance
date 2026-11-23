@@ -383,7 +383,58 @@ body.family-workspace-open #familyWorkspace input,body.family-workspace-open #fa
 #dashboard .finance-due-strip>strong{font-size:24px;color:var(--gold)}
 #dashboard .grid{gap:10px}#dashboard .card{border-radius:17px}#dashboard .two{margin-top:11px}
 @media(max-width:420px){#dashboard .finance-hero{padding:17px 15px}#dashboard .finance-mini strong{font-size:18px}#dashboard .finance-projection strong{font-size:15px}}
- .auth-password-wrap{position:relative;display:flex;align-items:center}.auth-password-wrap input{padding-right:52px}.auth-password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:42px;height:38px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:19px;cursor:pointer}.auth-password-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}</style></head>
+ .auth-password-wrap{position:relative;display:flex;align-items:center}.auth-password-wrap input{padding-right:52px}.auth-password-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:42px;height:38px;border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:19px;cursor:pointer}.auth-password-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}</style>
+<style id="gama-finance-premium-reference">
+/* Painel de referência: grafite e dourado, compacto e sem cartões redundantes. */
+#dashboard .section-head{align-items:center;margin:5px 0 11px}
+#dashboard .section-head h2{font-size:18px;font-weight:750;letter-spacing:-.25px}
+#dashboard .section-head p{font-size:11px}
+#dashboard #dashMonth{max-width:142px!important;padding:8px 10px;font-size:12px;border-radius:10px}
+#dashboard .finance-hero{padding:17px 16px!important;border-radius:17px!important;background:linear-gradient(145deg,#22262d,#191d23)!important;border:1px solid #373d46!important;box-shadow:0 8px 22px #0002!important;margin-bottom:9px!important}
+#dashboard .finance-hero .metric-label{font-size:10px;letter-spacing:1.1px;color:#b7bbc2}
+#dashboard .finance-balance{font-size:clamp(29px,7vw,37px)!important;line-height:1.12;margin:7px 0 13px!important;color:#f2f2ef}
+#dashboard .finance-projection{padding-top:10px;gap:10px;border-color:#3a4049}
+#dashboard .finance-projection small,#dashboard .finance-mini small{font-size:9px;letter-spacing:.75px}
+#dashboard .finance-projection strong{font-size:14px;color:#c5a46d}
+#dashboard .finance-mini-grid{gap:8px;margin-bottom:9px}
+#dashboard .finance-mini{padding:11px 13px!important;border-radius:14px!important;background:linear-gradient(145deg,#20252c,#191e25)!important;border:1px solid #343b44!important}
+#dashboard .finance-mini strong{font-size:18px}
+#dashboard .income-mini{border-left:3px solid #6d9b7c!important}
+#dashboard .expense-mini{border-left:3px solid #b87583!important}
+#dashboard .finance-due-strip{padding:10px 13px!important;margin-bottom:10px!important;border-radius:13px!important;background:#1b2027!important;border:1px solid #343b44!important}
+#dashboard .finance-due-strip b{font-size:12px}
+#dashboard .finance-due-strip small{font-size:10px}
+#dashboard .finance-due-strip>strong{font-size:19px;color:#c5a46d}
+#dashboard>.grid{display:none!important}
+#dashboard>.two{grid-template-columns:1fr;gap:9px;margin-top:9px}
+#dashboard>.two .card{padding:13px 14px;border-radius:14px}
+#dashboard>.two h3{font-size:13px;margin-bottom:8px}
+#dashboard .item{padding:9px 0;gap:8px}
+#dashboard .item strong{font-size:12px}
+#dashboard .item small{font-size:10px}
+#dashboard .amount{font-size:12px}
+#dashboard>.card[style*="margin-top"]{padding:13px 14px!important;border-radius:14px!important;margin-top:9px!important}
+#dashboard .btn,#familyWorkspace .btn{min-height:34px;padding:7px 11px;border-radius:9px;font-size:12px;font-weight:650;letter-spacing:.05px;box-shadow:none;transition:filter .15s ease,transform .15s ease}
+#dashboard .btn:active,#familyWorkspace .btn:active{transform:translateY(1px)}
+#familyWorkspace .btn.primary{background:linear-gradient(135deg,var(--theme),var(--theme-alt))!important;color:#101318!important;border:0!important}
+#familyWorkspace .tab{font-weight:650;letter-spacing:.05px}
+#familyWorkspace .tab.active{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--theme) 35%,transparent)}
+#familyThemePalette{gap:8px}
+#familyThemePalette .theme-palette-toggle{min-height:31px;padding:6px 10px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);font-size:11px;font-weight:650}
+#familyThemePalette .theme-swatch-list{gap:9px;padding:8px 3px}
+#familyThemePalette .theme-swatch{width:24px;height:24px;min-width:24px;border:2px solid color-mix(in srgb,var(--txt) 35%,transparent);box-shadow:0 0 0 1px #0005}
+#familyThemePalette .theme-swatch.selected{outline:2px solid var(--theme);outline-offset:3px;transform:none}
+#familyThemePalette .theme-swatch.selected:after{font-size:11px;color:#fff;text-shadow:0 1px 3px #000}
+@media(max-width:430px){
+ #dashboard .finance-hero{padding:15px 13px!important}
+ #dashboard .finance-balance{font-size:30px!important}
+ #dashboard .finance-mini{padding:10px 11px!important}
+ #dashboard .finance-mini strong{font-size:16px}
+ #dashboard>.two .card{padding:11px 12px}
+ #familyWorkspace .family-workspace-bar{gap:5px}
+}
+</style>
+</head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
 <button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
 <div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
@@ -1044,7 +1095,19 @@ function applyFamilyTheme(scope=familyDemo.scope){
  for(const [k,v] of Object.entries(values))root.style.setProperty('--'+k,v);
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme.bg);
 }
-const FAMILY_THEME_SWATCHES=Object.entries(FAMILY_THEME_PRESETS).map(([id,t])=>({id,color:t.primary,label:t.label,audience:t.audience||'both'}));
+/* Paleta profissional: cores de acento discretas, mantendo os fundos próprios de cada tema. */
+Object.assign(FAMILY_THEME_PRESETS.standard,{primary:'#C5A46D',secondary:'#9C8052'});
+Object.assign(FAMILY_THEME_PRESETS.white,{primary:'#A9874F',secondary:'#C5A46D'});
+Object.assign(FAMILY_THEME_PRESETS.graphite,{primary:'#AEB9C7',secondary:'#77879B'});
+Object.assign(FAMILY_THEME_PRESETS.midnight,{primary:'#6688B8',secondary:'#49698F'});
+Object.assign(FAMILY_THEME_PRESETS.forest,{primary:'#6D9B7C',secondary:'#4F785E'});
+Object.assign(FAMILY_THEME_PRESETS.steel,{primary:'#6D9BAE',secondary:'#4D7488'});
+Object.assign(FAMILY_THEME_PRESETS.rose,{primary:'#C47D9D',secondary:'#965B77'});
+Object.assign(FAMILY_THEME_PRESETS.mauve,{primary:'#A78AB8',secondary:'#785F91'});
+Object.assign(FAMILY_THEME_PRESETS.wine,{primary:'#B87583',secondary:'#89515F'});
+Object.assign(FAMILY_THEME_PRESETS.brown,{primary:'#B58B6D',secondary:'#87664E'});
+Object.assign(FAMILY_THEME_PRESETS.pearl,{primary:'#7188B8',secondary:'#586D99'});
+const FAMILY_THEME_SWATCHES=['standard','white','graphite','midnight','forest','steel','rose','mauve','wine','brown','pearl'].map(id=>({id,color:FAMILY_THEME_PRESETS[id].primary,label:FAMILY_THEME_PRESETS[id].label,audience:FAMILY_THEME_PRESETS[id].audience||'both'}));
 function renderFamilyThemePalette(scope=familyDemo.scope){
  const host=$('#familyThemePalette');if(!host)return;
  if(scope==='all'){host.hidden=true;host.innerHTML='';return}
