@@ -16,6 +16,14 @@ Aplicativo web instalável (PWA) para controle financeiro pessoal e profissional
 - Backup e restauração em JSON, com validação da estrutura antes de substituir os dados locais.
 - Interface responsiva e suporte a instalação/offline via PWA.
 
+## Assistente conversacional com IA
+
+- Botão flutuante **IA** disponível após entrar na conta.
+- Conversa em português sobre assuntos gerais e dúvidas financeiras.
+- Para perguntas financeiras, envia à IA um resumo do perfil selecionado (saldo, receitas, despesas, contas próximas, lançamentos recentes, cartões e metas).
+- O chat usa Workers AI no Worker autenticado do projeto; exige internet e login. As conversas ficam na memória da tela enquanto ela estiver aberta e não são gravadas no Firestore.
+- A IA orienta, mas não cria, edita ou paga lançamentos. Confira valores e decisões importantes.
+
 ## Publicação
 O projeto é publicado pelo GitHub Actions no GitHub Pages. Abra a URL HTTPS no Android e use a opção de instalar/adicionar à tela inicial do navegador.
 
