@@ -27,12 +27,13 @@ jobs:
       - name: Validate GAMA FINANCE
         run: |
           node --check app.js
+          node --check assistant.js
           node --check firebase-client.js
           node --check sw.js
           node <<'NODE'
           const fs = require('fs');
           const html = fs.readFileSync('index.html', 'utf8');
-          for (const required of ['app.js', 'styles.css', 'firebase-client.js']) {
+          for (const required of ['app.js', 'assistant.js', 'styles.css', 'firebase-client.js']) {
             if (!html.includes(required)) throw new Error('Missing app reference: ' + required);
           }
           const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(m => m[1]);
@@ -40,7 +41,7 @@ jobs:
           if (duplicates.length) throw new Error('Duplicate HTML IDs: ' + [...new Set(duplicates)].join(', '));
           const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
           if (manifest.name !== 'GAMA FINANCE' || !manifest.start_url || !Array.isArray(manifest.icons)) throw new Error('Invalid PWA manifest');
-          for (const file of ['app.js', 'styles.css', 'firebase-client.js', 'firebase-config.js', 'sw.js', 'icon.svg']) {
+          for (const file of ['app.js', 'styles.css', 'firebase-client.js', 'firebase-config.js', 'assistant.js', 'sw.js', 'icon.svg']) {
             if (!fs.existsSync(file)) throw new Error('Missing app file: ' + file);
           }
           NODE
