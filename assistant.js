@@ -23,12 +23,12 @@ micButton.type="button";micButton.id="assistantMic";micButton.className="assista
 micButton.textContent="🎙";micButton.setAttribute("aria-label","Gravar mensagem por voz");
 micButton.title="Falar com a IA";
 $("assistantForm").insertBefore(micButton,send);
-let recognition=null,listening=false,voiceFinal="";
+let recognition=null,listening=false,voiceFinal="",voiceBase="";
 function stopVoice(){if(recognition&&listening){try{recognition.stop()}catch{}}}
 function voiceState(active){listening=active;micButton.classList.toggle("recording",active);micButton.textContent=active?"■":"🎙";micButton.setAttribute("aria-label",active?"Parar gravação":"Gravar mensagem por voz");}
 if(SpeechRecognition){
   recognition=new SpeechRecognition();recognition.lang="pt-BR";recognition.continuous=true;recognition.interimResults=true;
-  recognition.onstart=()=>{voiceFinal="";voiceState(true);status.textContent="Ouvindo... fale sua mensagem."};
+  recognition.onstart=()=>{voiceFinal="";voiceBase=input.value.trim();voiceState(true);status.textContent="Ouvindo... fale sua mensagem."};
   recognition.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const part=e.results[i][0]?.transcript||"";if(e.results[i].isFinal)voiceFinal+=part+" ";else interim+=part}input.value=(input.value.replace(/\s+$/,"")+(input.value.trim()&&voiceFinal?" ":"")+voiceFinal+interim).trimStart();status.textContent=interim?"Ouvindo: "+interim:"Voz convertida em texto. Você pode revisar e enviar.";};
   recognition.onerror=e=>{voiceState(false);status.textContent=e.error==="not-allowed"?"Permita o acesso ao microfone nas configurações do navegador.":e.error==="no-speech"?"Não detectei fala. Toque no microfone e tente novamente.":"Não foi possível usar o microfone neste aparelho.";};
   recognition.onend=()=>{voiceState(false);if(!busy&&voiceFinal)status.textContent="Texto transcrito. Revise e toque em enviar.";};
