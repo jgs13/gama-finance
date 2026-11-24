@@ -23,3 +23,41 @@
 .record-dialog,.auth-card{background:#131d18;border-color:#30483c;border-radius:19px}
 .progress{background:#293d32}.progress i{background:#8ee6b0}
 @media(max-width:680px){.screen-title{align-items:flex-end}.screen-title h2{font-size:22px}.record-row{flex-wrap:wrap}.record-main{min-width:90px}}
+
+/* Telas de módulos: identidade visual única e hierarquia renovada */
+.module-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 15px}
+.module-metrics article{min-width:0;padding:13px 14px;border:1px solid #294238;border-radius:14px;background:linear-gradient(145deg,#172720,#111b16);display:grid;gap:7px}
+.module-metrics small{font-size:9px;line-height:1.35;color:#a6b8ad}
+.module-metrics strong{font-size:clamp(13px,3.3vw,18px);letter-spacing:-.45px;overflow-wrap:anywhere;color:#eaf8ee}
+.toolbar{padding:10px;border:1px solid #294238;border-radius:15px;background:#111b16}
+.toolbar input,.toolbar select{background:#0b1410;border-color:#2c4438}
+.record-list{gap:9px}
+.record-row{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:12px 13px;border:1px solid #294238;border-radius:15px;background:linear-gradient(110deg,#172720,#111a16);box-shadow:0 5px 15px #00000014}
+.record-row .record-main b{font-size:12px;white-space:normal}
+.record-row .record-main small{font-size:10px}
+.record-row>strong{font-size:12px}
+.record-row .icon-button{min-width:30px;min-height:30px}
+.card-grid{align-items:stretch}
+.finance-card,.goal-card{position:relative;overflow:hidden;padding:16px;border:1px solid #2c493b;background:linear-gradient(150deg,#1b3026 0%,#111b16 75%);box-shadow:0 8px 24px #0002}
+.finance-card:before,.goal-card:before{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-45px;top:-55px;background:#8ee6b012;pointer-events:none}
+.finance-card h3,.goal-card>b{font-size:15px;letter-spacing:-.3px}
+.finance-card>strong,.goal-card>strong{font-size:25px;letter-spacing:-.8px}
+.finance-card .eyebrow{color:#a8c5b4}
+.finance-card .progress,.goal-card .progress{height:7px;background:#2a4034}
+.finance-card .mini-action,.goal-card .mini-action{padding:8px 10px;border:1px solid #365844;border-radius:9px;background:#1b3828;font-size:10px}
+.goal-card .icon-button{float:right}
+.screen-title{margin-bottom:16px}
+.screen-title>div{min-width:0}
+.screen-title p{max-width:330px;line-height:1.5}
+@media(max-width:680px){
+ .module-metrics{gap:6px}
+ .module-metrics article{padding:10px 8px;border-radius:12px}
+ .module-metrics small{font-size:8px}
+ .module-metrics strong{font-size:12px}
+ .record-row{grid-template-columns:32px minmax(0,1fr) auto;gap:7px;padding:10px}
+ .record-row .record-main{grid-column:2;grid-row:1}
+ .record-row>strong{grid-column:3;grid-row:1}
+ .record-row .icon-button,.record-row .mini-action{grid-row:2;grid-column:auto;justify-self:end}
+ .record-row .record-icon{grid-row:1}
+ .finance-card,.goal-card{padding:14px}
+}
