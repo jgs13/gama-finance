@@ -44,9 +44,9 @@ export default{async fetch(req,env){
     const sr=await fetch(searchUrl,{headers:{"user-agent":"Mozilla/5.0 (compatible; GamaFinance/1.0)" }});
     if(sr.ok){
      const html=await sr.text();
-     const links=[...html.matchAll(/<a[^>]*class="result__a"[^>]*href="([^"]+)"[^>]*>([\\s\\S]*?)<\\/a>/gi)].slice(0,5);
-     const snippets=[...html.matchAll(/<a[^>]*class="result__snippet"[^>]*>([\\s\\S]*?)<\\/a>/gi)].slice(0,5);
-     const cleanText=x=>String(x||"").replace(/<[^>]*>/g," ").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#x27;/g,"'").replace(/\\s+/g," ").trim();
+     const links=[...html.matchAll(/<a[^>]*class="result__a"[^>]*>(.*?)<\/a>/gi)].slice(0,5);
+     const snippets=[...html.matchAll(/<a[^>]*class="result__snippet"[^>]*>(.*?)<\/a>/gi)].slice(0,5);
+     const cleanText=x=>String(x||"").replace(/<[^>]*>/g," ").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#x27;/g,"'").replace(/\s+/g," ").trim();
      webContext=links.map((m,i)=>"Fonte: "+cleanText(m[2])+" | URL: "+m[1]+" | Resumo: "+cleanText(snippets[i]?.[1]||"")).join("\\n").slice(0,7000);
     }
    }catch{}
