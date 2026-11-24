@@ -25,6 +25,19 @@ export default{async fetch(req,env){
  let user;try{user=await verify(req)}catch(e){return json({error:e.message},401)}
  const prefix="users/"+user.sub+"/";
  try{
+  if(u.pathname==="/chat"&&req.method==="POST"){
+   let body;try{body=await req.json()}catch{return json({error:"Mensagem inválida."},400)}
+   const messages=Array.isArray(body.messages)?body.messages.slice(-12):[];
+   if(!messages.length)return json({error:"Digite uma pergunta para começar."},400);
+   const clean=messages.map(m=>({role:m.role==="assistant"?"assistant":"user",content:String(m.content||"").slice(0,3000)})).filter(m=>m.content.trim());
+   if(!clean.length||clean[clean.length-1].role!=="user")return json({error:"Envie uma pergunta."},400);
+   const context=JSON.stringify(body.context||{}).slice(0,14000);
+   const system="Você é o Assistente GAMA, um assistente conversacional útil, claro e versátil, que conversa em português do Brasil. Responda perguntas gerais sobre diversos assuntos, explique conceitos, ajude a planejar, escrever, estudar e resolver problemas. Quando a pergunta for sobre finanças do usuário, use o contexto financeiro fornecido abaixo; não invente valores, datas, registros ou fatos. Se faltar dado, diga o que falta. Não execute transações nem altere os dados do aplicativo: apenas oriente. Seja direto, organizado e respeitoso. Não diga que é o Pierre nem finja ser outro produto. Contexto financeiro atual do perfil selecionado (dados privados enviados para responder à pergunta): "+context;
+   const result=await env.AI.run("@cf/meta/llama-3.1-8b-instruct",{messages:[{role:"system",content:system},...clean],max_tokens:1200,temperature:0.35});
+   const reply=String(result.response||result.result||"").trim();
+   if(!reply)return json({error:"A IA não retornou uma resposta. Tente novamente."},502);
+   return json({reply});
+  }
   if(u.pathname==="/upload"&&req.method==="POST"){
    const f=await req.formData(),file=f.get("file");
    if(!(file instanceof File))return json({error:"Selecione um arquivo."},400);
