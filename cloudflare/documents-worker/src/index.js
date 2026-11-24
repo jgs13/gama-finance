@@ -30,9 +30,8 @@ export default{async fetch(req,env){
    const messages=Array.isArray(body.messages)?body.messages.slice(-12):[];
    if(!messages.length)return json({error:"Digite uma pergunta para começar."},400);
    const clean=messages.map(m=>({role:m.role==="assistant"?"assistant":"user",content:String(m.content||"").slice(0,3000)})).filter(m=>m.content.trim());
-   const question=clean[clean.length-1].content;
-
    if(!clean.length||clean[clean.length-1].role!=="user")return json({error:"Envie uma pergunta."},400);
+   const question=clean[clean.length-1].content;
    const context=JSON.stringify(body.context||{}).slice(0,14000);
    let locationText="";
    const coords=body.location;
