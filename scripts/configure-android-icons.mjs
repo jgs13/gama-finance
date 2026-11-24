@@ -58,7 +58,7 @@ const locationPermissions = [
 ];
 for (const permission of locationPermissions) {
   if (!manifest.includes(`android:name="${permission}"`)) {
-    manifest = manifest.replace(/<manifest\\b[^>]*>/, tag => `${tag}\\n    <uses-permission android:name="${permission}" />`);
+    manifest = manifest.replace(/<manifest\b[^>]*>/, tag => `${tag}\n    <uses-permission android:name="${permission}" />`);
   }
 }
 manifest = manifest.replace(/<application\b[^>]*>/, tag => {
