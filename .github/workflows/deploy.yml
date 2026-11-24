@@ -36,9 +36,21 @@ jobs:
           for (const required of ['app.js', 'assistant.js', 'styles.css', 'firebase-client.js']) {
             if (!html.includes(required)) throw new Error('Missing app reference: ' + required);
           }
-          const ids = [...html.matchAll(/\\bid="([^"]+)"/g)].map(m => m[1]);
+          const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
           const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
           if (duplicates.length) throw new Error('Duplicate HTML IDs: ' + [...new Set(duplicates)].join(', '));
+          const idSet = new Set(ids);
+          for (const [file, source] of [['app.js', fs.readFileSync('app.js', 'utf8')], ['firebase-client.js', fs.readFileSync('firebase-client.js', 'utf8')]]) {
+            const refs = [...source.matchAll(/(?:\$\(["']#([^"']+)["']\)|getElementById\(["']([^"']+)["']\))/g)].map(m => m[1] || m[2]);
+            const missing = [...new Set(refs.filter(id => !idSet.has(id)))];
+            if (missing.length) throw new Error(file + ' references missing HTML IDs: ' + missing.join(', '));
+          }
+          const importMap = html.match(/<script type="importmap">([\s\S]*?)<\/script>/);
+          if (!importMap) throw new Error('Missing Firebase import map in index.html');
+          const imports = JSON.parse(importMap[1]).imports;
+          for (const name of ['firebase/app', 'firebase/auth', 'firebase/firestore']) {
+            if (!imports[name]) throw new Error('Missing import map entry: ' + name);
+          }
           const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
           if (manifest.name !== 'GAMA FINANCE' || !manifest.start_url || !Array.isArray(manifest.icons)) throw new Error('Invalid PWA manifest');
           for (const file of ['app.js', 'styles.css', 'firebase-client.js', 'firebase-config.js', 'assistant.js', 'sw.js', 'icon.svg']) {
