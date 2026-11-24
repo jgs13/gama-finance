@@ -1,7 +1,7 @@
 {
-  "name": "GAMA FINANCE",
-  "short_name": "GAMA FINANCE",
-  "description": "Controle financeiro pessoal e familiar.",
+  "name": "Duo Finance",
+  "short_name": "Duo Finance",
+  "description": "Organização financeira pessoal e familiar.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
