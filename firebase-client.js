@@ -11,7 +11,7 @@ import firebaseConfig from "./firebase-config.js";
 
 const configured = Boolean(firebaseConfig.apiKey && firebaseConfig.authDomain && firebaseConfig.projectId && firebaseConfig.appId);
 // ALTERE PARA true quando quiser reativar a exigência de login.
-const LOGIN_REQUIRED = false;
+const LOGIN_REQUIRED = true;
 const gate = document.getElementById("authGate");
 const status = document.getElementById("authStatus");
 const form = document.getElementById("authForm");
