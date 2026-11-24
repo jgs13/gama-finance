@@ -23,3 +23,50 @@ window.GamaFinance={getAssistantContext(){const p=current?profile(current):null;
 window.addEventListener("gama-authenticated",e=>{let p=family.profiles.find(x=>x.uid===e.detail?.uid)||family.profiles.find(x=>x.id==="me");if(p)selectProfile(p.id)});window.addEventListener("gama-offline-ready",e=>{let p=family.profiles.find(x=>x.uid===e.detail?.uid)||profile("me");if(p){p.uid=e.detail.uid;selectProfile(p.id)}});
 bind();renderHome();if(family.scope!=="home"&&profile(family.scope)?.uid)selectProfile(family.scope);
 if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(e=>console.warn("GAMA FINANCE: cache offline indisponível.",e));
+
+
+// Verificação de atualização do aplicativo Android (não interfere na versão web).
+(async function checkGamaFinanceUpdate(){
+  try {
+    const nativeApp = Boolean(window.Capacitor?.isNativePlatform?.());
+    if (!nativeApp || document.getElementById("gamaUpdateDialog")) return;
+    const [installedResponse, latestResponse] = await Promise.all([
+      fetch("./app-version.json?ts=" + Date.now(), { cache: "no-store" }),
+      fetch("https://jgs13.github.io/gama-finance/latest.json?ts=" + Date.now(), { cache: "no-store" })
+    ]);
+    if (!installedResponse.ok || !latestResponse.ok) return;
+    const installed = await installedResponse.json();
+    const latest = await latestResponse.json();
+    if (!latest.downloadUrl || Number(latest.versionCode || 0) <= Number(installed.versionCode || 0)) return;
+    const style = document.createElement("style");
+    style.textContent = "#gamaUpdateDialog{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.76);display:grid;place-items:center;padding:22px}#gamaUpdateDialog .gama-update-card{width:min(100%,420px);background:#151b24;color:#f4f7fb;border:1px solid #354252;border-radius:20px;padding:24px;box-shadow:0 18px 70px #0009;font:15px/1.5 system-ui,sans-serif}#gamaUpdateDialog h2{margin:0 0 8px;font-size:21px}#gamaUpdateDialog p{color:#b9c4d1;margin:8px 0 18px}#gamaUpdateDialog .gama-update-actions{display:grid;gap:10px}#gamaUpdateDialog a,#gamaUpdateDialog button{display:block;width:100%;border:0;border-radius:12px;padding:13px;text-align:center;font:700 15px system-ui,sans-serif;text-decoration:none;cursor:pointer}#gamaUpdateDialog a{background:#c5ff45;color:#10150a}#gamaUpdateDialog button{background:#293442;color:#edf3fb}";
+    document.head.appendChild(style);
+    const dialog = document.createElement("section");
+    dialog.id = "gamaUpdateDialog";
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    const card = document.createElement("div");
+    card.className = "gama-update-card";
+    const title = document.createElement("h2");
+    title.textContent = "Atualização disponível";
+    const message = document.createElement("p");
+    message.textContent = "Há uma nova versão do GAMA FINANCE (" + String(latest.version || "") + "). Atualize para receber as melhorias.";
+    const actions = document.createElement("div");
+    actions.className = "gama-update-actions";
+    const download = document.createElement("a");
+    download.href = latest.downloadUrl;
+    download.target = "_blank";
+    download.rel = "noopener noreferrer";
+    download.textContent = "Baixar atualização";
+    const later = document.createElement("button");
+    later.type = "button";
+    later.textContent = "Agora não";
+    later.addEventListener("click", () => dialog.remove());
+    actions.append(download, later);
+    card.append(title, message, actions);
+    dialog.append(card);
+    document.body.append(dialog);
+  } catch (error) {
+    console.warn("GAMA FINANCE: não foi possível verificar atualizações.", error);
+  }
+})();
