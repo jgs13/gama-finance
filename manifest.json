@@ -1,13 +1,13 @@
 {
   "name": "GAMA FINANCE",
   "short_name": "GAMA FINANCE",
-  "description": "Controle financeiro pessoal, familiar e profissional.",
+  "description": "Controle financeiro pessoal e familiar.",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#080b12",
-  "theme_color": "#080b12",
+  "background_color": "#090a09",
+  "theme_color": "#090a09",
   "icons": [
     {
       "src": "icon.svg",
