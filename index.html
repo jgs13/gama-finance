@@ -485,7 +485,76 @@ body:has(#dashboard.active){background:#111419!important}body:has(#dashboard.act
  #dashboard .reminder-fab{width:60px!important;height:60px!important;font-size:31px!important;bottom:calc(16px + env(safe-area-inset-bottom))!important}
 }
 @media(max-width:360px){body:has(#dashboard.active) .app{padding-left:13px!important;padding-right:13px!important}#dashboard .reminder-minis{gap:8px!important}}
-</style></head>
+</style><style id="pierre-inspired-theme">
+/* GAMA FINOS — visual inspirado no Pierre: preto profundo, grafite e verde-lima. */
+:root{--bg:#080908;--panel:#111311;--panel2:#191c18;--line:#292e28;--txt:#f4f6f1;--muted:#969d92;--cyan:#c5ff45;--blue:#a6d936;--green:#c5ff45;--red:#ff7777;--gold:#e4c66d;--r:18px;color-scheme:dark}
+html,body{background:#080908!important;color:#f4f6f1}
+body{background:radial-gradient(ellipse at 50% -24%,#1b2512 0,transparent 46%),#080908!important;letter-spacing:-.01em}
+.app{background:transparent}
+.app>.top{background:#090a09!important;border-color:#242922!important}
+.brand h1{font-size:17px!important;letter-spacing:1.6px!important;font-weight:850}
+.brand small{color:#a0a79b!important;letter-spacing:.65px!important}
+.logo{background:#c5ff45!important;color:#10140a!important;box-shadow:0 0 26px #c5ff4522!important;border-radius:14px!important}
+.btn{background:#171a16!important;border:1px solid #30362c!important;color:#f3f5ef!important;border-radius:12px!important;transition:background .16s,border-color .16s,transform .16s}
+.btn:active,.tab:active{transform:scale(.98)}
+.btn.primary{background:#c5ff45!important;color:#11150a!important;border-color:#c5ff45!important;font-weight:800!important;box-shadow:0 5px 18px #c5ff451b}
+.btn.danger{color:#ff8585!important}
+.tabs{background:#090a09f5!important;border-color:#242922!important;box-shadow:0 8px 24px #0008!important;gap:6px!important}
+.tab{background:#151814!important;color:#a4aa9e!important;border:1px solid #2b3028!important;border-radius:12px!important;font-weight:650!important}
+.tab.active{background:#c5ff45!important;color:#11150a!important;border-color:#c5ff45!important;box-shadow:0 4px 16px #c5ff4520!important}
+.view{scrollbar-color:#3d4538 transparent}
+.card,.modal-box,.auth-card,.panel,.dialog,.sheet{background:linear-gradient(150deg,#171a16,#10120f)!important;border:1px solid #2b3028!important;border-radius:19px!important;box-shadow:0 12px 32px #0004!important}
+.card h3,.section-head h2{color:#f4f6f1}
+.section-head{margin-bottom:16px!important}
+.section-head h2{font-size:22px!important;font-weight:800!important;letter-spacing:-.6px}
+.section-head p,.muted,.metric-label,.metric-sub{color:#a0a79b!important}
+.metric{font-weight:850!important;letter-spacing:-1px!important}
+input,select,textarea{background:#0d100d!important;color:#f4f6f1!important;border:1px solid #343b31!important;border-radius:11px!important}
+input:focus,select:focus,textarea:focus{outline:2px solid #c5ff4570!important;border-color:#c5ff45!important}
+label{color:#c2c8bc!important}
+.table-wrap{border-radius:14px}
+.table th{color:#a8b09f!important}
+.table td,.table th{border-color:#2a3028!important}
+.positive,.accent{color:#c5ff45!important}
+.negative{color:#ff8585!important}
+.bar{background:#292e27!important}
+.bar i{background:linear-gradient(90deg,#c5ff45,#8fc82c)!important}
+#dashboard{padding-top:5px}
+.reminder-head{display:flex;align-items:center;justify-content:space-between;margin:3px 0 13px}
+.reminder-head h2{font-size:25px!important;font-weight:850!important;letter-spacing:-1px!important}
+.reminder-head button,.reminder-month button,.reminder-movements-head button{background:#191d17!important;color:#c5ff45!important;border:1px solid #30372b!important;border-radius:11px!important}
+.reminder-month{margin:0 0 12px!important;padding:9px 12px!important;background:#111410!important;border:1px solid #292f26!important;border-radius:13px!important}
+.finance-hero{background:linear-gradient(135deg,#c5ff45 0%,#a8e53a 65%,#8ac72b 100%)!important;color:#11150a!important;border:0!important;box-shadow:0 12px 35px #a6db3824!important;position:relative;overflow:hidden}
+.finance-hero:after{content:"";position:absolute;width:190px;height:190px;border:1px solid #11150a18;border-radius:50%;right:-65px;top:-95px;box-shadow:0 0 0 24px #11150a08,0 0 0 48px #11150a06}
+.finance-hero .metric-label,.finance-hero small,.finance-hero .reminder-info{color:#26351a!important}
+.finance-balance{font-size:clamp(30px,8vw,42px)!important;font-weight:900!important;letter-spacing:-1.8px!important;color:#10150a!important;margin:12px 0 17px!important}
+.finance-projection{border-top:1px solid #26351a35!important;padding-top:12px!important}
+.finance-projection strong{color:#11150a!important;font-size:16px!important}
+.finance-mini{background:#151914!important;border:1px solid #2c3328!important;border-radius:16px!important;padding:14px!important}
+.finance-mini small{color:#a7ad9f!important;font-size:10px!important;letter-spacing:.8px!important;font-weight:750}
+.finance-mini strong{font-size:19px!important;font-weight:850!important}
+.income-mini strong{color:#c5ff45!important}
+.expense-mini strong{color:#f0a0a0!important}
+.reminder-movements-head{margin:20px 0 10px!important}
+.reminder-movements-head h3{font-size:18px!important;font-weight:800!important}
+.reminder-movements{display:grid;gap:8px}
+.reminder-movements>*{background:#141713!important;border:1px solid #292f26!important;border-radius:14px!important}
+.reminder-fab{background:#c5ff45!important;color:#11150a!important;box-shadow:0 8px 25px #c5ff4540!important}
+.reminder-menu{background:#171b15!important;border:1px solid #343c2e!important;border-radius:17px!important;box-shadow:0 15px 40px #000b!important}
+.reminder-menu button{color:#f4f6f1!important;border-bottom:1px solid #2a3027!important}
+#familyWorkspace .family-workspace-bar{background:#090a09!important;border-color:#252a23!important}
+#familyWorkspace #tabs{background:#10130f!important;border-color:#2b3028!important}
+#familyWorkspace #tabs .tab{background:#171a16!important;color:#a4aa9e!important;border-color:#30362b!important}
+#familyWorkspace #tabs .tab.active{background:#c5ff45!important;color:#11150a!important;border-color:#c5ff45!important}
+.profile-card,.family-workspace-bar,.notice{border-radius:16px!important}
+.modal{backdrop-filter:blur(10px)}
+.modal-box{background:#151914!important}
+.auth-card{background:#141713!important}
+.auth-card .logo{background:#c5ff45!important}
+@media(max-width:720px){.app>.top{padding:9px 12px!important}.app .brand h1{font-size:14px!important}.app .top-actions .btn{font-size:10px!important}#dashboard{padding:3px 1px 20px}.reminder-head h2{font-size:23px!important}.finance-hero{padding:18px!important}.finance-balance{font-size:34px!important}.finance-mini{padding:12px!important}.section-head h2{font-size:20px!important}}
+
+</style>
+</head>
 <body><section id="authGate" hidden aria-modal="true" role="dialog" aria-label="Acesso ao GAMA FINANCE"><div class="auth-card">
 <button type="button" class="btn small auth-close" id="authClose" hidden>Fechar</button>
 <div class="brand" style="margin-bottom:18px"><div class="logo">G</div><div><h1 style="font-size:17px;letter-spacing:1.5px;margin:0">GAMA FINANCE</h1><small>ACESSO SEGURO À FAMÍLIA</small></div></div>
