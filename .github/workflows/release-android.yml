@@ -5,6 +5,9 @@ name: GAMA FINANCE - Publicar APK automaticamente
       - main
     paths:
       - 'index.html'
+      - 'app.js'
+      - 'styles.css'
+      - 'download/**'
       - 'firebase-client.js'
       - 'firebase-config.js'
       - 'native-back.js'
