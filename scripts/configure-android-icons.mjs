@@ -50,6 +50,17 @@ for (const entry of await readdir(root, { withFileTypes: true })) {
 
 const manifestPath = "android/app/src/main/AndroidManifest.xml";
 let manifest = await readFile(manifestPath, "utf8");
+
+// Permissões Android para recursos que dependem da localização do aparelho.
+const locationPermissions = [
+  "android.permission.ACCESS_COARSE_LOCATION",
+  "android.permission.ACCESS_FINE_LOCATION"
+];
+for (const permission of locationPermissions) {
+  if (!manifest.includes(`android:name="${permission}"`)) {
+    manifest = manifest.replace(/<manifest\\b[^>]*>/, tag => `${tag}\\n    <uses-permission android:name="${permission}" />`);
+  }
+}
 manifest = manifest.replace(/<application\b[^>]*>/, tag => {
   let updated = tag;
   updated = /\bandroid:icon="/.test(updated)
