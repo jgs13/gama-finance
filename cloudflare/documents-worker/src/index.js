@@ -31,6 +31,7 @@ export default{async fetch(req,env){
    if(!messages.length)return json({error:"Digite uma pergunta para começar."},400);
    const clean=messages.map(m=>({role:m.role==="assistant"?"assistant":"user",content:String(m.content||"").slice(0,3000)})).filter(m=>m.content.trim());
    if(!clean.length||clean[clean.length-1].role!=="user")return json({error:"Envie uma pergunta."},400);
+   const question=clean[clean.length-1].content;
    const context=JSON.stringify(body.context||{}).slice(0,14000);
    let locationText="";
    const coords=body.location;
@@ -38,7 +39,6 @@ export default{async fetch(req,env){
     try{const geo=await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat="+encodeURIComponent(coords.latitude)+"&lon="+encodeURIComponent(coords.longitude),{headers:{"user-agent":"GamaFinance/1.0 (location-aware assistant)"}});if(geo.ok){const g=await geo.json();locationText=String(g.display_name||"").slice(0,500)}}catch{}
    }
    let webContext="";
-   const question=clean[clean.length-1].content;
    try{
     const searchUrl="https://html.duckduckgo.com/html/?q="+encodeURIComponent(question+(locationText?" "+locationText:""));
     const sr=await fetch(searchUrl,{headers:{"user-agent":"Mozilla/5.0 (compatible; GamaFinance/1.0)" }});
