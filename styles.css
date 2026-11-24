@@ -197,3 +197,37 @@ body{letter-spacing:-.12px}
 .budget-edit input{width:112px;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface, #171c18);color:inherit;font:inherit}
 .progress i.over-budget{background:var(--red, #ef4444)}
 @media(max-width:680px){.couple-panel,.budget-panel{padding:12px}.budget-line .row-between{font-size:10px}}
+
+
+/* Acessibilidade: leitura ampliada para telas de celular */
+@media(max-width:680px){
+  .welcome p,.home-note,.section-heading p,.screen-title p,.workspace-person small,
+  .profile-info small,.eyebrow,.summary-card span,.module-metrics small,
+  .record-main small,.finance-card>small,.goal-card>small,.field span,
+  .auth-card p,.auth-status,.assistant-identity small,.assistant-welcome p,
+  .assistant-status,.assistant-disclaimer,.assistant-suggestions button{
+    font-size:14px !important;line-height:1.4;
+  }
+  .brand h1,.workspace-person b,.profile-info b,.panel-heading h3,
+  .screen-title h2,.auth-card h2,.record-dialog h2,.assistant-welcome h2{
+    font-size:18px !important;
+  }
+  .profile-info strong,.summary-card strong,.module-metrics strong,
+  .record-main b,.record-row>strong,.list-row b,.list-row strong,
+  .budget-line .row-between,.nav-item,.text-button,.mini-action,.icon-button,
+  .btn,.toolbar input,.toolbar select,.field input,.field select{
+    font-size:14px !important;
+  }
+  .balance-card>strong,.family-total strong{font-size:clamp(30px,8vw,38px) !important}
+  .assistant-bubble{font-size:16px !important;line-height:1.55}
+  .assistant-composer textarea{font-size:16px !important;min-height:48px}
+  .assistant-head .assistant-identity b{font-size:17px}
+  .assistant-composer button,.assistant-mic{width:46px;height:46px;flex:0 0 46px}
+  .nav-item span{font-size:21px}
+  .record-row{gap:7px;padding:10px}
+  .nav-item{padding:7px 2px}
+}
+.assistant-mic{width:42px;height:42px;flex:0 0 42px;border:1px solid #3c493d;border-radius:13px;background:#202923;color:#d9f4df;font-size:19px;display:grid;place-items:center}
+.assistant-mic.recording{background:#7d2929;color:#fff;border-color:#d66b6b;animation:mic-pulse 1s infinite}
+.assistant-mic:disabled{opacity:.45}
+@keyframes mic-pulse{50%{box-shadow:0 0 0 5px #e15b5b33}}
