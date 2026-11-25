@@ -1,15 +1,15 @@
 import { mkdir, readFile, readdir, unlink, writeFile } from "node:fs/promises";
 
 const root = "android/app/src/main/res";
-const gPath = "M350,165c-27-24-58-36-98-36-84,0-144,56-144,135s60,135,144,135c40,0,75-12,102-37V252H254v58h35v28c-12,7-24,10-38,10-47,0-79-34-79-84s32-84,79-84c24,0,45,8,64,25z";
-// Marca G com gráfico discreto, sem seta adicional ou elementos do template Capacitor.
-const logo = `<group android:pivotX="256" android:pivotY="256" android:scaleX="0.86" android:scaleY="0.86">
-    <path android:pathData="${gPath}">
-        <aapt:attr name="android:fillColor"><gradient android:type="linear" android:startX="120" android:startY="120" android:endX="390" android:endY="390"><item android:offset="0" android:color="#36D6C5"/><item android:offset="1" android:color="#628CFF"/></gradient></aapt:attr>
-    </path>
-    <path android:fillColor="#080B12" android:pathData="M306,296 h30 v54 h-30 z M348,268 h30 v82 h-30 z M390,238 h30 v112 h-30 z"/>
-    </group>`;
-const fallback = `<path android:fillColor="#080B12" android:pathData="M0,0 H512 V512 H0 Z"/>
+const gPath = "M350,165c-27-24-58-36-98-36-84,0-144,56-144,135s60,135 144,135c40,0,75-12,102-37V252H254v58h35v28c-12,7-24,10-38,10-47,0-79-34-79-84s32-84 79-84c24,0,45,8,64,25z";
+const dPath = "M160 126h91c94 0 151 49 151 130S345 386 251 386h-91V126zm77 66v128h15c48 0 73-21 73-64s-25-64-73-64h-15z";
+// Reproduz o icon.svg da versão web: moldura escura, fundo verde-limão e letra D.
+const brandBackground = '<path android:fillColor="#0a0a0c" android:pathData="M0,0 H512 V512 H0 Z"/>';
+const brandTile = '<path android:fillColor="#d4ff1f" android:pathData="M148,44 H364 C421.4,44 468,90.6 468,148 V364 C468,421.4 421.4,468 364,468 H148 C90.6,468 44,421.4 44,364 V148 C44,90.6 90.6,44 148,44 Z"/>';
+const brandLetter = `<path android:fillColor="#0a0a0c" android:pathData="${dPath}"/>`;
+const logo = `${brandTile}
+    ${brandLetter}`;
+const fallback = `${brandBackground}
     ${logo}`;
 const vector = (width, height, body) => `<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +27,7 @@ const files = {
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"><background android:drawable="@color/gama_icon_background"/><foreground android:drawable="@drawable/gama_launcher_foreground"/></adaptive-icon>`,
   "mipmap-anydpi-v26/gama_launcher_round.xml": `<?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android"><background android:drawable="@color/gama_icon_background"/><foreground android:drawable="@drawable/gama_launcher_foreground"/></adaptive-icon>`,
-  "values/gama_icon_colors.xml": `<?xml version="1.0" encoding="utf-8"?><resources><color name="gama_icon_background">#080B12</color></resources>`
+  "values/gama_icon_colors.xml": `<?xml version="1.0" encoding="utf-8"?><resources><color name="gama_icon_background">#0a0a0c</color></resources>`
 };
 
 for (const [path, body] of Object.entries(files)) {
