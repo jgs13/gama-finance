@@ -1,8 +1,8 @@
 {
-  "version": "1.0.95",
-  "versionCode": 10095,
-  "name": "Duo Finance 1.0.95",
-  "releaseNotes": "Restauracao do layout original aprovado e preservacao da IA corrigida.",
-  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.95/GamaFinance.apk",
+  "version": "1.0.96",
+  "versionCode": 10096,
+  "name": "Duo Finance 1.0.96",
+  "releaseNotes": "Consulte as notas deste lançamento no GitHub.",
+  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.96/GamaFinance.apk",
   "downloadPage": "https://jgs13.github.io/gama-finance/download/"
 }
