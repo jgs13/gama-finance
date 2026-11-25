@@ -1,8 +1,8 @@
 {
-  "version": "1.0.101",
-  "versionCode": 10101,
-  "name": "Duo Finance 1.0.101",
+  "version": "1.0.102",
+  "versionCode": 10102,
+  "name": "Duo Finance 1.0.102",
   "releaseNotes": "Consulte as notas deste lançamento no GitHub.",
-  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.101/GamaFinance.apk",
+  "downloadUrl": "https://github.com/jgs13/gama-finance/releases/download/v1.0.102/GamaFinance.apk",
   "downloadPage": "https://jgs13.github.io/gama-finance/download/"
 }
