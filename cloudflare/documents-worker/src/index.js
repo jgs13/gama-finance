@@ -25,6 +25,16 @@ export default{async fetch(req,env){
  let user;try{user=await verify(req)}catch(e){return json({error:e.message},401)}
  const prefix="users/"+user.sub+"/";
  try{
+  if(u.pathname==="/transcribe"&&req.method==="POST"){
+   let form;try{form=await req.formData()}catch{return json({error:"Arquivo de áudio inválido."},400)}
+   const audio=form.get("audio");if(!(audio instanceof File))return json({error:"Envie uma gravação de áudio."},400);
+   if(audio.size<1||audio.size>7*1024*1024)return json({error:"O áudio deve ter até 7 MB."},413);
+   const bytes=new Uint8Array(await audio.arrayBuffer());
+   const result=await env.AI.run("@cf/openai/whisper-large-v3-turbo",{audio:[...bytes]});
+   const text=String(result.text||result.transcription||"").trim();
+   if(!text)return json({error:"Não consegui reconhecer a fala no áudio."},422);
+   return json({text});
+  }
   if(u.pathname==="/chat"&&req.method==="POST"){
    let body;try{body=await req.json()}catch{return json({error:"Mensagem inválida."},400)}
    const messages=Array.isArray(body.messages)?body.messages.slice(-12):[];
