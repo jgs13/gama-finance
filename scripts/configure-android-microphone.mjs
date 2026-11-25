@@ -3,8 +3,8 @@ import { readFile, writeFile } from "node:fs/promises";
 const path = "android/app/src/main/AndroidManifest.xml";
 let xml = await readFile(path, "utf8");
 const permissions = [
-  '  <uses-permission android:name="android.permission.RECORD_AUDIO" />\\n',
-  '  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\\n'
+  '  <uses-permission android:name="android.permission.RECORD_AUDIO" />\n',
+  '  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n'
 ];
 for (const permission of permissions) {
   const name = permission.match(/android:name="([^"]+)"/)[1];
