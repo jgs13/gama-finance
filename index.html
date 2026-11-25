@@ -8,7 +8,6 @@
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon.svg">
 <link rel="stylesheet" href="./styles.css">
-<link rel="stylesheet" href="./duo-theme.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -39,14 +38,14 @@
 </section>
 
 <main class="app-shell">
- <div class="hero-glow"></div>
  <header class="topbar">
   <div class="brand"><div class="logo">D</div><div><h1>DUO FINANCE</h1><small>SEU DINHEIRO, SOB CONTROLE</small></div></div>
-  <div class="top-actions"><button class="icon-top" id="duoEye" type="button" aria-label="Ocultar valores">◉</button><button class="icon-top" id="authAccountBtn" type="button" aria-label="Conta">♙</button><button class="btn small" id="backupExport" type="button">Backup</button><button class="btn small" id="backupImport" type="button">Restaurar</button><input id="backupFile" type="file" accept="application/json" hidden></div>
+  <div class="top-actions"><button class="icon-top" id="authAccountBtn" type="button" aria-label="Conta">♙</button><button class="btn small" id="backupExport" type="button">Backup</button><button class="btn small" id="backupImport" type="button">Restaurar</button><input id="backupFile" type="file" accept="application/json" hidden></div>
  </header>
 
  <section id="familyHome" class="home-screen">
-  <div class="welcome"><span class="eyebrow">ESPAÇO FINANCEIRO</span><h2 id="homeGreet">Seu dinheiro.<br>Suas escolhas.</h2><p id="familyState">Seus perfis financeiros em um só lugar.</p></div>
+  <div class="hero-glow"></div>
+  <div class="welcome"><span class="eyebrow">ESPAÇO FINANCEIRO</span><h2>Seu dinheiro.<br>Suas escolhas.</h2><p id="familyState">Seus perfis financeiros em um só lugar.</p></div>
   <article class="family-total"><div class="row-between"><span class="eyebrow">PATRIMÔNIO REGISTRADO</span><span class="balance-chip">● VISÃO GERAL</span></div><strong id="familyTotal">R$ 0,00</strong><small>Saldo acumulado dos perfis</small></article>
   <div class="section-heading"><div><h3>Perfis financeiros</h3><p>Escolha um perfil para continuar.</p></div><button class="btn primary small" id="newProfile" type="button">+ Perfil</button></div>
   <div id="profileList" class="profile-list"></div><div class="home-note">Dados protegidos e sincronizados pelo Firebase.</div>
@@ -54,24 +53,12 @@
 
  <section id="workspace" class="workspace" hidden>
   <header class="workspace-header"><button class="back-button" id="backHome" type="button" aria-label="Voltar">‹</button><span class="profile-avatar" id="workspaceAvatar">G</span><div class="workspace-person"><b id="workspaceName">Meu perfil</b><small id="workspaceEmail"></small></div><button class="icon-top" id="authAccountBtn2" type="button" aria-label="Conta">♙</button></header>
-  <nav class="bottom-nav"><button class="nav-item active" data-view="overview" type="button">Início</button><button class="nav-item" data-view="entries" type="button">Movimentos</button><button class="nav-item" data-view="bills" type="button">Contas</button><button class="nav-item" data-view="cards" type="button">Cartões</button><button class="nav-item" data-view="goals" type="button">Metas</button></nav>
 
   <section class="screen active" id="screen-overview">
-   <div class="greet" id="duoGreet">Olá</div>
-   <article class="panel couple-panel"><div class="ban"><span id="duoPair">Casal</span><small id="splitModeLabel">DIVISÃO PROPORCIONAL</small></div><span class="lbl">Acerto de contas</span><strong id="familySettlement">Cadastre despesas compartilhadas.</strong><small id="familySplit"></small><button class="text-button" id="splitModeToggle" type="button">Usar 50/50</button></article>
-   <article class="panel"><span class="lbl">Fluxo de Caixa · <span id="monthLabel"></span></span>
-    <div class="fl"><div class="row-between"><b>Entrada</b><span id="totalIncome" class="positive">R$ 0,00</span></div><div class="bar"><i id="barIn" style="width:100%"></i></div></div>
-    <div class="fl"><div class="row-between"><b>Saída</b><span id="totalExpense" class="negative">R$ 0,00</span></div><div class="bar"><i id="barOut" class="r" style="width:0"></i></div></div>
-    <div class="row-between flow-total"><b>Fluxo de caixa</b><b id="heroBalance">R$ 0,00</b></div>
-    <div class="row-between lbl"><span>Projeção do mês</span><span id="heroProjection">R$ 0,00</span></div></article>
-   <div class="grid2">
-    <article class="panel w"><div id="wDonut"></div><span class="lbl">Orçamento usado</span><strong id="wBudgetPct">0%</strong><small id="wBudgetOf"></small></article>
-    <article class="panel w"><div id="wSpark"></div><span class="lbl">Gastos do mês</span><strong id="wSpent">R$ 0,00</strong></article>
-    <article class="panel w"><div id="wCats" class="seg6"></div><span class="lbl">Categorias</span><strong id="wCatCount">0</strong><small id="wCatTop"></small></article>
-    <article class="panel w"><span class="lbl">Taxa de poupança</span><strong id="wSave">0%</strong><small>Previsto: <span id="pendingTotal">R$ 0,00</span></small></article>
-   </div>
-   <article class="panel budget-panel"><div class="panel-heading"><h3>Orçamento por categoria</h3><span class="eyebrow">MENSAL</span></div><div id="budgetOverview"></div></article>
-   <button class="btn primary wide-btn" id="duoInsight" type="button">Gerar análise com IA</button>
+   <div class="screen-title"><div><span class="eyebrow">RESUMO FINANCEIRO</span><h2>Visão geral</h2><p id="monthLabel"></p></div><button class="btn primary" data-add="entry" type="button">+ Lançamento</button></div>
+   <article class="balance-card"><div class="row-between"><span class="eyebrow">SALDO DO MÊS</span><span class="balance-chip">● ATUALIZADO</span></div><strong id="heroBalance">R$ 0,00</strong><div class="balance-footer"><span>Projeção do mês</span><b id="heroProjection">R$ 0,00</b></div></article>
+   <div class="summary-grid"><article class="summary-card"><span>Receitas recebidas</span><strong class="positive" id="totalIncome">R$ 0,00</strong></article><article class="summary-card"><span>Despesas pagas</span><strong class="negative" id="totalExpense">R$ 0,00</strong></article><article class="summary-card wide"><span>Saldo previsto após pendências</span><strong id="pendingTotal">R$ 0,00</strong></article></div>
+   <div class="content-grid"><article class="panel couple-panel"><div class="panel-heading"><h3>Acerto de contas</h3><span class="eyebrow" id="splitModeLabel">DIVISÃO PROPORCIONAL</span></div><strong id="familySettlement">Cadastre despesas compartilhadas.</strong><small id="familySplit"></small><button class="text-button" id="splitModeToggle" type="button">Usar 50/50</button></article><article class="panel budget-panel"><div class="panel-heading"><h3>Orçamento por categoria</h3><span class="eyebrow">MENSAL</span></div><div id="budgetOverview"></div></article></div>
    <div class="content-grid"><article class="panel"><div class="panel-heading"><h3>Próximas contas</h3><button class="text-button" data-view="bills" type="button">Ver todas</button></div><div id="upcomingBills" class="list-stack"></div></article><article class="panel"><div class="panel-heading"><h3>Movimentações recentes</h3><button class="text-button" data-view="entries" type="button">Ver todas</button></div><div id="recentEntries" class="list-stack"></div></article></div>
   </section>
 
@@ -82,14 +69,16 @@
   <section class="screen" id="screen-cards"><div class="screen-title"><div><span class="eyebrow">CRÉDITO</span><h2>Cartões</h2><p>Limites e situação das faturas.</p></div><button class="btn primary" data-add="card" type="button">+ Cartão</button></div><div class="module-metrics"><article><small>Cartões cadastrados</small><strong id="cardCount">0</strong></article><article><small>Limite utilizado</small><strong id="cardUsed">R$ 0,00</strong></article><article><small>Limite disponível</small><strong id="cardAvailable">R$ 0,00</strong></article></div><div id="cardList" class="card-grid"></div></section>
 
   <section class="screen" id="screen-goals"><div class="screen-title"><div><span class="eyebrow">PLANOS</span><h2>Metas</h2><p>Acompanhe seus objetivos financeiros.</p></div><button class="btn primary" data-add="goal" type="button">+ Nova meta</button></div><div class="module-metrics"><article><small>Metas ativas</small><strong id="goalCount">0</strong></article><article><small>Valor acumulado</small><strong id="goalSaved">R$ 0,00</strong></article><article><small>Objetivo total</small><strong id="goalTarget">R$ 0,00</strong></article></div><div id="goalList" class="card-grid"></div></section>
+
+  <nav class="bottom-nav"><button class="nav-item active" data-view="overview" type="button"><span>⌂</span>Início</button><button class="nav-item" data-view="entries" type="button"><span>⇄</span>Movimentos</button><button class="nav-item" data-view="bills" type="button"><span>▤</span>Contas</button><button class="nav-item" data-view="cards" type="button"><span>▣</span>Cartões</button><button class="nav-item" data-view="goals" type="button"><span>◎</span>Metas</button></nav>
  </section>
 </main>
 
 <div class="assistant-dock" id="assistantDock"><button class="dock-home" data-view="overview" type="button" aria-label="Início">⌂</button><button id="assistantFab" class="assistant-fab" type="button"><span>✦</span><b>Pergunte ao Duo</b></button><button class="dock-add" data-add="entry" type="button" aria-label="Novo lançamento">＋</button></div>
-<section id="assistantPanel" class="assistant-panel" hidden aria-label="Assistente Duo"><header class="assistant-head"><button id="assistantClose" class="assistant-close" type="button" aria-label="Fechar">×</button></header><div id="assistantMessages" class="assistant-messages"><div class="assistant-welcome"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V8l3.5 3h7L19 8v13M4 12h16M9 17h6" stroke-linecap="round" stroke-linejoin="round"/></svg><h2>Olá, <span id="assistantHello">você</span></h2><p>Como posso te ajudar?</p><div class="assistant-suggestions"><button type="button" data-prompt="Analise minhas finanças e diga onde posso economizar.">Analisar minhas finanças</button><button type="button" data-prompt="Quais contas vencem primeiro?">Próximas contas</button><button type="button" data-prompt="Quem deve a quem neste mês?">Quem deve a quem?</button><button type="button" data-prompt="Me ajude a organizar um orçamento mensal.">Organizar orçamento</button></div></div></div><div id="assistantStatus" class="assistant-status" aria-live="polite"></div><form id="assistantForm" class="assistant-composer"><textarea id="assistantInput" rows="1" maxlength="3000" placeholder="Envie uma mensagem..." required></textarea><button id="assistantSend" type="submit" aria-label="Enviar mensagem">➤</button></form><small class="assistant-disclaimer">A IA pode cometer erros. Confira informações importantes.</small></section>
+<section id="assistantPanel" class="assistant-panel" hidden aria-label="Assistente Duo"><header class="assistant-head"><div class="assistant-identity"><span class="assistant-mark">✦</span><div><b>Duo</b><small>Seu assistente financeiro</small></div></div><button id="assistantClose" class="assistant-close" type="button" aria-label="Fechar">×</button></header><div id="assistantMessages" class="assistant-messages"><div class="assistant-welcome"><span>✦</span><h2>Como posso ajudar?</h2><p>Pergunte sobre suas finanças ou qualquer outro assunto.</p><div class="assistant-suggestions"><button type="button" data-prompt="Analise minhas finanças e diga onde posso economizar.">Analisar minhas finanças</button><button type="button" data-prompt="Quais contas vencem primeiro?">Próximas contas</button><button type="button" data-prompt="Me ajude a organizar um orçamento mensal.">Organizar meu orçamento</button></div></div></div><div id="assistantStatus" class="assistant-status" aria-live="polite"></div><form id="assistantForm" class="assistant-composer"><textarea id="assistantInput" rows="1" maxlength="3000" placeholder="Envie uma mensagem..." required></textarea><button id="assistantSend" type="submit" aria-label="Enviar mensagem">➤</button></form><small class="assistant-disclaimer">A IA pode cometer erros. Confira informações importantes.</small></section>
 
 <dialog id="recordDialog" class="record-dialog"><form id="dialogForm"><div class="dialog-heading"><div><span class="eyebrow">DUO FINANCE</span><h2 id="dialogTitle">Novo registro</h2></div><button type="button" class="icon-button" id="dialogCancel">✕</button></div><div id="dialogFields" class="dialog-fields"></div><div class="dialog-actions"><button type="button" class="btn" id="dialogCancel2">Cancelar</button><button type="submit" class="btn primary">Salvar</button></div></form></dialog>
 
 <script type="importmap">{"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"}}</script>
-<script type="module" src="./firebase-client.js"></script><script type="module" src="./app.js"></script><script type="module" src="./assistant.js"></script><script type="module" src="./duo-ui.js"></script>
+<script type="module" src="./firebase-client.js"></script><script type="module" src="./app.js"></script><script type="module" src="./assistant.js"></script>
 </body></html>
