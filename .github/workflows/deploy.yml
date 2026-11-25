@@ -40,9 +40,11 @@ jobs:
           const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
           if (duplicates.length) throw new Error('Duplicate HTML IDs: ' + [...new Set(duplicates)].join(', '));
           const idSet = new Set(ids);
+          // IDs criados em tempo de execução são válidos mesmo sem existir no HTML inicial.
+          const runtimeCreatedIds = new Set(['gamaUpdateDialog']);
           for (const [file, source] of [['app.js', fs.readFileSync('app.js', 'utf8')], ['firebase-client.js', fs.readFileSync('firebase-client.js', 'utf8')]]) {
-            const refs = [...source.matchAll(/(?:\$\(["']#([^"']+)["']\)|getElementById\(["']([^"']+)["']\))/g)].map(m => m[1] || m[2]);
-            const missing = [...new Set(refs.filter(id => !idSet.has(id)))];
+            const refs = [...source.matchAll(/(?:\\$\\(["']#([^"']+)["']\\)|getElementById\\(["']([^"']+)["']\\))/g)].map(m => m[1] || m[2]);
+            const missing = [...new Set(refs.filter(id => !idSet.has(id) && !runtimeCreatedIds.has(id)))];
             if (missing.length) throw new Error(file + ' references missing HTML IDs: ' + missing.join(', '));
           }
           const importMap = html.match(/<script type="importmap">([\s\S]*?)<\/script>/);
