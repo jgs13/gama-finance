@@ -1,8 +1,8 @@
 {
-  "name": "gama-finance",
+  "name": "duo-finance",
   "version": "1.0.0",
   "private": true,
-  "description": "GAMA FINANCE - aplicativo financeiro web e Android",
+  "description": "Duo Finance - aplicativo financeiro web e Android",
   "scripts": {
     "android:prepare": "node scripts/prepare-android.mjs && esbuild native-back.js --bundle --format=esm --outfile=www/native-back.js && esbuild firebase-client.js --bundle --format=esm --outfile=www/firebase-client.js && esbuild native-notifications.js --bundle --format=esm --outfile=www/native-notifications.js",
     "android:add": "cap add android",

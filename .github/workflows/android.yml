@@ -1,4 +1,4 @@
-name: Build GAMA FINANCE Android APK
+name: Build Duo Finance Android APK
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
 
       - name: Sync Android project
         run: npx cap sync android
-      - name: Aplicar ícone oficial do GAMA FINANCE
+      - name: Aplicar ícone oficial do Duo Finance
         run: node scripts/configure-android-icons.mjs
 
       - name: Build debug APK
@@ -69,9 +69,9 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: gama-finance-debug-apk
+          name: duo-finance-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
 
-# Rebuild requested for the latest GAMA FINANCE release.
+# Rebuild requested for the latest Duo Finance release.

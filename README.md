@@ -1,4 +1,4 @@
-# GAMA FINANCE
+# Duo Finance
 
 Aplicativo web instalável (PWA) para controle financeiro pessoal e profissional.
 
@@ -46,7 +46,7 @@ O repositório também contém a configuração para gerar um aplicativo Android
 4. Execute `npm run android:sync`.
 5. Abra o projeto com `npm run android:open` ou compile pelo Android Studio.
 
-O workflow **Build GAMA FINANCE Android APK** também compila automaticamente um APK de desenvolvimento em pushes que alteram os arquivos do app e pode ser iniciado manualmente em GitHub Actions. O arquivo gerado fica disponível como artefato da execução por 14 dias.
+O workflow **Build Duo Finance Android APK** também compila automaticamente um APK de desenvolvimento em pushes que alteram os arquivos do app e pode ser iniciado manualmente em GitHub Actions. O arquivo gerado fica disponível como artefato da execução por 14 dias.
 
 ### Atenção à migração dos dados
 
@@ -60,7 +60,7 @@ Esta configuração prepara um APK **debug** para instalação e testes. Uma ver
 - Página pública de download: https://jgs13.github.io/gama-finance/download/
 - O app consulta `latest.json` ao abrir e mostra um aviso dentro do aplicativo quando uma versão superior estiver publicada.
 - Os APKs de distribuição são publicados em GitHub Releases com o nome estável `GamaFinance.apk`.
-- Para publicar uma versão, crie uma tag no formato `vMAJOR.MINOR.PATCH` (ex.: `v1.0.1`). O workflow `Release GAMA FINANCE Android` compila, assina e publica o APK e atualiza os metadados usados pelo aviso interno.
+- Para publicar uma versão, crie uma tag no formato `vMAJOR.MINOR.PATCH` (ex.: `v1.0.1`). O workflow `Release Duo Finance Android` compila, assina e publica o APK e atualiza os metadados usados pelo aviso interno.
 - O APK de distribuição exige os segredos `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` e `ANDROID_KEY_PASSWORD` nas configurações do repositório. A mesma chave deve ser usada em todas as versões futuras; perder ou trocar essa chave impede atualização por cima da instalação anterior.
 - A primeira instalação assinada pode exigir backup e reinstalação caso o usuário já tenha instalado o APK debug. Não desinstale antes de exportar os dados. As versões seguintes poderão ser instaladas por cima, desde que mantenham o mesmo certificado e o versionCode aumente.
 - O botão de atualização abre o download do APK no navegador/gerenciador do Android; o usuário confirma a instalação no Android. Não há instalação silenciosa.

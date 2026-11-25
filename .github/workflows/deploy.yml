@@ -1,10 +1,10 @@
-name: Deploy GAMA FINANCE to GitHub Pages
+name: Deploy Duo Finance to GitHub Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
   workflow_run:
-    workflows: ["GAMA FINANCE - Publicar APK automaticamente"]
+    workflows: ["Duo Finance - Publicar APK automaticamente"]
     types: [completed]
     branches: [main]
 permissions:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Validate GAMA FINANCE
+      - name: Validate Duo Finance
         run: |
           node --check app.js
           node --check assistant.js
@@ -52,7 +52,7 @@ jobs:
             if (!imports[name]) throw new Error('Missing import map entry: ' + name);
           }
           const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
-          if (manifest.name !== 'GAMA FINANCE' || !manifest.start_url || !Array.isArray(manifest.icons)) throw new Error('Invalid PWA manifest');
+          if (manifest.name !== 'Duo Finance' || !manifest.start_url || !Array.isArray(manifest.icons)) throw new Error('Invalid PWA manifest');
           for (const file of ['app.js', 'styles.css', 'firebase-client.js', 'firebase-config.js', 'assistant.js', 'sw.js', 'icon.svg']) {
             if (!fs.existsSync(file)) throw new Error('Missing app file: ' + file);
           }
