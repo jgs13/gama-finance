@@ -80,5 +80,5 @@
 <dialog id="recordDialog" class="record-dialog"><form id="dialogForm"><div class="dialog-heading"><div><span class="eyebrow">DUO FINANCE</span><h2 id="dialogTitle">Novo registro</h2></div><button type="button" class="icon-button" id="dialogCancel">✕</button></div><div id="dialogFields" class="dialog-fields"></div><div class="dialog-actions"><button type="button" class="btn" id="dialogCancel2">Cancelar</button><button type="submit" class="btn primary">Salvar</button></div></form></dialog>
 
 <script type="importmap">{"imports":{"firebase/app":"https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js","firebase/auth":"https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js","firebase/firestore":"https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js"}}</script>
-<script type="module" src="./firebase-client.js"></script><script type="module" src="./app.js"></script><script type="module" src="./assistant.js"></script>
+<script type="module" src="./firebase-client.js"></script><script type="module" src="./app.js"></script><script type="module" src="./assistant.js"></script><script type="module">if(window.Capacitor?.isNativePlatform?.())import("./native-back.js").catch(()=>{});</script>
 </body></html>
